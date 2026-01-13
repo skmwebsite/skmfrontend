@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.max-unset {
+  max-width: unset;
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #f8f5ee inset !important;
+    -webkit-text-fill-color: #0000008f !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
+  }
+  /* Remove number input spinners in Chrome, Safari, Edge */
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Remove number input spinners in Firefox */
+  .no-spinner {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+}
+html,
+body {
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+}

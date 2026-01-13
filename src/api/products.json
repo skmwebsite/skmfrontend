@@ -1,0 +1,558 @@
+[
+  {
+    "category": "Masala ",
+    "color": 1,
+
+    "image": "/images/category1.png",
+    "products": [
+      {
+        "id": 101,
+        "name": "Turmeric Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Pure and natural turmeric powder with rich aroma.",
+        "product_info": "100% pure turmeric powder with rich aroma and color. Perfect for daily cooking, skincare, and traditional remedies.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 45, "original_price": 60 },
+          { "uom": "200g", "price": 85, "original_price": 110 },
+          { "uom": "500g", "price": 199, "original_price": 240 },
+          { "uom": "1kg", "price": 380, "original_price": 450 }
+        ]
+      },
+      {
+        "id": 102,
+        "name": "Red Chilli Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "High–quality red chilli powder with perfect heat.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 55, "original_price": 70 },
+          { "uom": "200g", "price": 105, "original_price": 130 },
+          { "uom": "500g", "price": 240, "original_price": 300 },
+          { "uom": "1kg", "price": 460, "original_price": 550 }
+        ]
+      },
+      {
+        "id": 103,
+        "name": "Coriander Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Freshly ground coriander powder for authentic flavor.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 40, "original_price": 55 },
+          { "uom": "200g", "price": 78, "original_price": 100 },
+          { "uom": "500g", "price": 180, "original_price": 220 },
+          { "uom": "1kg", "price": 350, "original_price": 420 }
+        ]
+      },
+      {
+        "id": 104,
+        "name": "Red Chilli Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "High–quality red chilli powder with perfect heat.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 55, "original_price": 70 },
+          { "uom": "200g", "price": 105, "original_price": 130 },
+          { "uom": "500g", "price": 240, "original_price": 300 },
+          { "uom": "1kg", "price": 460, "original_price": 550 }
+        ]
+      },
+      {
+        "id": 105,
+        "name": "Coriander Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Freshly ground coriander powder for authentic flavor.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 40, "original_price": 55 },
+          { "uom": "200g", "price": 78, "original_price": 100 },
+          { "uom": "500g", "price": 180, "original_price": 220 },
+          { "uom": "1kg", "price": 350, "original_price": 420 }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Mirchi",
+    "color": 2,
+
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 201,
+        "name": "Byadgi Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Deep red color, mild heat—perfect for rich color.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 75, "original_price": 95 },
+          { "uom": "200g", "price": 140, "original_price": 180 },
+          { "uom": "500g", "price": 330, "original_price": 400 },
+          { "uom": "1kg", "price": 620, "original_price": 750 }
+        ]
+      },
+      {
+        "id": 202,
+        "name": "Guntur Red Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Strong aroma and spicy heat from Andhra.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 85, "original_price": 110 },
+          { "uom": "200g", "price": 160, "original_price": 200 },
+          { "uom": "500g", "price": 360, "original_price": 450 },
+          { "uom": "1kg", "price": 690, "original_price": 820 }
+        ]
+      },
+      {
+        "id": 203,
+        "name": "Kashmiri Red Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Vibrant color with mild spice. Ideal for gravies.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 90, "original_price": 120 },
+          { "uom": "200g", "price": 170, "original_price": 210 },
+          { "uom": "500g", "price": 390, "original_price": 470 },
+          { "uom": "1kg", "price": 740, "original_price": 880 }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Dry Fruits",
+    "color": 3,
+
+    "image": "/images/category3.png",
+    "products": [
+      {
+        "id": 301,
+        "name": "Cashew Nuts",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Premium W320 cashews — crunchy and fresh.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 150, "original_price": 180 },
+          { "uom": "200g", "price": 290, "original_price": 340 },
+          { "uom": "500g", "price": 690, "original_price": 780 },
+          { "uom": "1kg", "price": 1300, "original_price": 1500 }
+        ]
+      },
+      {
+        "id": 302,
+        "name": "Almonds",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "California almonds rich in nutrients.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 120, "original_price": 150 },
+          { "uom": "200g", "price": 230, "original_price": 280 },
+          { "uom": "500g", "price": 560, "original_price": 650 },
+          { "uom": "1kg", "price": 1080, "original_price": 1250 }
+        ]
+      },
+      {
+        "id": 303,
+        "name": "Raisins (Kismis)",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Sweet and juicy golden raisins.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 70, "original_price": 90 },
+          { "uom": "200g", "price": 130, "original_price": 160 },
+          { "uom": "500g", "price": 300, "original_price": 350 },
+          { "uom": "1kg", "price": 580, "original_price": 650 }
+        ]
+      },
+      {
+        "id": 304,
+        "name": "Cashew Nuts",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Premium W320 cashews — crunchy and fresh.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 150, "original_price": 180 },
+          { "uom": "200g", "price": 290, "original_price": 340 },
+          { "uom": "500g", "price": 690, "original_price": 780 },
+          { "uom": "1kg", "price": 1300, "original_price": 1500 }
+        ]
+      },
+      {
+        "id": 305,
+        "name": "Almonds",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "California almonds rich in nutrients.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 120, "original_price": 150 },
+          { "uom": "200g", "price": 230, "original_price": 280 },
+          { "uom": "500g", "price": 560, "original_price": 650 },
+          { "uom": "1kg", "price": 1080, "original_price": 1250 }
+        ]
+      },
+      {
+        "id": 306,
+        "name": "Raisins (Kismis)",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Sweet and juicy golden raisins.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 70, "original_price": 90 },
+          { "uom": "200g", "price": 130, "original_price": 160 },
+          { "uom": "500g", "price": 300, "original_price": 350 },
+          { "uom": "1kg", "price": 580, "original_price": 650 }
+        ]
+      },
+      {
+        "id": 307,
+        "name": "Cashew Nuts",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Premium W320 cashews — crunchy and fresh.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 150, "original_price": 180 },
+          { "uom": "200g", "price": 290, "original_price": 340 },
+          { "uom": "500g", "price": 690, "original_price": 780 },
+          { "uom": "1kg", "price": 1300, "original_price": 1500 }
+        ]
+      },
+      {
+        "id": 308,
+        "name": "Almonds",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "California almonds rich in nutrients.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 120, "original_price": 150 },
+          { "uom": "200g", "price": 230, "original_price": 280 },
+          { "uom": "500g", "price": 560, "original_price": 650 },
+          { "uom": "1kg", "price": 1080, "original_price": 1250 }
+        ]
+      },
+      {
+        "id": 309,
+        "name": "Raisins (Kismis)",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Sweet and juicy golden raisins.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 70, "original_price": 90 },
+          { "uom": "200g", "price": 130, "original_price": 160 },
+          { "uom": "500g", "price": 300, "original_price": 350 },
+          { "uom": "1kg", "price": 580, "original_price": 650 }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Raw Mirchi ",
+    "color": 4,
+
+    "image": "/images/category1.png",
+    "products": [
+      {
+        "id": 401,
+        "name": "Turmeric Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Pure and natural turmeric powder with rich aroma.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 45, "original_price": 60 },
+          { "uom": "200g", "price": 85, "original_price": 110 },
+          { "uom": "500g", "price": 199, "original_price": 240 },
+          { "uom": "1kg", "price": 380, "original_price": 450 }
+        ]
+      },
+      {
+        "id": 402,
+        "name": "Red Chilli Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "High–quality red chilli powder with perfect heat.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 55, "original_price": 70 },
+          { "uom": "200g", "price": 105, "original_price": 130 },
+          { "uom": "500g", "price": 240, "original_price": 300 },
+          { "uom": "1kg", "price": 460, "original_price": 550 }
+        ]
+      },
+      {
+        "id": 403,
+        "name": "Coriander Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Freshly ground coriander powder for authentic flavor.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 40, "original_price": 55 },
+          { "uom": "200g", "price": 78, "original_price": 100 },
+          { "uom": "500g", "price": 180, "original_price": 220 },
+          { "uom": "1kg", "price": 350, "original_price": 420 }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Raw Masala",
+    "color": 5,
+
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 501,
+        "name": "Byadgi Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Deep red color, mild heat—perfect for rich color.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 75, "original_price": 95 },
+          { "uom": "200g", "price": 140, "original_price": 180 },
+          { "uom": "500g", "price": 330, "original_price": 400 },
+          { "uom": "1kg", "price": 620, "original_price": 750 }
+        ]
+      },
+      {
+        "id": 502,
+        "name": "Guntur Red Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Strong aroma and spicy heat from Andhra.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 85, "original_price": 110 },
+          { "uom": "200g", "price": 160, "original_price": 200 },
+          { "uom": "500g", "price": 360, "original_price": 450 },
+          { "uom": "1kg", "price": 690, "original_price": 820 }
+        ]
+      },
+      {
+        "id": 503,
+        "name": "Kashmiri Red Chilli",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Vibrant color with mild spice. Ideal for gravies.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 90, "original_price": 120 },
+          { "uom": "200g", "price": 170, "original_price": 210 },
+          { "uom": "500g", "price": 390, "original_price": 470 },
+          { "uom": "1kg", "price": 740, "original_price": 880 }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Achaar",
+    "color": 6,
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 601,
+        "name": "Mango Pickle",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Traditional spicy mango pickle.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "200g", "price": 95, "original_price": 120 },
+          { "uom": "500g", "price": 220, "original_price": 260 },
+          { "uom": "1kg", "price": 420, "original_price": 480 }
+        ]
+      },
+      {
+        "id": 602,
+        "name": "Lemon Pickle",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Tangy lemon pickle with authentic spices.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "200g", "price": 90, "original_price": 115 },
+          { "uom": "500g", "price": 210, "original_price": 250 }
+        ]
+      }
+    ]
+  },
+
+  {
+    "category": "Pappad",
+    "color": 7,
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 701,
+        "name": "Urad Papad",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Crispy urad dal papad.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 45, "original_price": 60 },
+          { "uom": "250g", "price": 105, "original_price": 130 }
+        ]
+      },
+      {
+        "id": 702,
+        "name": "Rice Papad",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Light and crunchy rice papad.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 40, "original_price": 55 },
+          { "uom": "250g", "price": 95, "original_price": 120 }
+        ]
+      }
+    ]
+  },
+
+  {
+    "category": "Farsan",
+    "color": 8,
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 801,
+        "name": "Mix Farsan",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Traditional Gujarati mix farsan.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "250g", "price": 120, "original_price": 150 },
+          { "uom": "500g", "price": 230, "original_price": 280 }
+        ]
+      },
+      {
+        "id": 802,
+        "name": "Sev",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Crispy besan sev.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "200g", "price": 90, "original_price": 115 },
+          { "uom": "500g", "price": 210, "original_price": 250 }
+        ]
+      }
+    ]
+  },
+
+  {
+    "category": "Chutney",
+    "color": 9,
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 901,
+        "name": "Coconut Chutney Powder",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Dry coconut chutney with spices.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "100g", "price": 65, "original_price": 85 },
+          { "uom": "250g", "price": 150, "original_price": 180 }
+        ]
+      },
+      {
+        "id": 902,
+        "name": "Mint Chutney",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Refreshing mint chutney.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "200g", "price": 75, "original_price": 95 },
+          { "uom": "500g", "price": 170, "original_price": 210 }
+        ]
+      }
+    ]
+  },
+
+  {
+    "category": "Yadi",
+    "color": 10,
+    "image": "/images/category2.png",
+    "products": [
+      {
+        "id": 1001,
+        "name": "Roasted Peanuts",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Crunchy roasted peanuts.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "250g", "price": 85, "original_price": 110 },
+          { "uom": "500g", "price": 160, "original_price": 200 }
+        ]
+      },
+      {
+        "id": 1002,
+        "name": "Fried Gram",
+        "image": "/images/sample.png",
+        "food_type": 1,
+        "description": "Roasted fried gram snack.",
+        "is_wishlisted": false,
+        "tax": "0.00",
+        "variants": [
+          { "uom": "250g", "price": 90, "original_price": 115 },
+          { "uom": "500g", "price": 170, "original_price": 210 }
+        ]
+      }
+    ]
+  }
+]
