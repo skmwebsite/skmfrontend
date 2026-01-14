@@ -101,9 +101,9 @@ const LoginOTPForm = ({ onOTPVerified }: LoginOTPFormProps) => {
               </div>
             </div>
 
-            <div className="~pb-[6rem]/[9.438rem] flex sm:flex-row flex-col justify-center gap-[1rem]">
+            <div className="~pb-[6rem]/[9.438rem] flex sm:flex-row flex-col-reverse justify-center gap-[1rem]">
               <button
-                className={` leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] rounded-full border-2 font-semibold disabled:opacity-50 ${
+                className={` leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] rounded-full md:border-2 font-semibold disabled:opacity-50 ${
                   timer > 0 || resendOtpMutation.isPending
                     ? "cursor-not-allowed border-gray-300 bg-gray-200 text-gray-500"
                     : "border-black bg-white text-black enabled:hover:text-redcolor"
@@ -120,7 +120,7 @@ const LoginOTPForm = ({ onOTPVerified }: LoginOTPFormProps) => {
               </button>
 
               <button
-                className=" w-full rounded-full border-2 border-main  leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] bg-main font-medium text-white transition-all duration-300 enabled:hover:bg-white enabled:hover:text-main disabled:opacity-50 md:w-fit"
+                className=" w-full rounded-full md:border-2 border-main  leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] bg-main font-medium text-white transition-all duration-300 enabled:hover:bg-white enabled:hover:text-main disabled:opacity-50 md:w-fit"
                 disabled={
                   verifyOtpMutation.isPending || resendOtpMutation.isPending
                 }

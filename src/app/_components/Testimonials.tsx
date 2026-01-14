@@ -81,13 +81,13 @@ const Testimonials = () => {
             alt=""
           />
         </div>{" "}
-        <div className="w-[8rem] h-[4.25rem] absolute top-0 right-0 flex justify-center items-center rounded-bl-[1rem] bg-white">
+        <div className="~w-[6rem]/[8rem] ~h-[3.3125rem]/[4.25rem] absolute top-0 right-0 flex justify-center items-center rounded-bl-[1rem] bg-white">
           <BorderRadius className="absolute top-0 rotate-90 left-[-1.125rem] size-[1.125rem] text-white" />
           <BorderRadius className="absolute right-0 rotate-90 bottom-[-1.125rem]  size-[1.125rem] text-white" />
           <div className="flex gap-[0.5rem] ">
             <button
               onClick={handlePrev}
-              className="size-[3.125rem] relative flex group overflow-hidden justify-center items-center  bg-[#F8F5EE] rounded-full "
+              className="~size-[2.339189291rem]/[3.125rem] relative flex group overflow-hidden justify-center items-center  bg-[#F8F5EE] rounded-full "
             >
               {" "}
               <span
@@ -98,11 +98,11 @@ const Testimonials = () => {
     transition-opacity duration-700 ease-in-out
   "
               />
-              <Arrow className="size-[1.5rem] text-main  transition-all group-hover:text-white duration-700 ease-in-out rotate-[180deg] " />
+              <Arrow className="~size-[1.25rem]/[1.5rem] text-main  transition-all group-hover:text-white duration-700 ease-in-out rotate-[180deg] " />
             </button>
             <button
               onClick={handleNext}
-              className="size-[3.125rem] relative flex group overflow-hidden justify-center items-center  bg-[#F8F5EE] rounded-full "
+              className="~size-[2.339189291rem]/[3.125rem] relative flex group overflow-hidden justify-center items-center  bg-[#F8F5EE] rounded-full "
             >
               {" "}
               <span
@@ -113,7 +113,7 @@ const Testimonials = () => {
     transition-opacity duration-700 ease-in-out
   "
               />
-              <Arrow className="size-[1.5rem] text-main  transition-all group-hover:text-white duration-700 ease-in-out rotate-0 " />
+              <Arrow className="~size-[1.25rem]/[1.5rem] text-main  transition-all group-hover:text-white duration-700 ease-in-out rotate-0 " />
             </button>
           </div>
         </div>
@@ -296,23 +296,18 @@ const Testimonials = () => {
       </div>
 
       <div>
-        <div className="w-full group relative ~px-[0.625rem]/[3.6875rem] ~py-[5rem]/[2.75rem] ~mt-[1.5rem]/[5rem] flex justify-start items-end overflow-hidden  ~h-[25rem]/[32.1993751526rem]">
+        <div className="w-full group relative ~rounded-[0.75rem]/[1rem] ~px-[0.625rem]/[3.6875rem] ~py-[5rem]/[2.75rem] ~mt-[1.5rem]/[5rem] flex justify-start items-end overflow-hidden  ~h-[25rem]/[32.1993751526rem]">
           <div className="absolute inset-0 bg-gradient-to-t from-[#F8F5EE] to-transparent z-20">
             {" "}
           </div>
           <p className="~text-[1rem]/[3rem] leading-[120%] max-w-[30ch] z-20  text-black font-medium tracking-[-0.04em]">
             Masala cherished across generations Bring home the authentic taste
           </p>
-          <Image
-            src={banner2}
-            alt="image"
-            fill
-            className="object-cover ~rounded-[0.75rem]/[1rem]"
-          />
-          <div className="~size-[2.1875rem]/[4.375rem] ~rounded-tl-[0.75rem]/[1rem] flex justify-center items-center absolute bottom-0 right-0 bg-white z-50 ">
+          <Image src={banner2} alt="image" fill className="object-cover " />
+          <div className="~size-[3.2748651505rem]/[4.375rem] ~rounded-tl-[0.75rem]/[1rem] flex justify-center items-center absolute bottom-0 right-0 bg-white z-50 ">
             <BorderRadius className="~size-[0.8125rem]/[1.125rem] absolute bottom-[-1px] rotate-180 ~left-[-0.8125rem]/[-1.125rem] text-white " />
-            <BorderRadius className="~size-[0.8125rem]/[1.125rem] absolute right-[-1px] rotate-180 ~top-[-0.8125rem]/[-1.11rem] text-white " />
-            <button className="~size-[1.5rem]/[3.125rem] relative  overflow-hidden  flex justify-center items-center bg-[#F8F5EE] rounded-full ">
+            <BorderRadius className="~size-[0.8125rem]/[1.125rem] absolute right-[-1px] rotate-180 ~top-[-0.8rem]/[-1.11rem] text-white " />
+            <button className="~size-[2.339189291rem]/[3.125rem] relative  overflow-hidden  flex justify-center items-center bg-[#F8F5EE] rounded-full ">
               <span
                 className="
     absolute inset-0
@@ -321,7 +316,7 @@ const Testimonials = () => {
     transition-opacity duration-700 ease-in-out
   "
               />{" "}
-              <Arrow className="~size-[1rem]/[1.25rem] text-main   transition-all group-hover:text-white duration-700 ease-in-out  -rotate-45" />
+              <Arrow className="size-[1.25rem] text-main   transition-all group-hover:text-white duration-700 ease-in-out  -rotate-45" />
             </button>
           </div>
         </div>

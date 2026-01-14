@@ -88,7 +88,7 @@ const ProductCard = ({ item, section }: Props) => {
         {item.variants.length > 0 ? (
           <Listbox value={selectedVariant} onChange={setSelectedVariant}>
             <div className="relative">
-              <ListboxButton className="~px-[0.75rem]/[1rem]  flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main py-[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
+              <ListboxButton className="~px-[0.75rem]/[1rem]  flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main ~py-[0.625rem]/[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
                 <div className="flex items-center ~gap-[0.2rem]/[0.4rem]">
                   <div>
                     {selectedVariant.name}

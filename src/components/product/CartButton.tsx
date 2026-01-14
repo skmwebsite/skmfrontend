@@ -152,7 +152,7 @@ const CartButton = ({
         {cartItem && showControls ? (
           <motion.div
             animate={{ opacity: 1 }}
-            className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#EC5715] to-[#FF7E00] ~h-[1.875rem]/[2.8125rem]"
+            className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#EC5715] to-[#FF7E00] ~h-[2.5rem]/[2.8125rem]"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             key={"in-cart"}
@@ -195,7 +195,7 @@ const CartButton = ({
         ) : (
           <motion.button
             animate={{ opacity: 1, x: 0 }}
-            className="~text-[0.75rem]/[1rem] relative group w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white ~py-[0.45rem]/[0.78125rem]"
+            className="~text-[0.75rem]/[1rem] relative group w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white ~py-[0.75rem]/[0.78125rem]"
             exit={{ opacity: 0, x: -10 }}
             initial={{ opacity: 0, x: -10 }}
             key={"add-to-cart"}
@@ -205,7 +205,7 @@ const CartButton = ({
             type="button"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
-            <CartBucket className="~size-[0.8rem]/[1.25rem] z-40" />
+            <CartBucket className="~size-[1rem]/[1.25rem] z-40" />
             <span className="z-40">
               {maxQuantity <= 0 ? "Out of Stock" : "Add to Cart"}
             </span>

@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import hero1 from "@public/images/hero-bg.png";
-import hero2 from "@public/images/banner-2.jpeg";
+import hero2 from "@public/images/banner-2.png";
+import hero3 from "@public/images/banner-3.png";
 import Arrow from "@/src/components/svg/Arrow";
 import Link from "next/link";
 
 const banners = [
   {
-    image: hero2,
+    image: hero1,
     title: "Shree Kakaji Masale",
     subtitle: {
       part1: "Pure",
@@ -21,15 +22,26 @@ const banners = [
       "Hand-picked spices crafted with tradition and perfected with flavor bringing the true taste of India straight to your kitchen.",
   },
   {
-    image: hero1,
-    title: "Premium Spice Collection",
+    image: hero2,
+    title: "Authentically Indian",
     subtitle: {
-      part1: "Fresh",
-      part2: "Organic",
-      part3: "Natural",
+      part1: "Finest",
+      part2: "Honest",
+      part3: "Flavours",
     },
     description:
-      "Experience the authentic flavors of India with our carefully sourced and expertly blended premium spices.",
+      "Carefully selected spices blended to bring authentic Indian taste.",
+  },
+  {
+    image: hero3,
+    title: "Spices Made Personal",
+    subtitle: {
+      part1: "Custom",
+      part2: "Quality",
+      part3: "Trust",
+    },
+    description:
+      "Spice combinations crafted to match your flavour preferences and cooking style.",
   },
 ];
 

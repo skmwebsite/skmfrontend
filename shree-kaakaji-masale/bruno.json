@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "shree-kaakaji-masale",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

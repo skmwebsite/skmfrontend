@@ -106,7 +106,7 @@ const SecondSection = ({ popular_products }: Props) => {
           </Link>
         </div>
 
-        <div className="~px-[0.75rem]/[1.5rem] grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ~gap-[1rem]/[3rem]  2xl:~px-[-10.75rem]/[15rem] ~pt-[1.875rem]/[2rem] ">
+        <div className="~px-[0.75rem]/[1.5rem] grid grid-cols-2  xl:grid-cols-4 ~gap-[1rem]/[3rem]  2xl:~px-[-10.75rem]/[15rem] ~pt-[1.875rem]/[2rem] ">
           {popular_products?.map((item) => (
             <ProductCard
               section={item.category_name}
