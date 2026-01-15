@@ -3,6 +3,7 @@ import Hero from "./_component/Hero";
 import SecondSection from "./_component/SecondSection";
 import { frontendApi } from "@/src/api/api";
 import { TCategories } from "@/src/api/type";
+export const dynamic = "force-dynamic";
 
 const getCollectionPageApi = async (): Promise<TCategories[] | null> =>
   await frontendApi.getCollectionPage();

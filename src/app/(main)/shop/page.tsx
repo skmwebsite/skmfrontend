@@ -4,6 +4,8 @@ import SecondSection from "./_components/SecondSection";
 import { frontendApi } from "@/src/api/api";
 import { TShop } from "@/src/api/type";
 
+export const dynamic = "force-dynamic";
+
 const getShopPageApi = async (): Promise<TShop[] | null> =>
   await frontendApi.getShopPage();
 
