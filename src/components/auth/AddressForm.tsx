@@ -1,4 +1,5 @@
 "use client";
+import { frontendApi } from "@/src/api/api";
 import { useAuth } from "@/src/hooks/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -35,6 +36,21 @@ interface AddressData {
   state: string;
   pincode: string;
   email: string;
+}
+
+// Interface for pincode check response
+interface PincodeCheckResponse {
+  status: boolean;
+  message: string;
+  data: {
+    id: number;
+    uuid: string;
+    zone: string;
+    from_pincode: string;
+    to_pincode: string;
+    price: number;
+    exclude_pincodes: string[];
+  } | null;
 }
 
 const fetchLocationByPincode = async (pincode: string) => {
@@ -83,6 +99,8 @@ const AddressForm = ({
   isEditing = false,
 }: AddressFormProps) => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [isCheckingPincode, setIsCheckingPincode] = useState(false);
+  const [isPincodeValid, setIsPincodeValid] = useState(false);
   const { submitAddress, updateCustomerAddress } = useAuth();
 
   const defaultValues = existingAddress
@@ -109,6 +127,9 @@ const AddressForm = ({
     setValue,
     reset,
     watch,
+    trigger,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
@@ -120,33 +141,69 @@ const AddressForm = ({
   useEffect(() => {
     if (existingAddress) {
       reset(defaultValues);
+      setIsPincodeValid(true); // Assume existing address pincode is valid
     }
   }, [existingAddress, reset]);
 
   useEffect(() => {
-    const fetchLocation = async () => {
-      if (pincodeValue.length === 6 && !isEditing) {
-        setIsLoadingLocation(true);
+    const validateAndFetchLocation = async () => {
+      if (pincodeValue.length === 6) {
+        // Clear previous state
+        setIsPincodeValid(false);
+        setValue("city", "");
+        setValue("state", "");
+
+        // First check pincode availability with your backend
+        setIsCheckingPincode(true);
         try {
-          const location = await fetchLocationByPincode(pincodeValue);
-          if (location) {
-            setValue("city", location.city);
-            setValue("state", location.state);
+          const pincodeCheck = await frontendApi.getPinCode(pincodeValue);
+
+          // Check if pincode is valid (assuming the API returns data if deliverable)
+          if (pincodeCheck) {
+            // Pincode is deliverable, now fetch location details from postal API
+            setIsPincodeValid(true);
+            setIsLoadingLocation(true);
+
+            const location = await fetchLocationByPincode(pincodeValue);
+            if (location) {
+              setValue("city", location.city);
+              setValue("state", location.state);
+            } else {
+              toast.error("Could not fetch location details for this pincode");
+            }
           } else {
-            setValue("city", "");
-            setValue("state", "");
-            toast.error("Invalid pincode");
+            // Pincode is not deliverable (API returns null)
+            setIsPincodeValid(false);
+            setError("pincode", {
+              type: "manual",
+              message: "Delivery not available for this pincode",
+            });
+            toast.error("Delivery not available for this pincode");
           }
         } catch (error) {
-          toast.error("Failed to fetch location");
+          console.error("Error in pincode validation:", error);
+          setIsPincodeValid(false);
+          setError("pincode", {
+            type: "manual",
+            message: "Failed to validate pincode",
+          });
+          toast.error("Failed to validate pincode");
         } finally {
+          setIsCheckingPincode(false);
           setIsLoadingLocation(false);
         }
+      } else if (pincodeValue.length > 0) {
+        // Clear errors if pincode is being entered but not complete
+        clearErrors("pincode");
+        setIsPincodeValid(false);
       }
     };
 
-    fetchLocation();
-  }, [pincodeValue, setValue, isEditing]);
+    // Only auto-fetch for new addresses, not when editing
+    if (!isEditing) {
+      validateAndFetchLocation();
+    }
+  }, [pincodeValue, setValue, setError, clearErrors, isEditing]);
 
   const createAddressMutation = useMutation({
     mutationFn: (data: Schema) =>
@@ -173,7 +230,7 @@ const AddressForm = ({
     onError: (error: any) => {
       console.error("Address submission error:", error);
       toast.error(
-        error?.message || "Something went wrong while saving address"
+        error?.message || "Something went wrong while saving address",
       );
     },
   });
@@ -210,42 +267,73 @@ const AddressForm = ({
     onError: (error: any) => {
       console.error("Address update error:", error);
       toast.error(
-        error?.message || "Something went wrong while updating address"
+        error?.message || "Something went wrong while updating address",
       );
     },
   });
 
   const handlePincodeChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value;
 
     if (!/^\d*$/.test(value)) return;
 
     setValue("pincode", value.slice(0, 6));
+    await trigger("pincode");
 
+    // For editing mode, we check pincode on manual change
     if (isEditing && value.length === 6) {
-      setIsLoadingLocation(true);
+      setIsCheckingPincode(true);
       try {
-        const location = await fetchLocationByPincode(value);
-        if (location) {
-          setValue("city", location.city);
-          setValue("state", location.state);
-          toast.success("Location updated successfully");
+        const pincodeCheck = await frontendApi.getPinCode(value);
+
+        if (pincodeCheck) {
+          setIsPincodeValid(true);
+          setIsLoadingLocation(true);
+
+          const location = await fetchLocationByPincode(value);
+          if (location) {
+            setValue("city", location.city);
+            setValue("state", location.state);
+            toast.success("Location updated successfully");
+          } else {
+            setValue("city", "");
+            setValue("state", "");
+            toast.error("Could not fetch location details");
+          }
         } else {
-          setValue("city", "");
-          setValue("state", "");
-          toast.error("Invalid pincode");
+          setIsPincodeValid(false);
+          setError("pincode", {
+            type: "manual",
+            message: "Delivery not available for this pincode",
+          });
+          toast.error("Delivery not available for this pincode");
         }
       } catch (error) {
-        toast.error("Failed to fetch location");
+        toast.error("Failed to validate pincode");
       } finally {
+        setIsCheckingPincode(false);
         setIsLoadingLocation(false);
       }
     }
   };
 
   const onSubmit = async (value: Schema) => {
+    // Validate pincode before submission
+    if (value.pincode.length === 6) {
+      try {
+        const pincodeCheck = await frontendApi.getPinCode(value.pincode);
+        if (!pincodeCheck) {
+          toast.error("Delivery not available for this pincode");
+          return;
+        }
+      } catch (error) {
+        toast.error("Failed to validate pincode");
+        return;
+      }
+    }
+
     if (isEditing) {
       if (updateAddressMutation.isPending) return;
       updateAddressMutation.mutate(value);
@@ -275,20 +363,37 @@ const AddressForm = ({
             <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
               Pincode
             </h5>
-            <input
-              {...register("pincode")}
-              onChange={handlePincodeChange}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
-              placeholder="Enter your pincode"
-              type="text"
-              maxLength={6}
-              disabled={isLoading}
-            />
-            {errors.pincode && (
-              <p className="mt-1 text-redcolor text-sm">
-                *{errors.pincode.message}
-              </p>
-            )}
+            <div className="relative">
+              <input
+                {...register("pincode")}
+                onChange={handlePincodeChange}
+                className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+                placeholder="Enter your pincode"
+                type="text"
+                maxLength={6}
+                disabled={isLoading}
+              />
+              {isCheckingPincode && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin h-4 w-4 border-2 border-main border-t-transparent rounded-full"></div>
+                </div>
+              )}
+            </div>
+            {
+              errors.pincode && (
+                <p className="mt-1 text-redcolor text-sm">
+                  *{errors.pincode.message}
+                </p>
+              )
+              // : (
+              //   pincodeValue.length === 6 &&
+              //   isPincodeValid && (
+              //     <p className="mt-1 text-green-600 text-sm">
+              //       ✓ Delivery available for this pincode
+              //     </p>
+              //   )
+              // )
+            }
           </div>
 
           <div>
@@ -300,7 +405,7 @@ const AddressForm = ({
               className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder={isLoadingLocation ? "Fetching city..." : "City"}
               type="text"
-              disabled={isLoading || isLoadingLocation}
+              disabled={isLoading || isLoadingLocation || !isPincodeValid}
             />
             {errors.city && (
               <p className="mt-1 text-redcolor text-sm">
@@ -318,7 +423,7 @@ const AddressForm = ({
               className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder={isLoadingLocation ? "Fetching state..." : "State"}
               type="text"
-              disabled={isLoading || isLoadingLocation}
+              disabled={isLoading || isLoadingLocation || !isPincodeValid}
             />
             {errors.state && (
               <p className="mt-1 text-redcolor text-sm">
@@ -335,7 +440,7 @@ const AddressForm = ({
               {...register("street")}
               className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] min-h-[80px] resize-none disabled:opacity-50"
               placeholder="House No, Building, Street, Area"
-              disabled={isLoading}
+              disabled={isLoading || !isPincodeValid}
             />
             {errors.street && (
               <p className="mt-1 text-redcolor text-sm">
@@ -353,7 +458,7 @@ const AddressForm = ({
               className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder="Enter your full name"
               type="text"
-              disabled={isLoading}
+              disabled={isLoading || !isPincodeValid}
             />
             {errors.name && (
               <p className="mt-1 text-redcolor text-sm">
@@ -371,7 +476,7 @@ const AddressForm = ({
               className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder="Enter your email"
               type="email"
-              disabled={isLoading}
+              disabled={isLoading || !isPincodeValid}
             />
             {errors.email && (
               <p className="mt-1 text-redcolor text-sm">
@@ -384,7 +489,7 @@ const AddressForm = ({
         <div className="~pb-[5rem]/[7rem] flex justify-center">
           <button
             className="w-full rounded-full border-2 border-main leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] bg-main font-medium text-white transition-all duration-300 enabled:hover:bg-white enabled:hover:text-main disabled:opacity-50 disabled:cursor-not-allowed md:w-fit"
-            disabled={isLoading}
+            disabled={isLoading || isCheckingPincode || !isPincodeValid}
             type="submit"
           >
             {isLoading ? (

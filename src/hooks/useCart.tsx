@@ -31,7 +31,14 @@ export type Item = {
   grinding?: string;
   grindPrice?: number;
   category_name?: string;
+  cartItemKey?: string;
   [key: string]: unknown;
+  yadi_variant?: {
+    variant_id: number;
+    ingredients: { raw_material_id: number; quantity: number }[];
+  };
+  spice_level?: number;
+  has_grind?: boolean;
 };
 
 export type Discount = {
@@ -131,7 +138,7 @@ export type Actions =
 
 // Create and export context
 const CartContext = createContext<CartProviderState | undefined>(
-  initialState as CartProviderState
+  initialState as CartProviderState,
 );
 
 export const useCart = () => {
@@ -168,44 +175,49 @@ const calculateFreeKg = (totalKg: number): number => {
 };
 
 const manageFreeItems = (items: Item[]): Item[] => {
-  // Separate free items from non-free items
+  // Remove ALL existing free items first
   const nonFreeItems = items.filter((item) => !item.isFreeItem);
-  const existingFreeItems = items.filter((item) => item.isFreeItem);
+
+  // Filter eligible items (those with category_has_offer === 1)
+  const eligibleItems = nonFreeItems.filter(
+    (item) => item.category_has_offer === 1,
+  );
+
+  // If no eligible items, return without free items
+  if (eligibleItems.length === 0) {
+    return nonFreeItems;
+  }
+
+  // Calculate total eligible KG for the entire cart
+  const totalEligibleKg = eligibleItems.reduce((sum, item) => {
+    const unit = item.variantUnit || "gm";
+    const variantName = item.variantName ? String(item.variantName) : "0";
+    const itemKg = convertToKg(parseFloat(variantName), unit);
+    return sum + itemKg * item.quantity;
+  }, 0);
+
+  // Calculate total free KG for the entire cart
+  const totalFreeKg = calculateFreeKg(totalEligibleKg);
+
+  // If total eligible KG is less than 6kg, no free items
+  if (totalFreeKg <= 0) {
+    return nonFreeItems;
+  }
 
   // Group eligible items by product (id)
-  const eligibleItemsByProduct = nonFreeItems
-    .filter((item) => item.category_has_offer === 1)
-    .reduce((groups, item) => {
+  const eligibleItemsByProduct = eligibleItems.reduce(
+    (groups, item) => {
       const groupId = item.id.toString();
       if (!groups[groupId]) {
         groups[groupId] = [];
       }
       groups[groupId].push(item);
       return groups;
-    }, {} as Record<string, Item[]>);
+    },
+    {} as Record<string, Item[]>,
+  );
 
-  // Calculate total eligible KG for the entire cart
-  const totalEligibleKg = Object.values(eligibleItemsByProduct)
-    .flat()
-    .reduce((sum, item) => {
-      const unit = item.variantUnit || "gm";
-      const variantName = item.variantName ? String(item.variantName) : "0";
-      const itemKg = convertToKg(parseFloat(variantName), unit);
-      return sum + itemKg * item.quantity;
-    }, 0);
-
-  // Calculate total free KG for the entire cart
-  const totalFreeKg = calculateFreeKg(totalEligibleKg);
-
-  if (totalFreeKg <= 0) {
-    return [...nonFreeItems, ...existingFreeItems];
-  }
-
-  // Calculate free KG distribution for each product
   const updatedItems = [...nonFreeItems];
-
-  // Remove existing free items first
-  // We'll recreate them based on current distribution
 
   // Calculate each product's contribution to total eligible KG
   const productContributions: Record<string, number> = {};
@@ -220,25 +232,71 @@ const manageFreeItems = (items: Item[]): Item[] => {
       }, 0);
 
       productContributions[productId] = productKg;
-    }
+    },
   );
 
-  // Calculate and add free items for each product
+  // Calculate free KG distribution more accurately
+  let remainingFreeKg = totalFreeKg;
+  const productFreeKgMap: Record<string, number> = {};
+
+  // First pass: Calculate initial distribution (rounded down)
   Object.entries(eligibleItemsByProduct).forEach(
     ([productId, productItems]) => {
       if (productItems.length === 0) return;
 
       const productKg = productContributions[productId];
       const productContributionRatio = productKg / totalEligibleKg;
-      const productFreeKg = Math.round(totalFreeKg * productContributionRatio);
+      const productFreeKg = Math.floor(totalFreeKg * productContributionRatio);
 
-      if (productFreeKg > 0) {
-        const templateItem = productItems[0]; // Use first item of this product
+      productFreeKgMap[productId] = productFreeKg;
+      remainingFreeKg -= productFreeKg;
+    },
+  );
+
+  // Second pass: Distribute remaining free KG (due to rounding)
+  if (remainingFreeKg > 0) {
+    // Sort products by their contribution ratio (descending)
+    const sortedProducts = Object.entries(eligibleItemsByProduct).sort(
+      ([aId], [bId]) => {
+        const aRatio = productContributions[aId] / totalEligibleKg;
+        const bRatio = productContributions[bId] / totalEligibleKg;
+        return bRatio - aRatio;
+      },
+    );
+
+    // Distribute remaining free KG to products with highest contribution
+    for (const [productId] of sortedProducts) {
+      if (remainingFreeKg <= 0) break;
+
+      // Only add if the product already has some free KG or contribution is significant
+      if (
+        productFreeKgMap[productId] > 0 ||
+        productContributions[productId] / totalEligibleKg >= 0.2
+      ) {
+        productFreeKgMap[productId] += 1;
+        remainingFreeKg -= 1;
+      }
+    }
+  }
+
+  // Add free items for each product
+  Object.entries(eligibleItemsByProduct).forEach(
+    ([productId, productItems]) => {
+      if (productItems.length === 0) return;
+
+      const productFreeKg = productFreeKgMap[productId] || 0;
+
+      // Only add free item if productFreeKg is at least 1kg
+      if (productFreeKg >= 1) {
+        const templateItem = productItems[0];
 
         const freeItem: Item = {
           ...templateItem,
           id: `${templateItem.id}_free`,
-          itemId: `${templateItem.itemId}_free_${productId}`,
+          itemId: `${templateItem.itemId}_free_${Date.now()}_${productFreeKg}`,
+          cartItemKey: templateItem.cartItemKey
+            ? `${templateItem.cartItemKey}_free_${productFreeKg}`
+            : `${templateItem.id}_free_${productFreeKg}`,
           quantity: 1,
           variantName: String(productFreeKg),
           variantUnit: "kg",
@@ -249,11 +307,12 @@ const manageFreeItems = (items: Item[]): Item[] => {
           title: `Free ${productFreeKg}kg ${templateItem.title}`,
           image: templateItem.image,
           tax: "0",
+          productType: templateItem.productType,
         };
 
         updatedItems.push(freeItem);
       }
-    }
+    },
   );
 
   return updatedItems;
@@ -295,16 +354,20 @@ const reducer = (state: CartProviderState, action: Actions) => {
         },
       };
 
-      return updateState(updatedState, state.items);
+      // Recalculate free items when discount is added
+      const updatedItems = manageFreeItems(state.items);
+      return updateState(updatedState, updatedItems);
     }
 
     case "REMOVE_DISCOUNT": {
+      // Recalculate free items when discount is removed
+      const updatedItems = manageFreeItems(state.items);
       return updateState(
         {
           ...state,
           discount: undefined,
         },
-        state.items
+        updatedItems,
       );
     }
 
@@ -316,16 +379,20 @@ const reducer = (state: CartProviderState, action: Actions) => {
         },
       };
 
-      return updateState(updatedState, state.items);
+      // Recalculate free items when shipping is added
+      const updatedItems = manageFreeItems(state.items);
+      return updateState(updatedState, updatedItems);
     }
 
     case "REMOVE_SHIPPING": {
+      // Recalculate free items when shipping is removed
+      const updatedItems = manageFreeItems(state.items);
       return updateState(
         {
           ...state,
           shipping: undefined,
         },
-        state.items
+        updatedItems,
       );
     }
 
@@ -334,19 +401,29 @@ const reducer = (state: CartProviderState, action: Actions) => {
     }
 
     case "CLEAR_CART_META": {
-      return {
-        ...state,
-        metadata: {},
-      } as CartProviderState;
+      // Recalculate free items when metadata is cleared
+      const updatedItems = manageFreeItems(state.items);
+      return updateState(
+        {
+          ...state,
+          metadata: {},
+        },
+        updatedItems,
+      );
     }
 
     case "SET_CART_META": {
-      return {
-        ...state,
-        metadata: {
-          ...action.payload,
+      // Recalculate free items when metadata is set
+      const updatedItems = manageFreeItems(state.items);
+      return updateState(
+        {
+          ...state,
+          metadata: {
+            ...action.payload,
+          },
         },
-      } as CartProviderState;
+        updatedItems,
+      );
     }
     default:
       return state;
@@ -355,7 +432,7 @@ const reducer = (state: CartProviderState, action: Actions) => {
 
 const updateState = (
   state: CartProviderState,
-  items: Item[]
+  items: Item[],
 ): CartProviderState => {
   // Filter out free items for unique items count
   const nonFreeItems = items.filter((item) => !item.isFreeItem);
@@ -390,13 +467,13 @@ const getItemTotals = (items: Item[]) =>
 const getTotalNumberItems = (items: Item[]) =>
   items.reduce(
     (sum: number, item: Item) => sum + (item.isFreeItem ? 0 : item.quantity),
-    0
+    0,
   );
 
 const getCartTotal = (
   items: Item[],
   discount: Discount | undefined,
-  shipping: Shipping | undefined
+  shipping: Shipping | undefined,
 ) => {
   let totalCartAmount = items.reduce((total, item) => {
     if (item.isFreeItem) return total;
@@ -437,7 +514,7 @@ const getDiscountText = (discount: Discount | undefined) => {
     return `${formatCurrency(
       discount.value / 100,
       cartLocale,
-      cartCurrency
+      cartCurrency,
     )} off`;
   }
 
@@ -451,12 +528,12 @@ const getDiscountText = (discount: Discount | undefined) => {
 const getTotalItemsAmount = (items: Item[]) =>
   items.reduce(
     (total, item) => total + (item.isFreeItem ? 0 : item.quantity * item.price),
-    0
+    0,
   );
 
 const calculateDiscount = (
   items: Item[],
-  discount: Discount | undefined
+  discount: Discount | undefined,
 ): number => {
   const totalAmountOfItems = getTotalItemsAmount(items);
 
@@ -513,7 +590,7 @@ export const CartProvider: React.FC<{
   onMetadataUpdate?: (payload: object) => void;
   storage?: (
     key: string,
-    initialValue: string
+    initialValue: string,
   ) => [string, (value: string | ((prev: string) => string)) => void];
 }> = ({
   children,
@@ -549,7 +626,7 @@ export const CartProvider: React.FC<{
       discount: {},
       shipping: {},
       metadata: {},
-    })
+    }),
   );
 
   const [state, dispatch] = React.useReducer(reducer, JSON.parse(cartState));
@@ -676,7 +753,7 @@ export const CartProvider: React.FC<{
   const setMetadata = (metadata: Metadata) => {
     if (!metadata) {
       throw new Error(
-        "Please provide metadata to update or set value to `{}`."
+        "Please provide metadata to update or set value to `{}`.",
       );
     }
 

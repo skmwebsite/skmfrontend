@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
@@ -21,15 +21,13 @@ const Hero = ({ product_details }: Props) => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [selectedVariant, setSelectedVariant] = useState(
-    product_details?.variants?.find((v) => v.is_primary) ??
-      product_details?.variants?.[0]
+    product_details?.variants?.[0],
   );
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState(
-    selectedVariant?.spice_levels?.find((s) => s.is_default === 1) ??
-      selectedVariant?.spice_levels?.[0]
+    selectedVariant?.spice_levels?.[0],
   );
   const [grinding, setGrinding] = useState(
-    selectedVariant?.has_grind === 1 ? "Yes" : "No"
+    selectedVariant?.has_grind === 1 ? "Yes" : "No",
   );
   const [activeTab, setActiveTab] = useState("description");
   const [isPriceOpen, setIsPriceOpen] = useState(false);
@@ -41,6 +39,143 @@ const Hero = ({ product_details }: Props) => {
     { id: "description", label: "Description" },
     { id: "info", label: "Product Information" },
   ];
+
+  // Helper function to convert units to grams
+  const convertToGrams = (quantity: number, unit: string): number => {
+    const unitLower = unit.toLowerCase();
+    if (unitLower === "kg") return quantity * 1000;
+    if (unitLower === "gm" || unitLower === "g") return quantity;
+    if (unitLower === "mg") return quantity / 1000;
+    return quantity;
+  };
+  const calculateIngredientsTotalWeight = () => {
+    if (isCustomized && customizedIngredients) {
+      return customizedIngredients.reduce((total: number, ing: any) => {
+        let qty = ing.qty || 0;
+        const unit = ing.unit?.toLowerCase() || "";
+
+        if (unit === "kg") return total + qty * 1000;
+        if (unit === "gm" || unit === "g") return total + qty;
+
+        if (unit === "pcs" || unit === "pc") {
+          const primaryMaterial = ing.rawMaterials?.find(
+            (m: any) => m.is_primary,
+          );
+          const gramsPerPiece = primaryMaterial?.quantity_in_grams || 15;
+          return total + qty * gramsPerPiece;
+        }
+
+        return total + qty;
+      }, 0);
+    }
+
+    // Otherwise use default variant ingredients
+    if (!selectedVariant?.ingredients) return 0;
+
+    return selectedVariant.ingredients.reduce((total, ingredient) => {
+      const qtyMatch = ingredient.quantity.match(/(\d+(\.\d+)?)/);
+      const qty = qtyMatch ? parseFloat(qtyMatch[1]) : 0;
+      const unit = ingredient.unit.toLowerCase();
+
+      if (unit === "kg") return total + qty * 1000;
+      if (unit === "gm" || unit === "g") return total + qty;
+
+      if (unit === "pcs" || unit === "pc") {
+        const primaryMaterial = ingredient.raw_materials?.find(
+          (m: any) => m.is_primary,
+        );
+        const gramsPerPiece = primaryMaterial?.quantity_in_grams || 15;
+        return total + qty * gramsPerPiece;
+      }
+
+      return total + qty;
+    }, 0);
+  };
+
+  const totalIngredientsWeight = useMemo(
+    () => calculateIngredientsTotalWeight(),
+    [selectedVariant, isCustomized, customizedIngredients],
+  );
+
+  const spiceLevelPrice = useMemo(() => {
+    if (!selectedSpiceLevel || selectedSpiceLevel.price === 0) return 0;
+
+    const spiceQuantity = parseFloat(selectedSpiceLevel.quantity_in_gm) || 0;
+    if (spiceQuantity === 0) return 0;
+
+    // Calculate price per gram: spice price / spice quantity
+    const pricePerGram = selectedSpiceLevel.price / spiceQuantity;
+
+    // Calculate proportional price based on total ingredients weight
+    return totalIngredientsWeight * pricePerGram;
+  }, [selectedSpiceLevel, totalIngredientsWeight]);
+
+  // Calculate grinding price based on ingredients weight
+  const grindingPrice = useMemo(() => {
+    if (grinding !== "Yes" || selectedVariant?.has_grind !== 1) return 0;
+
+    // Convert grams to kilograms and multiply by grind price per kg
+    const weightInKg = totalIngredientsWeight / 1000;
+    return selectedVariant.grind_price * weightInKg;
+  }, [grinding, selectedVariant, totalIngredientsWeight]);
+
+  // Calculate custom ingredients total with proper rounding
+  const customIngredientsTotal = useMemo(() => {
+    if (!isCustomized || !customizedIngredients) return 0;
+
+    return customizedIngredients.reduce((total: number, ing: any) => {
+      const qty = ing.qty || 0;
+      const unit = ing.unit?.toLowerCase() || "";
+
+      // For pieces (pcs), use the price from rawMaterials directly
+      if (unit === "pcs" || unit === "pc") {
+        if (ing.rawMaterials && ing.rawMaterials.length > 0) {
+          // Use the price from the first raw material (it's the price per piece)
+          const rawMaterial = ing.rawMaterials[0];
+          const pricePerPiece = rawMaterial?.price || 0;
+          const price = qty * pricePerPiece;
+          return total + Math.round(price * 100) / 100;
+        }
+      }
+
+      // For other units, use pricePerUnit if available
+      if (ing.pricePerUnit !== undefined) {
+        const price = qty * ing.pricePerUnit;
+        return total + Math.round(price * 100) / 100;
+      }
+
+      // Fallback calculation for other ingredients without pricePerUnit
+      if (ing.rawMaterials && ing.rawMaterials.length > 0) {
+        const primaryMaterial = ing.rawMaterials.find((m: any) => m.is_primary);
+        if (primaryMaterial) {
+          const quantityInGrams = convertToGrams(qty, unit);
+          const pricePerGram =
+            primaryMaterial.price_per_gms ||
+            primaryMaterial.price / (primaryMaterial.quantity_in_grams || 1);
+          const price = quantityInGrams * pricePerGram;
+          return total + Math.round(price * 100) / 100;
+        }
+      }
+
+      // Last resort: use ingredient price if available
+      return total + (ing.price || 0);
+    }, 0);
+  }, [isCustomized, customizedIngredients]);
+
+  // Calculate final price with rounding
+  const finalPrice = useMemo(() => {
+    const basePrice = isCustomized
+      ? customIngredientsTotal
+      : selectedVariant?.price || 0;
+    const total = basePrice + spiceLevelPrice + grindingPrice;
+    return Math.round(total * 100) / 100; // Round to 2 decimal places
+  }, [
+    isCustomized,
+    customIngredientsTotal,
+    selectedVariant,
+    spiceLevelPrice,
+    grindingPrice,
+  ]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (!isZoomed) return;
@@ -60,12 +195,8 @@ const Hero = ({ product_details }: Props) => {
 
   const handleVariantChange = (variant: any) => {
     setSelectedVariant(variant);
-    setSelectedSpiceLevel(
-      variant?.spice_levels?.find((s: any) => s.is_default === 1) ??
-        variant?.spice_levels?.[0]
-    );
+    setSelectedSpiceLevel(variant?.spice_levels?.[0]);
     setGrinding(variant?.has_grind === 1 ? "Yes" : "No");
-
     setCustomizedIngredients(null);
     setIsCustomized(false);
   };
@@ -79,33 +210,6 @@ const Hero = ({ product_details }: Props) => {
     };
     return labels[level] || "Medium";
   };
-
-  // Calculate grinding price based on weight
-  const calculateGrindingPrice = () => {
-    if (grinding !== "Yes" || selectedVariant?.has_grind !== 1) return 0;
-
-    const variantWeight = parseFloat(selectedVariant.name);
-    const weightInKg = variantWeight / 1000;
-    return selectedVariant.grind_price * weightInKg;
-  };
-
-  // Calculate custom ingredients total
-  const customIngredientsTotal =
-    isCustomized && customizedIngredients
-      ? customizedIngredients.reduce(
-          (total: number, ing: any) => total + ing.qty * ing.pricePerUnit,
-          0
-        )
-      : 0;
-
-  // Calculate final price
-  const basePrice = isCustomized
-    ? customIngredientsTotal
-    : selectedVariant?.price || 0;
-  const spiceLevelPrice = selectedSpiceLevel?.price || 0;
-  const grindingPrice = calculateGrindingPrice();
-  const finalPrice = basePrice + spiceLevelPrice + grindingPrice;
-
   return (
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
@@ -186,7 +290,8 @@ const Hero = ({ product_details }: Props) => {
 
               <div className="flex pt-[1rem] gap-[0.5rem] flex-wrap">
                 {product_details.variants.map((variant) => {
-                  const isSelected = selectedVariant === variant;
+                  const isSelected = selectedVariant?.id === variant.id;
+
                   return (
                     <div
                       key={variant.id}
@@ -357,18 +462,24 @@ const Hero = ({ product_details }: Props) => {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <div className=" ~py-[0.75rem]/[1rem]  space-y-[0.625rem]">
+                    <div className=" ~py-[0.75rem]/[1rem] space-y-[0.625rem]">
+                      {/* Base Price */}
                       <div className="flex justify-between items-center ~text-[0.75rem]/[0.875rem] text-[#0000008F]">
                         <span>
-                          {isCustomized ? "Customised Ingredients" : " "}
+                          {isCustomized
+                            ? "Customised Ingredients"
+                            : "Base Price"}
                         </span>
                         <span className="font-medium text-black">
-                          ₹{basePrice.toFixed(2)}
+                          ₹
+                          {isCustomized
+                            ? customIngredientsTotal.toFixed(2)
+                            : selectedVariant?.price.toFixed(2)}
                         </span>
                       </div>
 
                       {/* {isCustomized && customizedIngredients && (
-                        <div className="pl-[1rem] space-y-[0.375rem] border-l-2 border-[#EC5715]/20">
+                        <div className="pl-3 space-y-1 border-l-2 border-main/20">
                           {customizedIngredients.map((ing: any) => (
                             <div
                               key={ing.id}
@@ -379,31 +490,83 @@ const Hero = ({ product_details }: Props) => {
                                 {ing.unit})
                               </span>
                               <span>
-                                ₹{(ing.qty * ing.pricePerUnit).toFixed(2)}
+                                ₹
+                                {(
+                                  (ing.qty || 0) *
+                                  (ing.pricePerUnit || ing.price || 0)
+                                ).toFixed(2)}
                               </span>
                             </div>
                           ))}
+                          {customizedIngredients.length > 3 && (
+                            <div className="~text-[0.625rem]/[0.75rem] text-[#00000066] italic">
+                              + {customizedIngredients.length - 3} more
+                              ingredients
+                            </div>
+                          )}
                         </div>
                       )} */}
 
                       {selectedSpiceLevel && selectedSpiceLevel.price > 0 && (
-                        <div className="flex justify-between items-center ~text-[0.75rem]/[0.875rem] text-[#0000008F]">
-                          <span>
-                            ({getSpiceLevelLabel(selectedSpiceLevel.level)})
-                            Spice Level
-                          </span>
-                          <span className="font-medium text-black">
-                            +₹{selectedSpiceLevel.price.toFixed(2)}
-                          </span>
+                        <div className="space-y-1">
+                          <div className="flex justify-between items-center ~text-[0.75rem]/[0.875rem] text-[#0000008F]">
+                            <span>
+                              Spice Level (
+                              {getSpiceLevelLabel(selectedSpiceLevel.level)})
+                            </span>
+                            <span className="font-medium text-black">
+                              +₹{spiceLevelPrice.toFixed(2)}
+                            </span>
+                          </div>
+                          {/* <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
+                            <div className="flex justify-between">
+                              <span>
+                                Spice quantity:{" "}
+                                {selectedSpiceLevel.quantity_in_gm}g
+                              </span>
+                              <span>
+                                ₹{selectedSpiceLevel.price.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>
+                                Ingredients weight:{" "}
+                                {totalIngredientsWeight.toFixed(0)}g
+                              </span>
+                              <span>
+                                ₹
+                                {(
+                                  selectedSpiceLevel.price /
+                                  parseFloat(
+                                    selectedSpiceLevel.quantity_in_gm || "1",
+                                  )
+                                ).toFixed(4)}
+                                /g
+                              </span>
+                            </div>
+                          </div> */}
                         </div>
                       )}
 
                       {grinding === "Yes" && grindingPrice > 0 && (
-                        <div className="flex justify-between items-center ~text-[0.75rem]/[0.875rem] text-[#0000008F]">
-                          <span>Grinding ({selectedVariant?.name})</span>
-                          <span className="font-medium text-black">
-                            +₹{grindingPrice.toFixed(2)}
-                          </span>
+                        <div className="space-y-1">
+                          <div className="flex justify-between items-center ~text-[0.75rem]/[0.875rem] text-[#0000008F]">
+                            <span>Grinding </span>
+                            <span className="font-medium text-black">
+                              +₹{grindingPrice.toFixed(2)}
+                            </span>
+                          </div>
+                          {/* <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
+                            <div className="flex justify-between">
+                              <span>
+                                Grind price: ₹{selectedVariant?.grind_price}/kg
+                              </span>
+                              <span>
+                                Ingredients weight:{" "}
+                                {(totalIngredientsWeight / 1000).toFixed(3)}kg
+                              </span>
+                            </div>
+                          </div> */}
                         </div>
                       )}
                     </div>
@@ -428,6 +591,7 @@ const Hero = ({ product_details }: Props) => {
                 customIngredients={customizedIngredients}
                 selectedSpiceLevel={selectedSpiceLevel}
                 grinding={grinding}
+                finalPrice={finalPrice}
               />
             </div>
           </div>
@@ -466,7 +630,12 @@ const Hero = ({ product_details }: Props) => {
               {activeTab === "description" && (
                 <p>{product_details.description}</p>
               )}
-              {activeTab === "info" && <p>{product_details.product_info}</p>}
+              {activeTab === "info" && (
+                <p>
+                  {product_details.product_info ||
+                    "No additional information available."}
+                </p>
+              )}
             </div>
           </div>
         </div>

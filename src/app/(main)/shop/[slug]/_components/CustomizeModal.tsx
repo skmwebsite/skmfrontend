@@ -79,23 +79,24 @@ const CustomizeModal = ({
   const calculatePricePerGram = (
     quantity: number,
     unit: string,
-    rawMaterials: RawMaterial[]
+    rawMaterials: RawMaterial[],
   ): number => {
     if (!rawMaterials || rawMaterials.length === 0) {
       return 0;
     }
 
+    // For pieces (pcs), we should NOT calculate price per gram
+    // Instead, we should store the actual price for CartButton to use directly
     if (unit.toLowerCase() === "pcs" || unit.toLowerCase() === "pc") {
       const primaryMaterial = rawMaterials.find((m) => m.is_primary);
       if (primaryMaterial) {
-        return (
-          primaryMaterial.price_per_gms ||
-          primaryMaterial.price / (primaryMaterial.quantity_in_grams || 1)
-        );
+        // Return the actual price per piece, not price per gram
+        return primaryMaterial.price || 0;
       }
-      return rawMaterials[0]?.price_per_gms || 0;
+      return rawMaterials[0]?.price || 0;
     }
 
+    // For other units (gm, kg), calculate price per gram as before
     const quantityInGrams = convertToGrams(quantity, unit);
     const primaryTier = rawMaterials.find((m) => m.is_primary);
     const bulkTier = rawMaterials.find((m) => !m.is_primary);
@@ -106,7 +107,7 @@ const CustomizeModal = ({
 
     const primaryQuantityInGrams = convertToGrams(
       parseFloat(primaryTier.name),
-      primaryTier.unit
+      primaryTier.unit,
     );
 
     if (quantityInGrams <= primaryQuantityInGrams) {
@@ -116,7 +117,7 @@ const CustomizeModal = ({
     if (bulkTier) {
       const bulkQuantityInGrams = convertToGrams(
         parseFloat(bulkTier.name),
-        bulkTier.unit
+        bulkTier.unit,
       );
       return bulkTier.price / bulkQuantityInGrams;
     }
@@ -132,8 +133,7 @@ const CustomizeModal = ({
       const primaryMaterial = ingredient.rawMaterials.find((m) => m.is_primary);
       if (primaryMaterial && primaryMaterial.quantity_in_grams) {
         const pricePerPiece =
-          primaryMaterial.quantity_in_grams *
-          (primaryMaterial.price_per_gms || 0);
+          (Number(primaryMaterial.name) || 0) * (primaryMaterial.price || 0);
         return ingredient.qty * pricePerPiece;
       }
       return ingredient.qty * (primaryMaterial?.price || 0);
@@ -143,7 +143,7 @@ const CustomizeModal = ({
     const pricePerGram = calculatePricePerGram(
       ingredient.qty,
       ingredient.unit,
-      ingredient.rawMaterials
+      ingredient.rawMaterials,
     );
     return quantityInGrams * pricePerGram;
   };
@@ -170,7 +170,7 @@ const CustomizeModal = ({
               rawMaterials: ingredient.raw_materials || [],
               editable: ingredient.editable ?? 1,
             };
-          }
+          },
         );
         setIngredients(formattedIngredients);
       }
@@ -182,8 +182,8 @@ const CustomizeModal = ({
       prev.map((item) =>
         item.id === id && item.editable === 1
           ? { ...item, qty: Math.max(0, item.qty + change) }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -193,14 +193,14 @@ const CustomizeModal = ({
       prev.map((ing) =>
         ing.id === id && ing.editable === 1
           ? { ...ing, qty: Math.max(0, numValue) }
-          : ing
-      )
+          : ing,
+      ),
     );
   };
 
   const resetIngredients = () => {
     setIngredients((prev) =>
-      prev.map((item) => ({ ...item, qty: item.defaultQty }))
+      prev.map((item) => ({ ...item, qty: item.defaultQty })),
     );
   };
 
@@ -242,7 +242,7 @@ const CustomizeModal = ({
   const totalQuantity = calculateTotalInGrams();
   const totalPrice = ingredients.reduce(
     (total, item) => total + calculateIngredientPrice(item),
-    0
+    0,
   );
 
   const { min, max } = getMinMaxQuantity();
@@ -308,6 +308,7 @@ const CustomizeModal = ({
                     <div className="my-[0.625rem] max-h-[48svh] no-scrollbar md:max-h-[55svh] overflow-y-auto space-y-[0.625rem]">
                       {ingredients.map((item) => {
                         const itemPrice = calculateIngredientPrice(item);
+
                         const isEditable = item.editable === 1;
 
                         return (

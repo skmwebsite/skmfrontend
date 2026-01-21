@@ -12,6 +12,8 @@ import Link from "next/link";
 type View = "cart" | "login" | "otp" | "address" | "delivery";
 
 interface handleDeliveryProps {
+  totalAfterDiscount: number;
+  promoCode: string;
   handleDelivery: () => void;
   setCurrentView: React.Dispatch<React.SetStateAction<View>>;
   addressData: AddressResponse | null;
@@ -72,7 +74,7 @@ const calculateTotalWeight = (items: any[]): number => {
 const calculateDeliveryCharges = (
   totalWeight: number,
   basePrice: number,
-  incrementalPrice?: number
+  incrementalPrice?: number,
 ): { charges: number; breakdown: string[] } => {
   if (totalWeight <= 0) {
     return { charges: 0, breakdown: ["Weight: 0kg", "Charges: ₹0"] };
@@ -98,15 +100,15 @@ const calculateDeliveryCharges = (
 
     if (additionalKgs > 0) {
       breakdown.push(
-        `Additional ${additionalKgs}kg @ ₹${pricePerAdditionalKg}/kg: ₹${additionalCharges}`
+        `Additional ${additionalKgs}kg @ ₹${pricePerAdditionalKg}/kg: ₹${additionalCharges}`,
       );
     }
   }
 
   breakdown.push(
     `Total weight: ${totalWeight.toFixed(
-      2
-    )}kg (Rounded up to: ${roundedWeight}kg)`
+      2,
+    )}kg (Rounded up to: ${roundedWeight}kg)`,
   );
   breakdown.push(`Total delivery charges: ₹${charges}`);
 
@@ -116,27 +118,51 @@ const calculateDeliveryCharges = (
 const prepareOrderItems = (items: any[]) => {
   return items
     .filter((item) => !item.isFreeItem)
-    .map((item) => ({
-      product_id:
-        typeof item.id === "string"
-          ? parseInt(item.id.split("_")[0])
-          : Number(item.id),
-      product_type: Number(item.productType),
-      variant_id: Number(item.variantId),
-      quantity: Number(item.quantity),
-      customer_note: "Pack properly" as const,
-    }));
-};
+    .map((item) => {
+      const orderItem: any = {
+        product_id:
+          typeof item.id === "string"
+            ? parseInt(item.id.split("_")[0])
+            : Number(item.id),
+        product_type: Number(item.productType),
+        variant_id: Number(item.variantId),
+        quantity: Number(item.quantity),
+        customer_note: "Pack properly" as const,
+      };
 
+      // For Yadi products, always send ingredients
+      if (Number(item.productType) === 2 && item.customIngredients) {
+        // Convert ingredients to backend format
+        const ingredients = item.customIngredients.map((ing: any) => ({
+          raw_material_id: ing.id,
+          quantity: ing.qty,
+          unit: ing.unit,
+          price_per_unit: ing.pricePerUnit,
+        }));
+
+        orderItem.yadi_variant = {
+          variant_id: item.variantId,
+          ingredients: ingredients,
+        };
+
+        orderItem.spice_level = item.spiceLevel?.level || 0;
+        orderItem.has_grind = item.grinding === "Yes";
+      }
+
+      return orderItem;
+    });
+};
 const Delivery = ({
+  promoCode,
   setCurrentView,
   addressData,
   isLoading,
   closeCart,
   orderSuccess,
   setOrderSuccess,
+  totalAfterDiscount,
 }: handleDeliveryProps) => {
-  const { items, cartNetTotal, emptyCart } = useCart();
+  const { items, emptyCart } = useCart();
   const [deliveryCalculation, setDeliveryCalculation] = useState<{
     charges: number;
     breakdown: string[];
@@ -162,8 +188,15 @@ const Delivery = ({
         variant_id: number;
         quantity: number;
         customer_note: "Pack properly";
+        yadi_variant: {
+          variant_id: number;
+          ingredients: { raw_material_id: number; quantity: number }[];
+        };
+        spice_level: number;
+        has_grind: boolean;
       }[];
       customer_id: number;
+      promo_code: string;
     }) => {
       const response = await frontendApi.createOrder(orderData);
       if (!response?.success) {
@@ -230,7 +263,6 @@ const Delivery = ({
     });
   }, [items, addressData]);
 
-  console.log(addressData);
   const handleProceedToPayment = async () => {
     if (items.length === 0) {
       return;
@@ -251,6 +283,7 @@ const Delivery = ({
       await createOrderMutation.mutateAsync({
         items: orderItems,
         customer_id: addressData.customer_address.customer_id,
+        promo_code: promoCode,
       });
     } catch (error) {
       console.error("Order creation failed:", error);
@@ -385,7 +418,7 @@ const Delivery = ({
   const { name, street, city, state, pincode, email, customer } =
     addressData.customer_address;
 
-  const totalAmount = cartNetTotal + deliveryCalculation.charges;
+  const totalAmount = totalAfterDiscount + deliveryCalculation.charges;
 
   return (
     <div className="~px-[1rem]/[1.5rem] ~pb-[1rem]/[1.5rem] flex flex-col justify-between h-full ">
@@ -437,7 +470,7 @@ const Delivery = ({
         <div className="~py-[1rem]/[1.5rem] ~space-y-[1rem]/[1.5rem]">
           <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between ">
             <p>Subtotal</p>
-            <p>₹ {cartNetTotal.toFixed(2)}</p>
+            <p>₹ {totalAfterDiscount.toFixed(2)}</p>
           </div>
           <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between ">
             <p>Delivery</p>

@@ -23,6 +23,7 @@ const CartButton = ({
   customIngredients,
   selectedSpiceLevel,
   grinding,
+  finalPrice,
 }: {
   section: string;
   item: TProduct;
@@ -30,6 +31,7 @@ const CartButton = ({
   customIngredients?: CustomIngredient[];
   selectedSpiceLevel?: any;
   grinding?: string;
+  finalPrice?: number;
 }) => {
   const { items, updateCart } = useMenuCart();
   const [showControls, setShowControls] = useState(false);
@@ -43,8 +45,8 @@ const CartButton = ({
     const spiceKey = selectedSpiceLevel?.id
       ? `-spice-${selectedSpiceLevel.id}`
       : selectedSpiceLevel
-      ? `-spice-${selectedSpiceLevel}`
-      : "";
+        ? `-spice-${selectedSpiceLevel}`
+        : "";
     const grindKey = grinding ? `-grind-${grinding}` : "";
     const ingredientsKey = customIngredients?.length
       ? `-ing-${customIngredients.map((i) => `${i.id}-${i.qty}`).join("_")}`
@@ -118,7 +120,8 @@ const CartButton = ({
       selectedVariant,
       customIngredients,
       selectedSpiceLevel,
-      grinding
+      grinding,
+      finalPrice,
     );
   };
 
@@ -131,7 +134,8 @@ const CartButton = ({
       selectedVariant,
       customIngredients,
       selectedSpiceLevel,
-      grinding
+      grinding,
+      finalPrice,
     );
   };
 

@@ -29,7 +29,21 @@ export type TMenu = {
   image: string;
   products: TProduct[];
 };
-
+export type TPromoCode = {
+  id: number;
+  uuid: string;
+  code: string;
+  discount_type: 1 | 2;
+  discount_value: string;
+  from_date: string;
+  to_date: string;
+  status: 0 | 1;
+  created_by: number | null;
+  updated_by: number | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
 export type TVariant = {
   id: number;
   uuid: string;
@@ -53,6 +67,17 @@ export type TIngredient = {
   quantity: string;
   unit: "gm" | "kg";
   price: number;
+  quantity_in_gm: number;
+  raw_materials: {
+    id: number;
+    uuid: string;
+    name: string;
+    unit: string;
+    price: number;
+    quantity_in_grams: number;
+    price_per_gms: number;
+    is_primary: boolean;
+  }[];
 };
 export type TSpiceLevel = {
   id: number;
@@ -61,6 +86,7 @@ export type TSpiceLevel = {
   quantity: string;
   price: number;
   is_default: 0 | 1;
+  quantity_in_gm: string;
 };
 export type TProduct = {
   product_type: number;

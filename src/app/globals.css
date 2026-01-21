@@ -5,7 +5,11 @@
 .max-unset {
   max-width: unset;
 }
-
+/* In your global CSS */
+body.headlessui-scroll-lock {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
 

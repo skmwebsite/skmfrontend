@@ -22,6 +22,7 @@ import Delivery from "@/src/components/auth/Delivery";
 import { useMutation } from "@tanstack/react-query";
 import { frontendApi } from "@/src/api/api";
 import ChevronDown from "@/src/components/svg/ChevronDown";
+import toast from "react-hot-toast";
 
 type View = "cart" | "login" | "otp" | "address" | "delivery";
 interface CustomerAddress {
@@ -64,11 +65,62 @@ const CartModal = () => {
 
   const { isLoggedIn, tempData } = useAuth();
   const [orderSuccess, setOrderSuccess] = useState(false);
-
   const [currentView, setCurrentView] = useState<View>("cart");
   const [addressData, setAddressData] = useState<AddressResponse | null>(null);
   const [isLoadingAddress, setIsLoadingAddress] = useState(true);
+  const [promoCode, setPromoCode] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
 
+  const calculateFinalTotal = () => {
+    const totalAfterDiscount = cartNetTotal - discountAmount;
+    return Math.max(totalAfterDiscount, 0);
+  };
+  const promoMutation = useMutation({
+    mutationFn: (code: string) => frontendApi.getPromoCode(code),
+
+    onMutate: () => {
+      toast.dismiss();
+      toast.loading("Applying promo code...");
+    },
+
+    onSuccess: (res) => {
+      toast.dismiss();
+
+      if (!res) {
+        toast.error("Invalid promo code");
+        setDiscountAmount(0);
+        return;
+      }
+
+      const discountValue = Number(res.discount_value);
+      let discount = 0;
+
+      if (res.discount_type === 1) {
+        discount = discountValue;
+      }
+
+      if (res.discount_type === 2) {
+        discount = (cartNetTotal * discountValue) / 100;
+      }
+
+      discount = Math.min(discount, cartNetTotal);
+
+      setDiscountAmount(discount);
+
+      toast.success(`Promo applied! You saved ₹${discount.toFixed(2)}`);
+    },
+
+    onError: () => {
+      toast.dismiss();
+      toast.error("Promo code expired or invalid");
+      setDiscountAmount(0);
+    },
+  });
+
+  const handleApplyPromo = () => {
+    if (!promoCode.trim()) return;
+    promoMutation.mutate(promoCode);
+  };
   const fetchAddressMutation = useMutation({
     mutationFn: async (): Promise<AddressResponse> => {
       const response = await frontendApi.getCustomerAddress();
@@ -146,7 +198,10 @@ const CartModal = () => {
       fetchAddressMutation.mutate();
     }
   };
+  const isPromoApplied = discountAmount > 0;
   const dialogPanelKey = isCartOpen ? "cart-open" : "cart-closed";
+
+  console.log(items);
   return (
     <Transition appear as={Fragment} show={isCartOpen}>
       <Dialog as="div" className="relative z-[2000]" onClose={handleCloseCart}>
@@ -246,11 +301,11 @@ const CartModal = () => {
                                 {items.map((item, i) => (
                                   <div
                                     key={i}
-                                    className={`flex ~py-[1rem]/[1.5rem] border-b border-b-[#00000014] gap-[1.25rem] ${
+                                    className={`flex ~py-[1rem]/[1.5rem] border-b border-b-[#00000014] ~gap-[0.75rem]/[1.25rem] ${
                                       item.isFreeItem ? "" : ""
                                     }`}
                                   >
-                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0 ~min-h-[4.125rem]/[7.5rem] h-full relative bg-[#FFF5E7] rounded-[0.25rem] ">
+                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0  ~h-[4.125rem]/[8.3125rem]  relative bg-[#FFF5E7] rounded-[0.25rem] ">
                                       <Image
                                         fill
                                         className="object-contain"
@@ -302,7 +357,8 @@ const CartModal = () => {
                                           } ~px-[0.75rem]/[0.875rem] ~py-[0.3rem]/[0.375rem]`}
                                         >
                                           {String(item.variantName)}{" "}
-                                          {String(item.variantUnit)}
+                                          {item.productType !== "2" &&
+                                            String(item.variantUnit)}
                                         </div>
                                         {item.customIngredients !== undefined &&
                                           item.customIngredients !== null && (
@@ -409,11 +465,30 @@ const CartModal = () => {
                                   </p>
                                   <div className="flex w-full gap-[0.625rem] ">
                                     <input
+                                      value={promoCode}
+                                      onChange={(e) =>
+                                        setPromoCode(e.target.value)
+                                      }
+                                      disabled={
+                                        promoMutation.isPending ||
+                                        isPromoApplied
+                                      }
                                       placeholder="Enter Promo Code"
                                       className="bg-[#F8F5EE] py-[0.625rem] ~text-[0.75rem]/[1rem] px-[0.75rem] outline-none rounded-[0.625rem] w-full "
                                     />
-                                    <button className="bg-black text-white p-[0.625rem] ~text-[0.75rem]/[1rem]  rounded-[0.625rem] font-medium tracking-[-0.03em] leading-[120%]  ">
-                                      Apply
+                                    <button
+                                      onClick={handleApplyPromo}
+                                      disabled={
+                                        promoMutation.isPending ||
+                                        isPromoApplied
+                                      }
+                                      className="bg-black text-white p-[0.625rem] ~text-[0.75rem]/[1rem] rounded-[0.625rem] font-medium tracking-[-0.03em] leading-[120%]"
+                                    >
+                                      {isPromoApplied
+                                        ? "Applied"
+                                        : promoMutation.isPending
+                                          ? "Applying..."
+                                          : "Apply"}
                                     </button>
                                   </div>
                                 </div>
@@ -422,6 +497,12 @@ const CartModal = () => {
                                     <p>Subtotal</p>
                                     <p>₹{cartNetTotal.toFixed(2)}</p>
                                   </div>
+                                  {isPromoApplied && (
+                                    <div className="flex font-medium ~text/[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between text-green-600">
+                                      <p>Discount Applied</p>
+                                      <p>-₹{discountAmount.toFixed(2)}</p>
+                                    </div>
+                                  )}
                                   <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between ">
                                     <p>Delivery</p>
                                     <p>To be calculated</p>
@@ -429,7 +510,7 @@ const CartModal = () => {
                                   <div className="h-[1px] my-[1.5rem] bg-[#00000014] "></div>
                                   <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between">
                                     <p>Total</p>
-                                    <p>₹{cartNetTotal.toFixed(2)}</p>
+                                    <p>₹{calculateFinalTotal().toFixed(2)}</p>
                                   </div>
                                   <AnimatePresence mode="wait">
                                     <motion.div
@@ -546,6 +627,8 @@ const CartModal = () => {
                         >
                           {" "}
                           <Delivery
+                            promoCode={promoCode}
+                            totalAfterDiscount={calculateFinalTotal()}
                             orderSuccess={orderSuccess}
                             setOrderSuccess={setOrderSuccess}
                             closeCart={closeCart}

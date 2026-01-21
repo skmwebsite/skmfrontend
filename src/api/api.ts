@@ -1,6 +1,6 @@
 import { TUserData } from "../contexts/AuthContext";
 import axiosClient from "./config/axiosClient";
-import { TCategories, THome, TShop, TShopInner } from "./type";
+import { TCategories, THome, TPromoCode, TShop, TShopInner } from "./type";
 
 export const frontendApi = {
   getHomePage: async (): Promise<THome | null> => {
@@ -24,6 +24,26 @@ export const frontendApi = {
   getShopPage: async (): Promise<TShop[] | null> => {
     try {
       const response = await axiosClient.get("/shop");
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
+  getPromoCode: async (code: string): Promise<TPromoCode | null> => {
+    try {
+      const response = await axiosClient.get(`/promocode-check?code=${code}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
+  getPinCode: async (pincode: string): Promise<TPromoCode | null> => {
+    try {
+      const response = await axiosClient.get(
+        `/pincode-check?pincode=${pincode}`,
+      );
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -132,7 +152,7 @@ export const frontendApi = {
       state: string;
       pincode: string;
       email: string;
-    }
+    },
   ): Promise<{} | null> => {
     try {
       const response = await axiosClient.put(`/customer-address/${id}`, data);
@@ -149,8 +169,16 @@ export const frontendApi = {
       variant_id: number;
       quantity: number;
       customer_note: "Pack properly";
+
+      yadi_variant?: {
+        variant_id: number;
+        ingredients: { raw_material_id: number; quantity: number }[];
+      };
+      spice_level?: number;
+      has_grind?: boolean;
     }[];
     customer_id: number;
+    promo_code: string;
   }): Promise<{
     success: boolean;
     message: string;

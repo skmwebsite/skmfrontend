@@ -4,16 +4,9 @@ import CartButton from "@/src/components/product/CartButton";
 import Arrow from "@/src/components/svg/Arrow";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition,
-} from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type Props = {
   item: TProduct;
@@ -22,8 +15,50 @@ type Props = {
 
 const ProductCard = ({ item, section }: Props) => {
   const [selectedVariant, setSelectedVariant] = useState(
-    item?.variants?.find((v) => v.is_primary) ?? item?.variants?.[0]
+    item?.variants?.find((v) => v.is_primary) ?? item?.variants?.[0],
   );
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close dropdown on escape key
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, []);
+
+  const handleVariantSelect = (variant: typeof selectedVariant) => {
+    setSelectedVariant(variant);
+    setIsDropdownOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   return (
     <div className="">
@@ -81,67 +116,79 @@ const ProductCard = ({ item, section }: Props) => {
             {item.category_name}
           </p>
         )}
-        <p className="text-[0.875rem]/[1.5rem] mb-[0.5rem] font-medium leading-[120%] ~tracking-[-0.05em]/[-0.03em]">
+        <p className="~text-[0.875rem]/[1.5rem] mb-[0.5rem] font-medium leading-[120%] ~tracking-[-0.05em]/[-0.03em]">
           {item.name}
         </p>
 
         {item.variants.length > 0 ? (
-          <Listbox value={selectedVariant} onChange={setSelectedVariant}>
-            <div className="relative">
-              <ListboxButton className="~px-[0.75rem]/[1rem]  flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main ~py-[0.625rem]/[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
-                <div className="flex items-center ~gap-[0.2rem]/[0.4rem]">
-                  <div>
-                    {selectedVariant.name}
-                    {selectedVariant.unit}
-                  </div>
-                  <p className="text-[#00000029] font-bold">/</p>
-                  <div>₹{selectedVariant.price.toFixed(2)}</div>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={toggleDropdown}
+              className="~px-[0.75rem]/[1rem] flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main ~py-[0.625rem]/[0.5rem] bg-[#F8F5EE] rounded-[1rem] hover:bg-[#F8F5EE]/80 transition-colors"
+            >
+              <div className="flex items-center ~gap-[0.2rem]/[0.4rem]">
+                <div>
+                  {selectedVariant.name}
+                  {selectedVariant.unit}
                 </div>
-                <ChevronDown className="text-black shrink-0 w-[0.6775000453rem]" />
-              </ListboxButton>
+                <p className="text-[#00000029] font-bold">/</p>
+                <div>₹{selectedVariant.price.toFixed(2)}</div>
+              </div>
+              <ChevronDown
+                className={`text-black shrink-0 w-[0.6775000453rem] transition-transform ${
+                  isDropdownOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <ListboxOptions className="absolute z-[2500] mt-[0.5rem] w-full flex flex-col gap-[0.25rem] bg-[#F8F5EE] rounded-[1rem] ~p-[0.75rem]/[1rem] shadow-lg max-h-60 overflow-auto focus:outline-none">
-                  {item.variants?.map((variant, i) => (
-                    <ListboxOption
+            {isDropdownOpen && (
+              <div className="absolute z-[200] mt-[0.5rem] w-full flex flex-col gap-[0.25rem] bg-[#F8F5EE] rounded-[1rem] ~p-[0.75rem]/[1rem] shadow-lg max-h-60 overflow-auto">
+                {item.variants?.map((variant, i) => {
+                  return (
+                    <button
                       key={i}
-                      value={variant}
-                      className={({ active }) =>
-                        `cursor-pointer select-none relative  p-[0.4rem] rounded-[0.5rem]  ${
-                          active ? "bg-main/10" : ""
-                        }`
-                      }
+                      type="button"
+                      onClick={() => handleVariantSelect(variant)}
+                      className={`cursor-pointer select-none relative p-[0.4rem] rounded-[0.5rem] text-left hover:bg-main/10 transition-colors ${
+                        selectedVariant.id === variant.id
+                          ? "bg-main/20 hover:bg-main/30"
+                          : ""
+                      }`}
                     >
-                      {({ selected }) => (
-                        <div className="flex items-center gap-[0.4rem] font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] text-main">
-                          <div>
-                            {variant.name}
-                            {variant.unit}
-                          </div>
-                          <p className="text-[#00000029] font-bold">/</p>
-                          <div>₹{variant.price.toFixed(2)}</div>
-
-                          {selected && (
-                            <span className="ml-auto text-main"></span>
-                          )}
+                      <div className="flex items-center gap-[0.4rem] font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] text-main">
+                        <div>
+                          {variant.name}
+                          {variant.unit}
                         </div>
-                      )}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Transition>
-            </div>
-          </Listbox>
+                        <p className="text-[#00000029] font-bold">/</p>
+                        <div>₹{variant.price.toFixed(2)}</div>
+                        {selectedVariant.id === variant.id && (
+                          <div className="ml-auto">
+                            <svg
+                              className="size-4 text-main"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         ) : (
-          <button className="px-[1rem]  flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main py-[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
+          <button className="px-[1rem] flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main py-[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
             <div className="flex items-center gap-[0.4rem]">
               <div>
                 {item.quantity}
