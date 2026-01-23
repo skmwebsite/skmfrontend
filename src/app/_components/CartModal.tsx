@@ -201,7 +201,6 @@ const CartModal = () => {
   const isPromoApplied = discountAmount > 0;
   const dialogPanelKey = isCartOpen ? "cart-open" : "cart-closed";
 
-  console.log(items);
   return (
     <Transition appear as={Fragment} show={isCartOpen}>
       <Dialog as="div" className="relative z-[2000]" onClose={handleCloseCart}>
@@ -305,7 +304,7 @@ const CartModal = () => {
                                       item.isFreeItem ? "" : ""
                                     }`}
                                   >
-                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0  ~h-[4.125rem]/[8.3125rem]  relative bg-[#FFF5E7] rounded-[0.25rem] ">
+                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0  h-auto relative bg-[#FFF5E7] rounded-[0.25rem] ">
                                       <Image
                                         fill
                                         className="object-contain"

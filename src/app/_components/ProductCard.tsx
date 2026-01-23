@@ -68,6 +68,7 @@ const ProductCard = ({ item, section }: Props) => {
       >
         <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] ~w-[7.9340820313rem]/[11.6875rem]">
           <Image
+            loading="lazy"
             src={item.thumbnail_image}
             className="object-contain group-hover:scale-105 duration-700 transition-all ease-in-out"
             fill

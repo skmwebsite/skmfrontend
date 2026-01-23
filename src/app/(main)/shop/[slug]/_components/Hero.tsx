@@ -40,7 +40,6 @@ const Hero = ({ product_details }: Props) => {
     { id: "info", label: "Product Information" },
   ];
 
-  // Helper function to convert units to grams
   const convertToGrams = (quantity: number, unit: string): number => {
     const unitLower = unit.toLowerCase();
     if (unitLower === "kg") return quantity * 1000;
@@ -69,9 +68,7 @@ const Hero = ({ product_details }: Props) => {
       }, 0);
     }
 
-    // Otherwise use default variant ingredients
     if (!selectedVariant?.ingredients) return 0;
-
     return selectedVariant.ingredients.reduce((total, ingredient) => {
       const qtyMatch = ingredient.quantity.match(/(\d+(\.\d+)?)/);
       const qty = qtyMatch ? parseFloat(qtyMatch[1]) : 0;
@@ -103,23 +100,18 @@ const Hero = ({ product_details }: Props) => {
     const spiceQuantity = parseFloat(selectedSpiceLevel.quantity_in_gm) || 0;
     if (spiceQuantity === 0) return 0;
 
-    // Calculate price per gram: spice price / spice quantity
     const pricePerGram = selectedSpiceLevel.price / spiceQuantity;
 
-    // Calculate proportional price based on total ingredients weight
     return totalIngredientsWeight * pricePerGram;
   }, [selectedSpiceLevel, totalIngredientsWeight]);
 
-  // Calculate grinding price based on ingredients weight
   const grindingPrice = useMemo(() => {
     if (grinding !== "Yes" || selectedVariant?.has_grind !== 1) return 0;
 
-    // Convert grams to kilograms and multiply by grind price per kg
     const weightInKg = totalIngredientsWeight / 1000;
     return selectedVariant.grind_price * weightInKg;
   }, [grinding, selectedVariant, totalIngredientsWeight]);
 
-  // Calculate custom ingredients total with proper rounding
   const customIngredientsTotal = useMemo(() => {
     if (!isCustomized || !customizedIngredients) return 0;
 
@@ -210,11 +202,12 @@ const Hero = ({ product_details }: Props) => {
     };
     return labels[level] || "Medium";
   };
+
   return (
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
         <Link
-          href={"/shop"}
+          href={`/shop#${product_details.category_slug}`}
           className="flex gap-[0.45rem] ~mb-[0.75rem]/[1rem] px-[0.875rem] ~text-[0.875rem]/[1rem] py-[0.5rem] rounded-full w-fit hover:bg-[#F8F5EE] duration-300 ease-in-out transition-all"
         >
           <ChevronDown className="shrink-0 rotate-90 ~w-[0.5775000453rem]/[0.900000095rem]" />
@@ -394,7 +387,7 @@ const Hero = ({ product_details }: Props) => {
             )}
 
           {product_details.product_type === 2 && (
-            <div className="~pb-[1.125rem]/[1.5rem]">
+            <div className="~pb-[0.75rem]/[1rem]">
               <div className="~text-[0.75rem]/[1rem] pt-[1.5rem] pb-[1rem] font-medium leading-[120%] tracking-[-0.04em]">
                 Customise Ingredients
               </div>
@@ -518,7 +511,7 @@ const Hero = ({ product_details }: Props) => {
                               +₹{spiceLevelPrice.toFixed(2)}
                             </span>
                           </div>
-                          {/* <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
+                          <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
                             <div className="flex justify-between">
                               <span>
                                 Spice quantity:{" "}
@@ -544,7 +537,7 @@ const Hero = ({ product_details }: Props) => {
                                 /g
                               </span>
                             </div>
-                          </div> */}
+                          </div>
                         </div>
                       )}
 
@@ -556,7 +549,7 @@ const Hero = ({ product_details }: Props) => {
                               +₹{grindingPrice.toFixed(2)}
                             </span>
                           </div>
-                          {/* <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
+                          <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
                             <div className="flex justify-between">
                               <span>
                                 Grind price: ₹{selectedVariant?.grind_price}/kg
@@ -566,7 +559,7 @@ const Hero = ({ product_details }: Props) => {
                                 {(totalIngredientsWeight / 1000).toFixed(3)}kg
                               </span>
                             </div>
-                          </div> */}
+                          </div>
                         </div>
                       )}
                     </div>

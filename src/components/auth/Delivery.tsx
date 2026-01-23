@@ -62,12 +62,27 @@ const calculateTotalWeight = (items: any[]): number => {
     if (item.isFreeItem) return total;
 
     const quantity = item.quantity || 1;
-    const variantName = item.variantName ? String(item.variantName) : "0";
-    const variantUnit = item.variantUnit || "gm";
 
-    const variantKg = convertToKg(parseFloat(variantName), variantUnit);
+    if (item.productType === "2") {
+      const variantName = item.variantName ? String(item.variantName) : "0";
 
-    return total + variantKg * quantity;
+      const match = variantName.match(/([\d.]+)\s*(\w+)/);
+
+      if (match) {
+        const value = parseFloat(match[1]);
+        const unit = match[2].toLowerCase();
+        const variantKg = convertToKg(value, unit);
+        return total + variantKg * quantity;
+      } else {
+        const value = parseFloat(variantName) || 0;
+        return total + value * quantity;
+      }
+    } else {
+      const variantName = item.variantName ? String(item.variantName) : "0";
+      const variantUnit = item.variantUnit || "gm";
+      const variantKg = convertToKg(parseFloat(variantName), variantUnit);
+      return total + variantKg * quantity;
+    }
   }, 0);
 };
 
@@ -119,6 +134,7 @@ const prepareOrderItems = (items: any[]) => {
   return items
     .filter((item) => !item.isFreeItem)
     .map((item) => {
+      console.log(item);
       const orderItem: any = {
         product_id:
           typeof item.id === "string"
@@ -128,13 +144,13 @@ const prepareOrderItems = (items: any[]) => {
         variant_id: Number(item.variantId),
         quantity: Number(item.quantity),
         customer_note: "Pack properly" as const,
+        spice_level: item.spiceLevel?.id || 0,
+        has_grind: item.grinding === "Yes" ? true : false,
       };
 
-      // For Yadi products, always send ingredients
       if (Number(item.productType) === 2 && item.customIngredients) {
-        // Convert ingredients to backend format
         const ingredients = item.customIngredients.map((ing: any) => ({
-          raw_material_id: ing.id,
+          raw_material_id: ing.raw_material_id,
           quantity: ing.qty,
           unit: ing.unit,
           price_per_unit: ing.pricePerUnit,
@@ -144,9 +160,6 @@ const prepareOrderItems = (items: any[]) => {
           variant_id: item.variantId,
           ingredients: ingredients,
         };
-
-        orderItem.spice_level = item.spiceLevel?.level || 0;
-        orderItem.has_grind = item.grinding === "Yes";
       }
 
       return orderItem;
@@ -199,6 +212,8 @@ const Delivery = ({
       promo_code: string;
     }) => {
       const response = await frontendApi.createOrder(orderData);
+
+      console.log("orderData==", orderData);
       if (!response?.success) {
         throw new Error(response?.message || "Failed to create order");
       }

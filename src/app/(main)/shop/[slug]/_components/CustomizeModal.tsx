@@ -85,18 +85,14 @@ const CustomizeModal = ({
       return 0;
     }
 
-    // For pieces (pcs), we should NOT calculate price per gram
-    // Instead, we should store the actual price for CartButton to use directly
     if (unit.toLowerCase() === "pcs" || unit.toLowerCase() === "pc") {
       const primaryMaterial = rawMaterials.find((m) => m.is_primary);
       if (primaryMaterial) {
-        // Return the actual price per piece, not price per gram
         return primaryMaterial.price || 0;
       }
       return rawMaterials[0]?.price || 0;
     }
 
-    // For other units (gm, kg), calculate price per gram as before
     const quantityInGrams = convertToGrams(quantity, unit);
     const primaryTier = rawMaterials.find((m) => m.is_primary);
     const bulkTier = rawMaterials.find((m) => !m.is_primary);
@@ -169,6 +165,7 @@ const CustomizeModal = ({
               pricePerUnit: 0,
               rawMaterials: ingredient.raw_materials || [],
               editable: ingredient.editable ?? 1,
+              raw_material_id: ingredient.raw_material_id,
             };
           },
         );

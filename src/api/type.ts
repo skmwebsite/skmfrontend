@@ -91,6 +91,7 @@ export type TSpiceLevel = {
 export type TProduct = {
   product_type: number;
   max_quantity: number;
+  category_slug: string;
   id: number;
   colour: string;
   has_offer: number;
