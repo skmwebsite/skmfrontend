@@ -2,11 +2,31 @@
 
 import { TProduct } from "@/src/api/type";
 import { useMenuCart } from "@/src/hooks/useMenuCart";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, calcLength, motion } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import CartBucket from "../svg/CartBucket";
 import Decrease from "../svg/Decrease";
 import Increase from "../svg/Increase";
+
+// Helper function to convert weight to kg
+const convertToKg = (quantity: number, unit: string): number => {
+  const unitLower = unit?.toLowerCase() || "";
+  if (unitLower === "kg") return quantity;
+  if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
+  if (unitLower === "mg") return quantity / 1000000;
+  return quantity;
+};
+
+const calculateTotalWeightInKg = (
+  quantity: number,
+  variantName?: string,
+  variantUnit?: string,
+): number => {
+  if (!variantName || !variantUnit) return 0;
+  const weightPerUnit = parseFloat(variantName) || 0;
+  if (weightPerUnit === 0) return 0;
+  return convertToKg(weightPerUnit * quantity, variantUnit);
+};
 
 type CustomIngredient = {
   id: number;
@@ -83,10 +103,23 @@ const CartButton = ({
   const itemQuantity = cartItem?.quantity ?? 0;
   const directionRef = useRef<"increase" | "decrease">("increase");
 
-  const maxQuantity = item.max_quantity || 15;
-  const isMaxReached = itemQuantity >= maxQuantity;
+  const variantName = cartItem?.variantName || selectedVariant?.name;
+  const variantUnit = cartItem?.variantUnit || selectedVariant?.unit;
 
-  // Reset button view timer
+  const weightPerPieceInKg = calculateTotalWeightInKg(
+    1,
+    variantName,
+    variantUnit,
+  );
+  const currentTotalWeightInKg = weightPerPieceInKg * itemQuantity;
+  console.log("currentTotalWeightInKg", currentTotalWeightInKg);
+  console.log("weightPerPieceInKg", weightPerPieceInKg);
+  const maxWeightKg = item.max_quantity || 15;
+
+  const isMaxReached =
+    weightPerPieceInKg > 0 &&
+    currentTotalWeightInKg + weightPerPieceInKg > maxWeightKg;
+
   const resetButtonTimer = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -123,7 +156,7 @@ const CartButton = ({
       customIngredients,
       selectedSpiceLevel,
       grinding,
-      finalPrice, // Make sure to pass finalPrice
+      finalPrice,
     );
   };
 
@@ -137,7 +170,7 @@ const CartButton = ({
       customIngredients,
       selectedSpiceLevel,
       grinding,
-      finalPrice, // Make sure to pass finalPrice
+      finalPrice,
     );
   };
 
@@ -206,14 +239,16 @@ const CartButton = ({
             initial={{ opacity: 0, x: -10 }}
             key={"add-to-cart"}
             onClick={handleIncrease}
-            disabled={maxQuantity <= 0}
+            disabled={maxWeightKg <= 0 || isMaxReached}
             transition={{ duration: 0.15, ease: "easeInOut" }}
             type="button"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
             <CartBucket className="~size-[1rem]/[1.25rem] z-40" />
             <span className="z-40">
-              {maxQuantity <= 0 ? "Out of Stock" : "Add to Cart"}
+              {maxWeightKg <= 0 || isMaxReached
+                ? "Out of Stock"
+                : "Add to Cart"}
             </span>
           </motion.button>
         )}

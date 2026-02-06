@@ -1,7 +1,11 @@
 "use client";
 
 import { TProduct } from "../api/type";
-import { showCustomItemToast, ToastItem } from "../utils/customToast";
+import {
+  showCustomItemToast,
+  ToastItem,
+  PromoInfo,
+} from "../utils/customToast";
 import { useCart } from "./useCart";
 
 type CustomIngredient = {
@@ -14,8 +18,51 @@ type CustomIngredient = {
   price?: number;
 };
 
-// Helper function: generates key for matching cart items
-// Only uses item.id, variantId, and customIngredients for matching
+// Helper function to convert weight to kg
+const convertToKg = (quantity: number, unit: string): number => {
+  const unitLower = unit?.toLowerCase() || "";
+  if (unitLower === "kg") return quantity;
+  if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
+  if (unitLower === "mg") return quantity / 1000000;
+  return quantity;
+};
+
+// Helper function to calculate total weight in kg
+const calculateTotalWeightInKg = (
+  quantity: number,
+  variantName?: string,
+  variantUnit?: string,
+): number => {
+  if (!variantName || !variantUnit) return 0;
+
+  const weightPerUnit = parseFloat(variantName) || 0;
+  if (weightPerUnit === 0) return 0;
+
+  return convertToKg(weightPerUnit * quantity, variantUnit);
+};
+
+// Helper function to get promo info for type 1 products with offer
+const getPromoInfo = (
+  productType: number,
+  hasOffer: number,
+  totalWeightInKg: number,
+): PromoInfo | undefined => {
+  // Only show promo for product_type === 1 AND has_offer === 1
+  if (productType !== 1 || hasOffer !== 1) return undefined;
+
+  // Calculate free weight: 1kg free for every 5kg
+  const freeWeight = Math.floor(totalWeightInKg / 5);
+
+  // Only return promo if there's a free weight
+  if (freeWeight === 0) return undefined;
+
+  return {
+    freeWeight,
+    currentWeight: totalWeightInKg,
+    isQualified: true,
+  };
+};
+
 const generateMatchingKey = (
   item: TProduct,
   selectedVariant?: any,
@@ -27,7 +74,6 @@ const generateMatchingKey = (
     ? `-variant-${selectedVariant.id}`
     : "";
 
-  // Only include custom ingredients if they exist
   const ingredientsKey = customIngredients?.length
     ? `-ing-${customIngredients
         .sort((a, b) => a.id - b.id)
@@ -38,7 +84,6 @@ const generateMatchingKey = (
   return `${item.id}${variantKey}${ingredientsKey}`;
 };
 
-// Original function: generates key WITHOUT price - price can vary based on spice level/grinding
 const generateCartItemKey = (
   item: TProduct,
   selectedVariant?: any,
@@ -47,8 +92,6 @@ const generateCartItemKey = (
   grinding?: string | null,
   price?: number,
 ): string => {
-  // Use matching key - don't include price in the cartItemKey
-  // Same product with different spice levels should be the same cart item
   const baseKey = generateMatchingKey(
     item,
     selectedVariant,
@@ -191,12 +234,26 @@ export const useMenuCart = () => {
       message = "Removed from Cart";
     }
 
+    // Calculate promo info for type 1 products with offer
+    const newQuantity = (existingItem?.quantity || 0) + quantityChange;
+    const totalWeightInKg = calculateTotalWeightInKg(
+      newQuantity,
+      selectedVariant?.name,
+      selectedVariant?.unit,
+    );
+    const promo = getPromoInfo(
+      item.product_type,
+      item.has_offer || 0,
+      totalWeightInKg,
+    );
+
     showCustomItemToast({
       item: toastItem,
       message,
-      quantity: (existingItem?.quantity || 0) + quantityChange,
+      quantity: newQuantity,
       type: "cart",
       openCart: openCart,
+      promo,
     });
   };
 
@@ -231,13 +288,6 @@ export const useMenuCart = () => {
     }
 
     return totalPrice;
-  };
-
-  const convertToKg = (quantity: number, unit: string): number => {
-    const unitLower = unit?.toLowerCase() || "";
-    if (unitLower === "kg") return quantity;
-    if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
-    return quantity;
   };
 
   return {
