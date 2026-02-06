@@ -16,9 +16,9 @@ import banner2 from "@public/images/banner2.png";
 const testimonials = [
   {
     id: 1,
-    text: "I've been searching for spices that remind me of my childhood. These are the real deal! Every meal is a trip down memory lane.",
-    name: "Raj Kumar",
-    role: "Co-founder, Spice Route",
+    text: "Kakaji Masale has been with me through different phases of life - from messy hostel kitchens to my new home. It carries the same quality and taste as the masalas our grandmothers used to grind by hand. Today, I feel like I’m giving them rest, because Kakaji Masale delivers those memories with the same love and warmth. My personal favorite is Kala Masala, Khandeshi Masala and Chole Masala.",
+    name: "Deepika",
+    role: "Product Designer",
     image: "/images/rahul.png",
   },
   {
@@ -60,13 +60,13 @@ const Testimonials = () => {
 
   const handlePrev = () => {
     setCurrentIndex((prev) =>
-      prev === 0 ? testimonials.length - 1 : prev - 1
+      prev === 0 ? testimonials.length - 1 : prev - 1,
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
-      prev === testimonials.length - 1 ? 0 : prev + 1
+      prev === testimonials.length - 1 ? 0 : prev + 1,
     );
   };
 

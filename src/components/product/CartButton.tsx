@@ -28,54 +28,56 @@ const CartButton = ({
   section: string;
   item: TProduct;
   selectedVariant?: any;
-  customIngredients?: CustomIngredient[];
+  customIngredients?: CustomIngredient[] | null;
   selectedSpiceLevel?: any;
-  grinding?: string;
-  finalPrice?: number;
+  grinding?: string | null;
+  finalPrice?: number | null;
 }) => {
   const { items, updateCart } = useMenuCart();
   const [showControls, setShowControls] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Generate a unique key for this specific configuration
-  const generateCartItemKey = () => {
+  // Only use item.id and variantId for basic matching
+  // Custom ingredients require exact match
+  const generateMatchingKey = () => {
     const variantKey = selectedVariant?.id
       ? `-variant-${selectedVariant.id}`
       : "";
-    const spiceKey = selectedSpiceLevel?.id
-      ? `-spice-${selectedSpiceLevel.id}`
-      : selectedSpiceLevel
-        ? `-spice-${selectedSpiceLevel}`
-        : "";
-    const grindKey = grinding ? `-grind-${grinding}` : "";
+
+    // Only include custom ingredients if they exist (for customized products)
     const ingredientsKey = customIngredients?.length
-      ? `-ing-${customIngredients.map((i) => `${i.id}-${i.qty}`).join("_")}`
+      ? `-ing-${customIngredients
+          .sort((a, b) => a.id - b.id)
+          .map((i) => `${i.id}-${i.qty}`)
+          .join("_")}`
       : "";
 
-    return `${item.id}${variantKey}${spiceKey}${grindKey}${ingredientsKey}`;
+    return `${item.id}${variantKey}${ingredientsKey}`;
   };
 
-  const cartItemKey = generateCartItemKey();
+  const matchingKey = generateMatchingKey();
 
-  // Find the exact matching cart item using the unique key
+  // Find the exact matching cart item using the matching key
   const cartItem = items.find((cartSingleItem) => {
-    // First try to match by cartItemKey if it exists
-    if (cartSingleItem.cartItemKey) {
-      return cartSingleItem.cartItemKey === cartItemKey;
-    }
+    // Generate matching key for the cart item
+    const cartItemMatchingKey = (() => {
+      const variantKey = cartSingleItem.variantId
+        ? `-variant-${cartSingleItem.variantId}`
+        : "";
 
-    return (
-      cartSingleItem.id === item.id &&
-      cartSingleItem.variantId === selectedVariant?.id &&
-      cartSingleItem.variantName === selectedVariant?.name &&
-      // Compare custom ingredients
-      JSON.stringify(cartSingleItem.customIngredients || []) ===
-        JSON.stringify(customIngredients || []) &&
-      (cartSingleItem.spiceLevel?.id === selectedSpiceLevel?.id ||
-        cartSingleItem.spiceLevel === selectedSpiceLevel) &&
-      // Compare grinding
-      cartSingleItem.grinding === grinding
-    );
+      // Only include custom ingredients if they exist
+      const ingredientsKey = cartSingleItem.customIngredients?.length
+        ? `-ing-${cartSingleItem.customIngredients
+            .sort((a: any, b: any) => a.id - b.id)
+            .map((i: any) => `${i.id}-${i.qty}`)
+            .join("_")}`
+        : "";
+
+      return `${cartSingleItem.id}${variantKey}${ingredientsKey}`;
+    })();
+
+    return cartItemMatchingKey === matchingKey;
   });
 
   const itemQuantity = cartItem?.quantity ?? 0;
@@ -121,7 +123,7 @@ const CartButton = ({
       customIngredients,
       selectedSpiceLevel,
       grinding,
-      finalPrice,
+      finalPrice, // Make sure to pass finalPrice
     );
   };
 
@@ -135,7 +137,7 @@ const CartButton = ({
       customIngredients,
       selectedSpiceLevel,
       grinding,
-      finalPrice,
+      finalPrice, // Make sure to pass finalPrice
     );
   };
 

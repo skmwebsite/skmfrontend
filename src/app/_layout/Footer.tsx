@@ -35,7 +35,9 @@ const Footer = () => {
               </p>
               <div className="flex items-center ~gap-[0.1875rem]/[0.5rem]">
                 <Link
-                  href={"https://www.instagram.com/"}
+                  href={
+                    "https://www.instagram.com/shreekakajimasale?igsh=MW00Y3lmNW83Y2dpbw%3D%3D&utm_source=qr"
+                  }
                   target="_blank"
                   className="bg-main hover:bg-main/70 relative overflow-hidden group tracking-[-0.04em] font-medium ~text-[0.75rem]/[1rem] duration-500 transition-all ease-in-out ~py-[0.25rem]/[0.5rem] flex items-center gap-[0.25rem] rounded-full sm:rounded-[0.75rem] text-white ~px-[0.4rem]/[1rem]"
                 >
@@ -51,7 +53,9 @@ const Footer = () => {
                   <span className="relative z-10"> Instagram</span>
                 </Link>
                 <Link
-                  href={"https://www.facebook.com/"}
+                  href={
+                    "https://www.facebook.com/ShreeKakajimasale?mibextid=wwXIfr&rdid=eENcqqijuRBHJbwE&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AqykKHVZ1%2F%3Fmibextid%3DwwXIfr%26ref%3D1#"
+                  }
                   target="_blank"
                   className="bg-main hover:bg-main/70 relative overflow-hidden group tracking-[-0.04em] font-medium ~text-[0.75rem]/[1rem] duration-500 transition-all ease-in-out ~py-[0.25rem]/[0.5rem] flex items-center gap-[0.25rem] rounded-full sm:rounded-[0.75rem] text-white ~px-[0.4rem]/[1rem]"
                 >

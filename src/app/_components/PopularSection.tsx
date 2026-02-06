@@ -37,50 +37,49 @@ const PopularSection = ({ popularProduct }: Props) => {
       </div>
 
       <div className="~pt-[2.125rem]/[7.625rem]">
-        <div className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem]  flex md:flex-row flex-col gap-[2rem] justify-between relative items-center ~pt-[5rem]/[7.4375rem] pb-[2.875rem]  md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]">
-          <div className="flex flex-col items-center md:items-start">
-            <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center bg-clip-text bg-gradient-to-b from-[#000000] to-[#666666] md:text-white  font-medium leading-[120%] tracking-[-0.05em]">
-              Customize Your Perfect Masala Blend with Yadi Customisation{" "}
-            </h3>{" "}
-            <Link
-              href={"/shop#yadi"}
-              className="relative overflow-hidden rounded-full max-md:bg-main bg-white mt-4 max-md:text-white group-hover:text-white text-main p-[0.125rem] ~w-[9.625rem]/[13rem] flex items-center justify-end ~text-[0.75rem]/[1rem] tracking-[-0.03em] leading-[120%] transition-all duration-700 ease-in-out font-medium group"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
-              <span className="absolute z-10 ~left-[0.5rem]/[1rem]">
-                Shop Yadi Products
-              </span>
-              <div className="relative z-10 ~w-[2rem]/[2.5rem] ~h-[2rem]/[2.5rem] flex justify-center items-center max-md:bg-white  bg-main group-hover:bg-white rounded-full transition-all duration-700 ease-in-out">
-                <Arrow className="~size-[1rem]/[1.5rem] max-md:text-main text-white group-hover:text-main absolute right-[0.5rem] transition-all duration-700 ease-in-out group-hover:-rotate-45" />
-              </div>
-            </Link>
-          </div>
-          <div className="relative md:~mr-[3rem]/[5rem] shrink-0 ~w-[12.7312011719rem]/[28.25rem] ~h-[6.8393173218rem]/[15.6875rem]">
-            {" "}
-            <Image
-              fill
-              className="object-contain"
-              src={productsImage}
-              alt="products"
-            />
-          </div>
+        <Link href={"/shop#yadi"}>
+          <div className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem]  flex md:flex-row flex-col gap-[2rem] justify-between relative items-center ~pt-[5rem]/[7.4375rem] pb-[2.875rem]  md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]">
+            <div className="flex flex-col items-center md:items-start">
+              <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center bg-clip-text bg-gradient-to-b from-[#000000] to-[#666666] md:text-white  font-medium leading-[120%] tracking-[-0.05em]">
+                Customize Your Perfect Masala Blend with Yadi Customisation{" "}
+              </h3>{" "}
+              <button className="relative overflow-hidden rounded-full max-md:bg-main bg-white mt-4 max-md:text-white group-hover:text-white text-main p-[0.125rem] ~w-[9.625rem]/[13rem] flex items-center justify-end ~text-[0.75rem]/[1rem] tracking-[-0.03em] leading-[120%] transition-all duration-700 ease-in-out font-medium group">
+                <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                <span className="absolute z-10 ~left-[0.5rem]/[1rem]">
+                  Shop Yadi Products
+                </span>
+                <div className="relative z-10 ~w-[2rem]/[2.5rem] ~h-[2rem]/[2.5rem] flex justify-center items-center max-md:bg-white  bg-main group-hover:bg-white rounded-full transition-all duration-700 ease-in-out">
+                  <Arrow className="~size-[1rem]/[1.5rem] max-md:text-main text-white group-hover:text-main absolute right-[0.5rem] transition-all duration-700 ease-in-out group-hover:-rotate-45" />
+                </div>
+              </button>
+            </div>
+            <div className="relative md:~mr-[3rem]/[5rem] shrink-0 ~w-[12.7312011719rem]/[28.25rem] ~h-[6.8393173218rem]/[15.6875rem]">
+              {" "}
+              <Image
+                fill
+                className="object-contain"
+                src={productsImage}
+                alt="products"
+              />
+            </div>
 
-          <div className="absolute ~size-[3.2748651505rem]/[4.375rem] flex justify-center items-center max-md:rounded-bl-[1rem] md:rounded-tl-[1rem] max-md:top-0 md:bottom-0 right-0 bg-white">
-            <BorderRadius className="absolute max-md:top-0 md:bottom-0 rotate-90 md:rotate-180 left-[-1.125rem] size-[1.125rem] text-white" />
-            <BorderRadius className="absolute right-0 rotate-90 md:rotate-180 bottom-[-1.125rem] md:top-[-1.125rem] size-[1.125rem] text-white" />
-            <button className="~size-[2.339189291rem]/[3.125rem]  overflow-hidden relative flex justify-center items-center bg-[#F8F5EE] rounded-full ">
-              <span
-                className="
-    absolute inset-0
-    bg-gradient-to-r from-[#EC5715] to-[#FF7E00]
-    opacity-0 group-hover:opacity-100
-    transition-opacity duration-700 ease-in-out
-  "
-              />{" "}
-              <Arrow className="~size-[1.25rem]/[1.5rem] group-hover:text-white text-main  transition-all duration-700 ease-in-out  -rotate-45" />
-            </button>
+            <div className="absolute ~size-[3.2748651505rem]/[4.375rem] flex justify-center items-center max-md:rounded-bl-[1rem] md:rounded-tl-[1rem] max-md:top-0 md:bottom-0 right-0 bg-white">
+              <BorderRadius className="absolute max-md:top-0 md:bottom-0 rotate-90 md:rotate-180 left-[-1.125rem] size-[1.125rem] text-white" />
+              <BorderRadius className="absolute right-0 rotate-90 md:rotate-180 bottom-[-1.125rem] md:top-[-1.125rem] size-[1.125rem] text-white" />
+              <button className="~size-[2.339189291rem]/[3.125rem]  overflow-hidden relative flex justify-center items-center bg-[#F8F5EE] rounded-full ">
+                <span
+                  className="
+      absolute inset-0
+      bg-gradient-to-r from-[#EC5715] to-[#FF7E00]
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-700 ease-in-out
+    "
+                />{" "}
+                <Arrow className="~size-[1.25rem]/[1.5rem] group-hover:text-white text-main  transition-all duration-700 ease-in-out  -rotate-45" />
+              </button>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

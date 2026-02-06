@@ -20,7 +20,6 @@ const ProductCard = ({ item, section }: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -60,13 +59,16 @@ const ProductCard = ({ item, section }: Props) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  // Calculate final price for CartButton
+  const finalPrice = selectedVariant?.price || item.price || 0;
+  console.log(item.product_type);
   return (
     <div className="">
       <Link
         href={`/shop/${item.slug}`}
         className="bg-cream group cursor-pointer relative items-center flex w-full justify-center rounded-[0.75rem]"
       >
-        <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] ~w-[7.9340820313rem]/[11.6875rem]">
+        <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] ~w-[7.9340820313rem]/[14.6875rem]">
           <Image
             loading="lazy"
             src={item.thumbnail_image}
@@ -205,11 +207,25 @@ const ProductCard = ({ item, section }: Props) => {
         )}
 
         <div className="~mt-[0.5rem]/[0.75rem]">
-          <CartButton
-            item={{ ...item }}
-            section={section}
-            selectedVariant={selectedVariant}
-          />
+          {item.product_type === 2 ? (
+            <Link
+              href={`/shop/${item.slug}`}
+              className="~text-[0.75rem]/[1rem] overflow-hidden relative group w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white ~py-[0.75rem]/[0.78125rem]"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+              <span className="z-50"> View Product</span>
+            </Link>
+          ) : (
+            <CartButton
+              item={{ ...item }}
+              section={section}
+              selectedVariant={selectedVariant}
+              customIngredients={null}
+              selectedSpiceLevel={null}
+              grinding={null}
+              finalPrice={finalPrice}
+            />
+          )}
         </div>
       </div>
     </div>

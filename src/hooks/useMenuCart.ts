@@ -14,30 +14,51 @@ type CustomIngredient = {
   price?: number;
 };
 
-const generateCartItemKey = (
+// Helper function: generates key for matching cart items
+// Only uses item.id, variantId, and customIngredients for matching
+const generateMatchingKey = (
   item: TProduct,
   selectedVariant?: any,
-  customIngredients?: CustomIngredient[],
+  customIngredients?: CustomIngredient[] | null,
   selectedSpiceLevel?: any,
-  grinding?: string,
-  price?: number,
+  grinding?: string | null,
 ): string => {
   const variantKey = selectedVariant?.id
     ? `-variant-${selectedVariant.id}`
     : "";
-  const spiceKey = selectedSpiceLevel
-    ? `-spice-${selectedSpiceLevel.id || selectedSpiceLevel}`
-    : "";
-  const grindKey = grinding ? `-grind-${grinding}` : "";
-  const ingredientsKey = customIngredients?.length
-    ? `-ing-${customIngredients.map((i) => `${i.id}-${i.qty}`).join("_")}`
-    : "";
-  const priceKey = price !== undefined ? `-price-${price.toFixed(2)}` : "";
 
-  return `${item.id}${variantKey}${spiceKey}${grindKey}${ingredientsKey}${priceKey}`;
+  // Only include custom ingredients if they exist
+  const ingredientsKey = customIngredients?.length
+    ? `-ing-${customIngredients
+        .sort((a, b) => a.id - b.id)
+        .map((i) => `${i.id}-${i.qty}`)
+        .join("_")}`
+    : "";
+
+  return `${item.id}${variantKey}${ingredientsKey}`;
 };
 
-// Remove the calculateTotalPrice function - let Hero component handle it
+// Original function: generates key WITHOUT price - price can vary based on spice level/grinding
+const generateCartItemKey = (
+  item: TProduct,
+  selectedVariant?: any,
+  customIngredients?: CustomIngredient[] | null,
+  selectedSpiceLevel?: any,
+  grinding?: string | null,
+  price?: number,
+): string => {
+  // Use matching key - don't include price in the cartItemKey
+  // Same product with different spice levels should be the same cart item
+  const baseKey = generateMatchingKey(
+    item,
+    selectedVariant,
+    customIngredients,
+    selectedSpiceLevel,
+    grinding,
+  );
+  const priceKey = price !== undefined ? `-price-${price.toFixed(2)}` : "";
+  return `${baseKey}${priceKey}`;
+};
 
 export const useMenuCart = () => {
   const { updateItem, items, openCart } = useCart();
@@ -47,11 +68,11 @@ export const useMenuCart = () => {
     section: string,
     action: "increase" | "decrease" = "increase",
     selectedVariant?: any,
-    customIngredients?: CustomIngredient[],
+    customIngredients?: CustomIngredient[] | null,
     selectedSpiceLevel?: any,
-    grinding?: string,
+    grinding?: string | null,
     // Add new parameters for price
-    price?: number, // Final price calculated in Hero component
+    price?: number | null, // Final price calculated in Hero component
     priceDetails?: {
       // Optional: Price breakdown
       basePrice?: number;
@@ -61,19 +82,30 @@ export const useMenuCart = () => {
       customIngredientsTotal?: number;
     },
   ) => {
-    // Generate cart item key with price included
-    const cartItemKey = generateCartItemKey(
+    // Generate matching key WITHOUT price for finding existing items
+    const matchingKey = generateMatchingKey(
       item,
       selectedVariant,
       customIngredients,
-      selectedSpiceLevel,
-      grinding,
-      price, // Include price in the key
     );
 
-    const existingItem = items.find(
-      (cartItem) => cartItem.cartItemKey === cartItemKey,
-    );
+    // Find existing item using the matching key (without price)
+    const existingItem = items.find((cartItem) => {
+      // Generate matching key for the cart item
+      const variantKey = cartItem.variantId
+        ? `-variant-${cartItem.variantId}`
+        : "";
+
+      const ingredientsKey = cartItem.customIngredients?.length
+        ? `-ing-${cartItem.customIngredients
+            .sort((a: any, b: any) => a.id - b.id)
+            .map((i: any) => `${i.id}-${i.qty}`)
+            .join("_")}`
+        : "";
+
+      const cartItemMatchingKey = `${cartItem.id}${variantKey}${ingredientsKey}`;
+      return cartItemMatchingKey === matchingKey;
+    });
 
     const maxQuantity = item.max_quantity || 15;
 
@@ -89,18 +121,32 @@ export const useMenuCart = () => {
 
     const quantityChange = action === "increase" ? 1 : -1;
 
-    // Use the price passed from Hero component, or calculate fallback
-    const totalPrice =
-      price !== undefined
+    // Use the price passed from component, or calculate fallback
+    let totalPrice =
+      price !== undefined && price !== null
         ? price
         : calculateFallbackPrice(
-            // Keep fallback for backward compatibility
             item,
             selectedVariant,
             customIngredients,
             selectedSpiceLevel,
             grinding,
           );
+
+    // Ensure totalPrice is never null
+    if (totalPrice === null) {
+      totalPrice = selectedVariant?.price || item.price || 0;
+    }
+
+    // Generate full cart item key WITH price for storage
+    const cartItemKey = generateCartItemKey(
+      item,
+      selectedVariant,
+      customIngredients,
+      selectedSpiceLevel,
+      grinding,
+      totalPrice,
+    );
 
     const cartItem = {
       id: item.id,
@@ -124,8 +170,6 @@ export const useMenuCart = () => {
             price: priceDetails?.spiceLevelPrice || selectedSpiceLevel.price,
           }
         : undefined,
-      grinding: grinding,
-
       max_quantity: item.max_quantity || 15,
       quantity: (existingItem?.quantity || 0) + quantityChange,
     };
@@ -156,13 +200,12 @@ export const useMenuCart = () => {
     });
   };
 
-  // Fallback calculation (for backward compatibility)
   const calculateFallbackPrice = (
     item: TProduct,
     selectedVariant?: any,
-    customIngredients?: CustomIngredient[],
+    customIngredients?: CustomIngredient[] | null,
     selectedSpiceLevel?: any,
-    grinding?: string,
+    grinding?: string | null,
   ): number => {
     let totalPrice = selectedVariant?.price || item.price || 0;
 

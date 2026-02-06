@@ -45,6 +45,20 @@ body.headlessui-scroll-lock {
     -moz-appearance: textfield;
   }
 
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #9a2923d1 transparent;
+  }
+
+  /* WebKit */
+  .custom-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   html {
     scroll-behavior: smooth;
   }

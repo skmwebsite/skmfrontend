@@ -264,7 +264,7 @@ const CustomizeModal = ({
           <div className="fixed inset-0 z-[100] h-screen bg-black/40 backdrop-blur-sm" />
         </TransitionChild>
 
-        <div className="fixed inset-0 z-[150] overflow-y-auto">
+        <div className="fixed  inset-0 z-[150]  ">
           <div className="md:~p-[1rem]/[1.5rem] flex min-h-full items-end justify-center sm:items-center">
             <TransitionChild
               as={Fragment}
@@ -296,13 +296,13 @@ const CustomizeModal = ({
                 </div>
                 <div className="~pt-[1rem]/[2.1875rem]">
                   <div className="~text-[0.8125rem]/[1rem] font-light w-full leading-[120%] tracking-[-0.03em]">
-                    <div className="grid grid-cols-3 w-full border-b border-b-[#D9D9D9] font-normal pb-[0.625rem]">
+                    <div className="grid grid-cols-3 w-full border-b pr-5 border-b-[#D9D9D9] font-normal pb-[0.625rem]">
                       <div className="w-full">Ingredient Name</div>
                       <div className="w-full text-center">Quantity</div>
                       <div className="w-full text-end">Price</div>
                     </div>
 
-                    <div className="my-[0.625rem] max-h-[48svh] no-scrollbar md:max-h-[55svh] overflow-y-auto space-y-[0.625rem]">
+                    <div className="my-[0.625rem] max-h-[48svh] pr-5 custom-scroll  md:max-h-[50svh] overflow-y-auto space-y-[0.625rem]">
                       {ingredients.map((item) => {
                         const itemPrice = calculateIngredientPrice(item);
 

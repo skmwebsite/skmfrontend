@@ -173,151 +173,66 @@ const calculateFreeKg = (totalKg: number): number => {
 
   return 3 + additionalFreeKg;
 };
+// Replace the current manageFreeItems function with this:
 
 const manageFreeItems = (items: Item[]): Item[] => {
   // Remove ALL existing free items first
   const nonFreeItems = items.filter((item) => !item.isFreeItem);
 
-  // Filter eligible items (those with category_has_offer === 1)
-  const eligibleItems = nonFreeItems.filter(
-    (item) => item.category_has_offer === 1,
-  );
+  const updatedItems = [...nonFreeItems];
 
-  // If no eligible items, return without free items
-  if (eligibleItems.length === 0) {
-    return nonFreeItems;
-  }
+  // Calculate free items for EACH eligible product individually
+  nonFreeItems.forEach((item) => {
+    // Check if product is eligible for free offer
+    if (item.category_has_offer !== 1) return;
 
-  // Calculate total eligible KG for the entire cart
-  const totalEligibleKg = eligibleItems.reduce((sum, item) => {
     const unit = item.variantUnit || "gm";
     const variantName = item.variantName ? String(item.variantName) : "0";
     const itemKg = convertToKg(parseFloat(variantName), unit);
-    return sum + itemKg * item.quantity;
-  }, 0);
+    const totalProductKg = itemKg * item.quantity;
 
-  // Calculate total free KG for the entire cart
-  const totalFreeKg = calculateFreeKg(totalEligibleKg);
+    // Calculate free kg for this specific product
+    // 5-9 kg → 1 kg free, 10-14 kg → 2 kg free, 15-19 kg → 3 kg free, etc.
+    let freeKg = 0;
 
-  // If total eligible KG is less than 6kg, no free items
-  if (totalFreeKg <= 0) {
-    return nonFreeItems;
-  }
-
-  // Group eligible items by product (id)
-  const eligibleItemsByProduct = eligibleItems.reduce(
-    (groups, item) => {
-      const groupId = item.id.toString();
-      if (!groups[groupId]) {
-        groups[groupId] = [];
-      }
-      groups[groupId].push(item);
-      return groups;
-    },
-    {} as Record<string, Item[]>,
-  );
-
-  const updatedItems = [...nonFreeItems];
-
-  // Calculate each product's contribution to total eligible KG
-  const productContributions: Record<string, number> = {};
-
-  Object.entries(eligibleItemsByProduct).forEach(
-    ([productId, productItems]) => {
-      const productKg = productItems.reduce((sum, item) => {
-        const unit = item.variantUnit || "gm";
-        const variantName = item.variantName ? String(item.variantName) : "0";
-        const itemKg = convertToKg(parseFloat(variantName), unit);
-        return sum + itemKg * item.quantity;
-      }, 0);
-
-      productContributions[productId] = productKg;
-    },
-  );
-
-  // Calculate free KG distribution more accurately
-  let remainingFreeKg = totalFreeKg;
-  const productFreeKgMap: Record<string, number> = {};
-
-  // First pass: Calculate initial distribution (rounded down)
-  Object.entries(eligibleItemsByProduct).forEach(
-    ([productId, productItems]) => {
-      if (productItems.length === 0) return;
-
-      const productKg = productContributions[productId];
-      const productContributionRatio = productKg / totalEligibleKg;
-      const productFreeKg = Math.floor(totalFreeKg * productContributionRatio);
-
-      productFreeKgMap[productId] = productFreeKg;
-      remainingFreeKg -= productFreeKg;
-    },
-  );
-
-  // Second pass: Distribute remaining free KG (due to rounding)
-  if (remainingFreeKg > 0) {
-    // Sort products by their contribution ratio (descending)
-    const sortedProducts = Object.entries(eligibleItemsByProduct).sort(
-      ([aId], [bId]) => {
-        const aRatio = productContributions[aId] / totalEligibleKg;
-        const bRatio = productContributions[bId] / totalEligibleKg;
-        return bRatio - aRatio;
-      },
-    );
-
-    // Distribute remaining free KG to products with highest contribution
-    for (const [productId] of sortedProducts) {
-      if (remainingFreeKg <= 0) break;
-
-      // Only add if the product already has some free KG or contribution is significant
-      if (
-        productFreeKgMap[productId] > 0 ||
-        productContributions[productId] / totalEligibleKg >= 0.2
-      ) {
-        productFreeKgMap[productId] += 1;
-        remainingFreeKg -= 1;
-      }
+    if (totalProductKg >= 5 && totalProductKg < 10) {
+      freeKg = 1;
+    } else if (totalProductKg >= 10 && totalProductKg < 15) {
+      freeKg = 2;
+    } else if (totalProductKg >= 15 && totalProductKg < 20) {
+      freeKg = 3;
+    } else if (totalProductKg >= 20) {
+      freeKg = 3 + Math.floor((totalProductKg - 19) / 5);
     }
-  }
 
-  // Add free items for each product
-  Object.entries(eligibleItemsByProduct).forEach(
-    ([productId, productItems]) => {
-      if (productItems.length === 0) return;
+    // Only add free item if freeKg is at least 1kg
+    if (freeKg >= 1) {
+      const freeItem: Item = {
+        ...item,
+        id: `${item.id}_free`,
+        itemId: `${item.itemId}_free_${Date.now()}_${freeKg}`,
+        cartItemKey: item.cartItemKey
+          ? `${item.cartItemKey}_free_${freeKg}`
+          : `${item.id}_free_${freeKg}`,
+        quantity: 1,
+        variantName: String(freeKg),
+        variantUnit: "kg",
+        price: 0,
+        itemTotal: 0,
+        isFreeItem: true,
+        linkedItemId: String(item.id),
+        title: ` FREE ${freeKg}kg ${item.title}`,
+        image: item.image,
+        tax: "0",
+        productType: item.productType,
+      };
 
-      const productFreeKg = productFreeKgMap[productId] || 0;
-
-      // Only add free item if productFreeKg is at least 1kg
-      if (productFreeKg >= 1) {
-        const templateItem = productItems[0];
-
-        const freeItem: Item = {
-          ...templateItem,
-          id: `${templateItem.id}_free`,
-          itemId: `${templateItem.itemId}_free_${Date.now()}_${productFreeKg}`,
-          cartItemKey: templateItem.cartItemKey
-            ? `${templateItem.cartItemKey}_free_${productFreeKg}`
-            : `${templateItem.id}_free_${productFreeKg}`,
-          quantity: 1,
-          variantName: String(productFreeKg),
-          variantUnit: "kg",
-          price: 0,
-          itemTotal: 0,
-          isFreeItem: true,
-          linkedItemId: String(templateItem.id),
-          title: `Free ${productFreeKg}kg ${templateItem.title}`,
-          image: templateItem.image,
-          tax: "0",
-          productType: templateItem.productType,
-        };
-
-        updatedItems.push(freeItem);
-      }
-    },
-  );
+      updatedItems.push(freeItem);
+    }
+  });
 
   return updatedItems;
 };
-
 const reducer = (state: CartProviderState, action: Actions) => {
   switch (action.type) {
     case "ADD_ITEM": {
@@ -572,7 +487,6 @@ const generateHash = (item: Partial<Item>) => {
   };
   return hash(itemToHash);
 };
-
 export const CartProvider: React.FC<{
   children?: React.ReactNode;
   cartId?: string;
@@ -588,6 +502,12 @@ export const CartProvider: React.FC<{
   onShippingRemove?: (payload: object) => void;
   onEmptyCart?: (payload: object) => void;
   onMetadataUpdate?: (payload: object) => void;
+  onFreeItemAdded?: (payload: {
+    freeItem: Item;
+    originalItem: Item;
+    freeQuantity: number;
+    purchasedQuantity: number;
+  }) => void;
   storage?: (
     key: string,
     initialValue: string,
@@ -606,6 +526,7 @@ export const CartProvider: React.FC<{
   onShippingRemove,
   onEmptyCart,
   onMetadataUpdate,
+  onFreeItemAdded,
   storage = cartStorage,
 }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -631,11 +552,57 @@ export const CartProvider: React.FC<{
 
   const [state, dispatch] = React.useReducer(reducer, JSON.parse(cartState));
 
+  // Use useRef to track previous free items (FIX for infinite loop)
+  const previousFreeItemsRef = React.useRef<Item[]>([]);
+
   React.useEffect(() => {
     setCart(JSON.stringify(state));
-  }, [state, setCart]);
 
-  // Updates the item quantity (adds if not exists, removes if quantity <=0)
+    // Check for newly added free items
+    const currentFreeItems = state.items.filter(
+      (item: Item) => item.isFreeItem,
+    );
+
+    const previousFreeItems = previousFreeItemsRef.current;
+
+    // Find newly added free items
+    const newlyAddedFreeItems = currentFreeItems.filter((freeItem: Item) => {
+      return !previousFreeItems.some(
+        (prevItem) => prevItem.itemId === freeItem.itemId,
+      );
+    });
+
+    // Trigger toast for each newly added free item
+    newlyAddedFreeItems.forEach((freeItem: Item) => {
+      // Find the original item
+      const originalItem = state.items.find(
+        (item: Item) =>
+          !item.isFreeItem && String(item.id) === freeItem.linkedItemId,
+      );
+
+      if (originalItem && onFreeItemAdded) {
+        // Extract free quantity
+        const freeQuantity = parseFloat(freeItem.variantName as string) || 0;
+        const unit = originalItem.variantUnit || "gm";
+        const variantName = originalItem.variantName
+          ? String(originalItem.variantName)
+          : "0";
+        const itemKg = convertToKg(parseFloat(variantName), unit);
+        const purchasedQuantity = itemKg * originalItem.quantity;
+
+        onFreeItemAdded({
+          freeItem,
+          originalItem,
+          freeQuantity,
+          purchasedQuantity,
+        });
+      }
+    });
+
+    // Update the ref with current free items (doesn't trigger re-render)
+    previousFreeItemsRef.current = currentFreeItems;
+  }, [state, setCart, onFreeItemAdded]); // Removed previousFreeItems from dependencies
+
   const updateItem = (item: Item, quantityChange: number) => {
     const newItem = deepClone(item);
     const itemHash = generateHash(newItem);
