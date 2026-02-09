@@ -38,7 +38,9 @@ const calculateTotalWeightInKg = (
   const weightPerUnit = parseFloat(variantName) || 0;
   if (weightPerUnit === 0) return 0;
 
-  return convertToKg(weightPerUnit * quantity, variantUnit);
+  const result = convertToKg(weightPerUnit * quantity, variantUnit);
+  // Round to 10 decimal places to handle floating point precision
+  return Math.round(result * 1e10) / 1e10;
 };
 
 // Helper function to get promo info for type 1 products with offer
@@ -153,11 +155,37 @@ export const useMenuCart = () => {
     const maxQuantity = item.max_quantity || 15;
 
     if (action === "increase") {
-      if (existingItem && existingItem.quantity >= maxQuantity) {
+      // Use variant info from existingItem if available, otherwise from selectedVariant
+      const variantName = String(
+        existingItem?.variantName || selectedVariant?.name || "",
+      );
+      const variantUnit =
+        existingItem?.variantUnit || selectedVariant?.unit || "";
+
+      // Calculate total weight in kg for weight-based limit checking
+      const currentWeightInKg = calculateTotalWeightInKg(
+        existingItem?.quantity || 0,
+        variantName,
+        variantUnit,
+      );
+      const weightPerPieceInKg = calculateTotalWeightInKg(
+        1,
+        variantName,
+        variantUnit,
+      );
+
+      if (
+        variantName &&
+        variantUnit &&
+        weightPerPieceInKg > 0 &&
+        currentWeightInKg + weightPerPieceInKg > maxQuantity
+      ) {
+        console.log("❌ Maximum weight reached, blocking add");
         return;
       }
 
       if (!existingItem && maxQuantity <= 0) {
+        console.log("❌ Invalid max quantity");
         return;
       }
     }
@@ -191,6 +219,28 @@ export const useMenuCart = () => {
       totalPrice,
     );
 
+    // For type 2 products without customization, use default ingredients from variant
+    let ingredientsForCart = customIngredients;
+    const wasActuallyCustomized =
+      !!customIngredients && customIngredients.length > 0;
+
+    if (
+      item.product_type === 2 &&
+      (!customIngredients || customIngredients.length === 0) &&
+      selectedVariant?.ingredients
+    ) {
+      ingredientsForCart = selectedVariant.ingredients.map(
+        (ingredient: any) => ({
+          id: ingredient.id,
+          name: ingredient.raw_material_name || ingredient.name,
+          qty: parseFloat(ingredient.quantity) || 0,
+          unit: ingredient.unit || "gm",
+          pricePerUnit: 0,
+          raw_material_id: ingredient.raw_material_id,
+        }),
+      );
+    }
+
     const cartItem = {
       id: item.id,
       tax: "0",
@@ -203,9 +253,10 @@ export const useMenuCart = () => {
       price: totalPrice,
       productType: String(item.product_type),
       variantId: selectedVariant?.id,
-      variantName: selectedVariant?.name,
-      variantUnit: selectedVariant?.unit,
-      customIngredients: customIngredients,
+      variantName: String(selectedVariant?.name || ""),
+      variantUnit: selectedVariant?.unit || "",
+      customIngredients: ingredientsForCart,
+      hasCustomizedIngredients: wasActuallyCustomized,
       spiceLevel: selectedSpiceLevel
         ? {
             id: selectedSpiceLevel.id,

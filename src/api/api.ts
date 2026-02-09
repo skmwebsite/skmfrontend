@@ -169,7 +169,6 @@ export const frontendApi = {
       variant_id: number;
       quantity: number;
       customer_note: "Pack properly";
-
       yadi_variant?: {
         variant_id: number;
         ingredients: { raw_material_id: number; quantity: number }[];
@@ -184,13 +183,18 @@ export const frontendApi = {
     message: string;
     data?: {
       order_id: string;
-      data: string;
-      item_count: number;
-      amount: number;
+      amount: string;
+      currency: string;
+      customer_id: number;
+      items_count: number;
+      paymentSessionId: string;
+      status: string;
+      webhook_url: string;
     };
   } | null> => {
     try {
       const response = await axiosClient.post("/create-order", body);
+      console.log(response);
       return response.data;
     } catch (error) {
       console.error("Error creating order:", error);

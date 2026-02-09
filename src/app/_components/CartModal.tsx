@@ -1,7 +1,13 @@
 "use client";
 import CloseIcon from "@/src/components/svg/CloseIcon";
 import DeleteIcon from "@/src/components/svg/DeleteIcon";
-import { useCart } from "@/src/hooks/useCart";
+import {
+  useCart,
+  convertToKg,
+  getWeightPerPieceKg,
+  isMaxWeightReached,
+  getMaxItemCount,
+} from "@/src/hooks/useCart";
 import bag from "@public/images/empty-bag.png";
 import {
   Dialog,
@@ -359,12 +365,11 @@ const CartModal = () => {
                                           {item.productType !== "2" &&
                                             String(item.variantUnit)}
                                         </div>
-                                        {item.customIngredients !== undefined &&
-                                          item.customIngredients !== null && (
-                                            <div className="~text-[0.625rem]/[0.875rem] rounded-[0.3125rem] font-medium tracking-[-0.03em] leading-[120%] bg-[#F8F5EE] ~px-[0.75rem]/[0.875rem] ~py-[0.3rem]/[0.375rem]">
-                                              Customized
-                                            </div>
-                                          )}
+                                        {item.hasCustomizedIngredients && (
+                                          <div className="~text-[0.625rem]/[0.875rem] rounded-[0.3125rem] font-medium tracking-[-0.03em] leading-[120%] bg-[#F8F5EE] ~px-[0.75rem]/[0.875rem] ~py-[0.3rem]/[0.375rem]">
+                                            Customized
+                                          </div>
+                                        )}
                                       </div>
 
                                       <div className="flex items-center justify-between">
@@ -389,7 +394,7 @@ const CartModal = () => {
                                                     parseInt(e.target.value) ||
                                                     0;
                                                   const maxQty =
-                                                    item.max_quantity || 15;
+                                                    getMaxItemCount(item);
 
                                                   if (newQty > maxQty) {
                                                     e.target.value =
@@ -418,17 +423,16 @@ const CartModal = () => {
                                                 }}
                                                 className="bg-[#F8F5EE] text-center min-w-[5ch] focus:ring-1 focus:ring-main no-spinner ~text-[0.75rem]/[1rem] font-semibold flex justify-center items-center ~rounded-[0.25rem]/[0.625rem] outline-none"
                                                 min="1"
-                                                max={item.max_quantity || 15}
+                                                max={getMaxItemCount(item)}
                                               />
                                               <button
                                                 onClick={() =>
                                                   updateItem(item, 1)
                                                 }
                                                 className="~size-[1.5rem]/[2.5rem] hover:bg-main text-black hover:text-white bg-[#F8F5EE] ~text-[0.75rem]/[1rem] font-semibold flex justify-center items-center ~rounded-[0.25rem]/[0.625rem] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                                disabled={
-                                                  item.quantity >=
-                                                  (item.max_quantity || 15)
-                                                }
+                                                disabled={isMaxWeightReached(
+                                                  item,
+                                                )}
                                                 type="button"
                                               >
                                                 +

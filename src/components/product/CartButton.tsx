@@ -2,20 +2,12 @@
 
 import { TProduct } from "@/src/api/type";
 import { useMenuCart } from "@/src/hooks/useMenuCart";
+import { convertToKg, isMaxWeightReached } from "@/src/hooks/useCart";
 import { AnimatePresence, calcLength, motion } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import CartBucket from "../svg/CartBucket";
 import Decrease from "../svg/Decrease";
 import Increase from "../svg/Increase";
-
-// Helper function to convert weight to kg
-const convertToKg = (quantity: number, unit: string): number => {
-  const unitLower = unit?.toLowerCase() || "";
-  if (unitLower === "kg") return quantity;
-  if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
-  if (unitLower === "mg") return quantity / 1000000;
-  return quantity;
-};
 
 const calculateTotalWeightInKg = (
   quantity: number,
@@ -25,7 +17,8 @@ const calculateTotalWeightInKg = (
   if (!variantName || !variantUnit) return 0;
   const weightPerUnit = parseFloat(variantName) || 0;
   if (weightPerUnit === 0) return 0;
-  return convertToKg(weightPerUnit * quantity, variantUnit);
+  const result = convertToKg(weightPerUnit * quantity, variantUnit);
+  return Math.round(result * 1e10) / 1e10;
 };
 
 type CustomIngredient = {
@@ -57,15 +50,11 @@ const CartButton = ({
   const [showControls, setShowControls] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Generate a unique key for this specific configuration
-  // Only use item.id and variantId for basic matching
-  // Custom ingredients require exact match
   const generateMatchingKey = () => {
     const variantKey = selectedVariant?.id
       ? `-variant-${selectedVariant.id}`
       : "";
 
-    // Only include custom ingredients if they exist (for customized products)
     const ingredientsKey = customIngredients?.length
       ? `-ing-${customIngredients
           .sort((a, b) => a.id - b.id)
@@ -78,15 +67,12 @@ const CartButton = ({
 
   const matchingKey = generateMatchingKey();
 
-  // Find the exact matching cart item using the matching key
   const cartItem = items.find((cartSingleItem) => {
-    // Generate matching key for the cart item
     const cartItemMatchingKey = (() => {
       const variantKey = cartSingleItem.variantId
         ? `-variant-${cartSingleItem.variantId}`
         : "";
 
-      // Only include custom ingredients if they exist
       const ingredientsKey = cartSingleItem.customIngredients?.length
         ? `-ing-${cartSingleItem.customIngredients
             .sort((a: any, b: any) => a.id - b.id)
@@ -103,8 +89,10 @@ const CartButton = ({
   const itemQuantity = cartItem?.quantity ?? 0;
   const directionRef = useRef<"increase" | "decrease">("increase");
 
-  const variantName = cartItem?.variantName || selectedVariant?.name;
-  const variantUnit = cartItem?.variantUnit || selectedVariant?.unit;
+  const variantName = String(
+    cartItem?.variantName || selectedVariant?.name || "",
+  );
+  const variantUnit = cartItem?.variantUnit || selectedVariant?.unit || "";
 
   const weightPerPieceInKg = calculateTotalWeightInKg(
     1,
@@ -112,11 +100,12 @@ const CartButton = ({
     variantUnit,
   );
   const currentTotalWeightInKg = weightPerPieceInKg * itemQuantity;
-  console.log("currentTotalWeightInKg", currentTotalWeightInKg);
-  console.log("weightPerPieceInKg", weightPerPieceInKg);
+
   const maxWeightKg = item.max_quantity || 15;
 
   const isMaxReached =
+    variantName &&
+    variantUnit &&
     weightPerPieceInKg > 0 &&
     currentTotalWeightInKg + weightPerPieceInKg > maxWeightKg;
 

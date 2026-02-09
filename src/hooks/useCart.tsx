@@ -27,6 +27,7 @@ export type Item = {
   category_has_offer?: number;
   max_quantity?: number;
   customIngredients?: any;
+  hasCustomizedIngredients?: boolean;
   spiceLevel?: any;
   grinding?: string;
   grindPrice?: number;
@@ -61,6 +62,38 @@ export type Storage = {
   items: Item[];
   discount: Discount;
   metadata: Metadata;
+};
+
+// ============= WEIGHT CALCULATION HELPERS (Reusable in components) =============
+export const convertToKg = (quantity: number, unit: string): number => {
+  const unitLower = unit?.toLowerCase() || "";
+  if (unitLower === "kg") return quantity;
+  if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
+  if (unitLower === "mg") return quantity / 1000000;
+  return quantity;
+};
+
+export const getWeightPerPieceKg = (item: Item): number => {
+  const variantName = String(item.variantName || "");
+  const variantUnit = String(item.variantUnit || "");
+  const weightPerUnit = parseFloat(variantName) || 0;
+  if (weightPerUnit <= 0 || !variantUnit) return 0;
+  return convertToKg(weightPerUnit, variantUnit);
+};
+
+export const isMaxWeightReached = (item: Item): boolean => {
+  const maxWeightKg = item.max_quantity || 15;
+  const weightPerPieceKg = getWeightPerPieceKg(item);
+  if (weightPerPieceKg <= 0) return false;
+  const currentWeightKg = weightPerPieceKg * item.quantity;
+  return currentWeightKg + weightPerPieceKg > maxWeightKg;
+};
+
+export const getMaxItemCount = (item: Item): number => {
+  const maxWeightKg = item.max_quantity || 15;
+  const weightPerPieceKg = getWeightPerPieceKg(item);
+  if (weightPerPieceKg <= 0) return maxWeightKg;
+  return Math.floor(maxWeightKg / weightPerPieceKg);
 };
 
 export const initialState: Partial<CartProviderState> = {
@@ -149,14 +182,6 @@ export const useCart = () => {
   }
 
   return context;
-};
-
-// Helper to convert quantity to kg
-const convertToKg = (quantity: number, unit: string): number => {
-  const unitLower = unit?.toLowerCase() || "";
-  if (unitLower === "kg") return quantity;
-  if (unitLower === "g" || unitLower === "gm") return quantity / 1000;
-  return quantity;
 };
 
 const calculateFreeKg = (totalKg: number): number => {
@@ -614,15 +639,28 @@ export const CartProvider: React.FC<{
       throw new Error("You must provide a `price` for items");
     }
 
-    // Check max_quantity limit
-    const maxQuantity = item.max_quantity || 15;
+    // Check max_quantity limit using WEIGHT calculation, not item count
+    const maxQuantityKg = item.max_quantity || 15;
     const currentItem = state.items.find((i: Item) => i.itemId === itemHash);
+
+    // Calculate weight per piece
+    const variantName = String(item.variantName || "");
+    const variantUnit = String(item.variantUnit || "");
+    const weightPerUnit = parseFloat(variantName) || 0;
+    const weightPerPieceKg =
+      weightPerUnit > 0 && variantUnit
+        ? convertToKg(weightPerUnit, variantUnit)
+        : 0;
 
     if (currentItem) {
       const newQuantity = currentItem.quantity + quantityChange;
 
-      if (newQuantity > maxQuantity && quantityChange > 0) {
-        return;
+      // Use weight-based check if we have valid variant info
+      if (weightPerPieceKg > 0 && quantityChange > 0) {
+        const newTotalWeightKg = weightPerPieceKg * newQuantity;
+        if (newTotalWeightKg > maxQuantityKg) {
+          return;
+        }
       }
     }
 
@@ -631,8 +669,12 @@ export const CartProvider: React.FC<{
         return;
       }
 
-      if (quantityChange > maxQuantity) {
-        return;
+      // Use weight-based check for new items too
+      if (weightPerPieceKg > 0) {
+        const newTotalWeightKg = weightPerPieceKg * quantityChange;
+        if (newTotalWeightKg > maxQuantityKg) {
+          return;
+        }
       }
 
       const payload = { ...item, itemId: itemHash, quantity: quantityChange };

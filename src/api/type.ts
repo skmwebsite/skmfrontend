@@ -56,6 +56,7 @@ export type TVariant = {
   grind_quantity: string;
   grind_price: number;
   status: 0 | 1;
+  is_customizable: 0 | 1;
   ingredients: TIngredient[];
   spice_levels: TSpiceLevel[];
   is_primary: boolean;
@@ -92,6 +93,9 @@ export type TProduct = {
   product_type: number;
   max_quantity: number;
   category_slug: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
   id: number;
   colour: string;
   has_offer: number;

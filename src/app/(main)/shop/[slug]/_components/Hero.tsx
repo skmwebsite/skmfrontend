@@ -225,7 +225,7 @@ const Hero = ({ product_details }: Props) => {
               >
                 <Image
                   alt={`Thumbnail ${index + 1}`}
-                  className="object-contain"
+                  className="object-cover"
                   fill
                   src={image}
                 />
@@ -251,7 +251,7 @@ const Hero = ({ product_details }: Props) => {
                 src={selectedImage}
                 alt="Product"
                 fill
-                className="object-contain transition-transform duration-200 ease-out"
+                className="object-cover transition-transform duration-200 ease-out"
                 style={{
                   transform: isZoomed ? "scale(2)" : "scale(1)",
                   transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`,
@@ -386,48 +386,52 @@ const Hero = ({ product_details }: Props) => {
               </div>
             )}
 
-          {product_details.product_type === 2 && (
-            <div className="~pb-[0.75rem]/[1rem]">
-              <div className="~text-[0.75rem]/[1rem] pt-[1.5rem] pb-[1rem] font-medium leading-[120%] tracking-[-0.04em]">
-                Customise Ingredients
-              </div>
-              {isCustomized ? (
-                <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
-                  <p className=" flex gap-[0.5rem] items-center">
-                    <GradientTick /> Your Customised Mix for{" "}
+          {/* {product_details.variants.at(0)?.is_customizable === 1 && ( */}
+          <div>
+            {product_details.product_type === 2 && (
+              <div className="~pb-[0.75rem]/[1rem]">
+                <div className="~text-[0.75rem]/[1rem] pt-[1.5rem] pb-[1rem] font-medium leading-[120%] tracking-[-0.04em]">
+                  Customise Ingredients
+                </div>
+                {isCustomized ? (
+                  <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
+                    <p className=" flex gap-[0.5rem] items-center">
+                      <GradientTick /> Your Customised Mix for{" "}
+                      {selectedVariant?.name}
+                    </p>
+                  </div>
+                ) : (
+                  <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
+                    Currently using recommended Shree Kakaji Mix for{" "}
                     {selectedVariant?.name}
-                  </p>
-                </div>
-              ) : (
-                <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
-                  Currently using recommended Shree Kakaji Mix for{" "}
-                  {selectedVariant?.name}
-                </div>
-              )}
-            </div>
-          )}
+                  </div>
+                )}
+              </div>
+            )}
 
-          {product_details.product_type === 2 && (
-            <button
-              onClick={() => setOpen(true)}
-              className="~text-[0.75rem]/[1rem] h-fit group overflow-hidden relative w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-[#F8F5EE] font-medium text-black py-[0.78125rem]"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
-              <Customize className="size-[1.25rem] relative z-20 text-main duration-500 ease-in-out transition-colors group-hover:text-white" />
-              <span className="group-hover:text-white duration-500 ease-in-out transition-colors relative z-20">
-                {isCustomized ? "Edit Ingredients" : "Customise Ingredients"}
-              </span>
-            </button>
-          )}
+            {product_details.product_type === 2 && (
+              <button
+                onClick={() => setOpen(true)}
+                className="~text-[0.75rem]/[1rem] h-fit group overflow-hidden relative w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-[#F8F5EE] font-medium text-black py-[0.78125rem]"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                <Customize className="size-[1.25rem] relative z-20 text-main duration-500 ease-in-out transition-colors group-hover:text-white" />
+                <span className="group-hover:text-white duration-500 ease-in-out transition-colors relative z-20">
+                  {isCustomized ? "Edit Ingredients" : "Customise Ingredients"}
+                </span>
+              </button>
+            )}
 
-          <CustomizeModal
-            item={product_details}
-            selectedVariant={selectedVariant}
-            setOpen={setOpen}
-            open={open}
-            onConfirm={handleConfirmIngredients}
-            existingCustomization={customizedIngredients}
-          />
+            <CustomizeModal
+              item={product_details}
+              selectedVariant={selectedVariant}
+              setOpen={setOpen}
+              open={open}
+              onConfirm={handleConfirmIngredients}
+              existingCustomization={customizedIngredients}
+            />
+          </div>
+          {/* )} */}
 
           {product_details.product_type === 2 ? (
             <div className="mt-[1.5rem]">

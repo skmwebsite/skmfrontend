@@ -378,7 +378,7 @@ const CustomizeModal = ({
                         !isWithinRange ? "text-red-600" : ""
                       }`}
                     >
-                      {totalQuantity.toFixed(0)}g
+                      {totalQuantity.toFixed(0)}
                       <div className="text-xs text-[#0000007A] mt-1">
                         {min}g - {max}g
                       </div>

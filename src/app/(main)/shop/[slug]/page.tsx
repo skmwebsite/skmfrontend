@@ -7,11 +7,38 @@ import { TShopInner } from "@/src/api/type";
 export const dynamic = "force-dynamic";
 
 const getShopInnerPageApi = async (
-  slug: string
+  slug: string,
 ): Promise<TShopInner | null> => {
   const response = await frontendApi.getShopInnerPage(slug);
   return response;
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const productDetails = await getShopInnerPageApi(slug);
+  const productDetailsInner = productDetails?.product_details;
+  let seo = {};
+
+  if (productDetailsInner) {
+    seo = {
+      title: productDetailsInner.meta_title || productDetailsInner.name,
+      description:
+        productDetailsInner.meta_description || productDetailsInner.name,
+      keywords: productDetailsInner.meta_keywords || productDetailsInner.name,
+    };
+  }
+
+  return {
+    ...seo,
+    alternates: {
+      canonical: `/shop/${slug}`,
+    },
+  };
+}
 
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;

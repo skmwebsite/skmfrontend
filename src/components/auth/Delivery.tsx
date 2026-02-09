@@ -8,6 +8,11 @@ import { frontendApi } from "@/src/api/api";
 import Lottie from "lottie-react";
 import successAnimation from "@public/lottie/success.json";
 import Link from "next/link";
+import {
+  initiateHDFCPayment,
+  storePaymentSession,
+} from "@/src/utils/paymentUtils";
+import toast from "react-hot-toast";
 
 type View = "cart" | "login" | "otp" | "address" | "delivery";
 
@@ -57,6 +62,31 @@ const convertToKg = (quantity: number, unit: string): number => {
   return quantity;
 };
 
+const convertToGrams = (quantity: number, unit: string): number => {
+  const unitLower = unit?.toLowerCase() || "";
+  if (unitLower === "kg") return quantity * 1000;
+  if (unitLower === "g" || unitLower === "gm") return quantity;
+  if (unitLower === "mg") return quantity / 1000;
+  if (unitLower === "pcs" || unitLower === "pc") return quantity;
+  return quantity;
+};
+
+const calculateCustomIngredientsWeightInKg = (
+  customIngredients: any[],
+): number => {
+  if (!customIngredients || customIngredients.length === 0) {
+    return 0;
+  }
+
+  const totalGrams = customIngredients.reduce((sum, ingredient) => {
+    const unit = ingredient.unit || "gm";
+    const qty = ingredient.qty || 0;
+    return sum + convertToGrams(qty, unit);
+  }, 0);
+
+  return convertToKg(totalGrams, "gm");
+};
+
 const calculateTotalWeight = (items: any[]): number => {
   return items.reduce((total, item) => {
     if (item.isFreeItem) return total;
@@ -64,18 +94,27 @@ const calculateTotalWeight = (items: any[]): number => {
     const quantity = item.quantity || 1;
 
     if (item.productType === "2") {
-      const variantName = item.variantName ? String(item.variantName) : "0";
-
-      const match = variantName.match(/([\d.]+)\s*(\w+)/);
-
-      if (match) {
-        const value = parseFloat(match[1]);
-        const unit = match[2].toLowerCase();
-        const variantKg = convertToKg(value, unit);
-        return total + variantKg * quantity;
+      // For productType "2", calculate weight from customIngredients
+      if (item.customIngredients && item.customIngredients.length > 0) {
+        const ingredientsWeightInKg = calculateCustomIngredientsWeightInKg(
+          item.customIngredients,
+        );
+        return total + ingredientsWeightInKg * quantity;
       } else {
-        const value = parseFloat(variantName) || 0;
-        return total + value * quantity;
+        // Fallback to variantName if no customIngredients
+        const variantName = item.variantName ? String(item.variantName) : "0";
+
+        const match = variantName.match(/([\d.]+)\s*(\w+)/);
+
+        if (match) {
+          const value = parseFloat(match[1]);
+          const unit = match[2].toLowerCase();
+          const variantKg = convertToKg(value, unit);
+          return total + variantKg * quantity;
+        } else {
+          const value = parseFloat(variantName) || 0;
+          return total + value * quantity;
+        }
       }
     } else {
       const variantName = item.variantName ? String(item.variantName) : "0";
@@ -220,27 +259,53 @@ const Delivery = ({
       return response;
     },
     onSuccess: (data) => {
-      console.log("Order created successfully:", data);
-      emptyCart();
+      console.dir("Order created successfully:", data);
+      // emptyCart();
 
-      const orderAmount = data.data!.amount;
+      const paymentSessionId = data.data?.paymentSessionId;
+      const status = data.data?.status;
 
-      if (data.data?.order_id) {
-        setOrderDetails({
-          order_id: data.data.order_id,
-          order_date: new Date().toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }),
-          items_count: data.data.item_count,
-          amount: orderAmount,
-        });
+      // If payment session ID is provided, initiate payment gateway
+      if (paymentSessionId) {
+        try {
+          // Calculate total amount for payment
+          const totalAmount = totalAfterDiscount + deliveryCalculation.charges;
+
+          // Store payment session for callback handling
+          storePaymentSession(paymentSessionId, paymentSessionId);
+
+          // Redirect to HDFC Payment Gateway
+          // Amount should be in paise (convert rupees to paise by multiplying by 100)
+          initiateHDFCPayment(
+            paymentSessionId,
+            paymentSessionId,
+            totalAmount * 100,
+          );
+        } catch (error) {
+          console.error("Payment initiation failed:", error);
+          toast.error("Failed to initiate payment. Please contact support.");
+          setOrderSuccess(true);
+        }
+      } else {
+        // If no payment session (shouldn't happen), show order success
+        const orderAmount =
+          data.data?.amount || totalAfterDiscount + deliveryCalculation.charges;
+
+        if (data.data?.order_id) {
+          // setOrderDetails({
+          //   order_id: data.data.order_id,
+          //   order_date: new Date().toLocaleDateString("en-IN", {
+          //     day: "numeric",
+          //     month: "long",
+          //     year: "numeric",
+          //   }),
+          //   items_count:
+          //     data.data.item_count || items.filter((i) => !i.isFreeItem).length,
+          //   amount: orderAmount,
+          // });
+        }
+        setOrderSuccess(true);
       }
-
-      setOrderSuccess(true);
-
-      setTimeout(() => {}, 2000);
     },
     onError: (error: Error) => {
       console.error("Order creation failed:", error);
@@ -355,16 +420,24 @@ const Delivery = ({
               Order Summary:
             </h4>
             <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span>Items:</span>
-                <span>{orderDetails!.items_count} item(s)</span>
-              </div>
-              {items.filter((item) => item.isFreeItem)?.length > 0 && (
-                <div className="flex justify-between">
-                  <span>Free items:</span>
-                  <span className="text-green-600">
-                    {items.filter((item) => item.isFreeItem).length} item(s)
-                  </span>
+              {orderDetails ? (
+                <>
+                  <div className="flex justify-between">
+                    <span>Items:</span>
+                    <span>{orderDetails.items_count} item(s)</span>
+                  </div>
+                  {items.filter((item) => item.isFreeItem)?.length > 0 && (
+                    <div className="flex justify-between">
+                      <span>Free items:</span>
+                      <span className="text-green-600">
+                        {items.filter((item) => item.isFreeItem).length} item(s)
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-gray-500 text-sm">
+                  Processing payment...
                 </div>
               )}
             </div>

@@ -61,18 +61,18 @@ const ProductCard = ({ item, section }: Props) => {
 
   // Calculate final price for CartButton
   const finalPrice = selectedVariant?.price || item.price || 0;
-  console.log(item.product_type);
   return (
     <div className="">
       <Link
         href={`/shop/${item.slug}`}
-        className="bg-cream group cursor-pointer relative items-center flex w-full justify-center rounded-[0.75rem]"
+        className="bg-cream group cursor-pointer relative overflow-hidden items-center flex w-full justify-center rounded-[0.75rem]"
       >
-        <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] ~w-[7.9340820313rem]/[14.6875rem]">
+        <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] w-full">
+          {/* ~w-[7.9340820313rem]/[14.6875rem] */}
           <Image
             loading="lazy"
             src={item.thumbnail_image}
-            className="object-contain group-hover:scale-105 duration-700 transition-all ease-in-out"
+            className="object-cover group-hover:scale-105 duration-700 transition-all ease-in-out"
             fill
             alt={item.name}
           />
