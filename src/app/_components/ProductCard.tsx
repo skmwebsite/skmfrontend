@@ -146,7 +146,7 @@ const ProductCard = ({ item, section }: Props) => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute z-[200] mt-[0.5rem] w-full flex flex-col gap-[0.25rem] bg-[#F8F5EE] rounded-[1rem] ~p-[0.75rem]/[1rem] shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-[200] mt-[0.5rem] w-full flex flex-col gap-[0.25rem] bg-[#F8F5EE] rounded-[1rem] ~p-[0.75rem]/[1rem] shadow-lg overflow-auto">
                 {item.variants?.map((variant, i) => {
                   return (
                     <button

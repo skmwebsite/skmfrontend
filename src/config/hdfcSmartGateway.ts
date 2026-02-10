@@ -1,27 +1,23 @@
 export const HDFC_SMART_GATEWAY_CONFIG = {
-  MERCHANT_ID: process.env.HDFC_MERCHANT_ID || "44166",
-  KEY_UUID: process.env.HDFC_KEY_UUID || "key_e375d9d40fe34fe8b4a78ecdeb6f7c14",
-  CLIENT_ID: process.env.HDFC_CLIENT_ID || "44166",
+  MERCHANT_ID: process.env.HDFC_MERCHANT_ID,
+  KEY_UUID: process.env.HDFC_KEY_UUID,
+  CLIENT_ID: process.env.HDFC_CLIENT_ID,
 
-  BASE_URL: "https://smartgateway.hdfc.bank.in",
+  BASE_URL: "https://smartgateway.hdfcuat.bank.in",
 
   TEST: {
     baseUrl: "https://smartgateway.hdfcuat.bank.in",
-    getCheckoutUrl: (orderId: string) =>
-      `https://smartgateway.hdfcuat.bank.in/merchant/ipay/${orderId}/payment-page`,
-    merchantId: process.env.HDFC_MERCHANT_ID || "44166",
+    merchantId: process.env.HDFC_MERCHANT_ID,
   },
   PRODUCTION: {
     baseUrl: "https://smartgateway.hdfc.bank.in",
-    getCheckoutUrl: (orderId: string) =>
-      `https://smartgateway.hdfc.bank.in/merchant/ipay/${orderId}/payment-page`,
-    merchantId: process.env.HDFC_MERCHANT_ID || "44166",
+    merchantId: process.env.HDFC_MERCHANT_ID,
   },
 
   REDIRECT_URLS: {
-    success: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
-    failure: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failure`,
-    cancel: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/cancel`,
+    success: `${process.env.NEXT_PUBLIC_BASE_URL}payment/success`,
+    failure: `${process.env.NEXT_PUBLIC_BASE_URL}payment/failure`,
+    cancel: `${process.env.NEXT_PUBLIC_BASE_URL}payment/cancel`,
   },
 };
 
@@ -32,19 +28,34 @@ export const getHDFCConfig = () =>
     ? HDFC_SMART_GATEWAY_CONFIG.PRODUCTION
     : HDFC_SMART_GATEWAY_CONFIG.TEST;
 
-export interface PaymentResponse {
-  success: boolean;
-  data?: {
-    order_id: string;
-    paymentSessionId: string;
-    status: "NEW" | "INITIATED" | "COMPLETED" | "FAILED" | "CANCELLED";
-    amount: number;
-    item_count: number;
+export interface CreateOrderResponse {
+  id: string;
+  order_id: string;
+  payment_links: {
+    web: string;
   };
-  message?: string;
+  sdk_payload: {
+    currTime: string;
+    expiry: string;
+    payload: {
+      action: string;
+      amount: string;
+      clientAuthToken: string;
+      clientId: string;
+      currency: string;
+      customerEmail: string;
+      customerId: string;
+      customerPhone: string;
+      merchantId: string;
+      orderId: string;
+      returnUrl: string;
+    };
+    requestId: string;
+    service: string;
+  };
+  status: "NEW" | "INITIATED" | "COMPLETED" | "FAILED" | "CANCELLED";
 }
 
-// Type for payment callback
 export interface PaymentCallback {
   paymentSessionId: string;
   orderId: string;

@@ -8,10 +8,6 @@ import { frontendApi } from "@/src/api/api";
 import Lottie from "lottie-react";
 import successAnimation from "@public/lottie/success.json";
 import Link from "next/link";
-import {
-  initiateHDFCPayment,
-  storePaymentSession,
-} from "@/src/utils/paymentUtils";
 import toast from "react-hot-toast";
 
 type View = "cart" | "login" | "otp" | "address" | "delivery";
@@ -225,6 +221,8 @@ const Delivery = ({
     totalWeight: 0,
   });
 
+  console.log(deliveryCalculation);
+
   const [orderDetails, setOrderDetails] = useState<{
     order_id: string;
     items_count: number;
@@ -252,65 +250,81 @@ const Delivery = ({
     }) => {
       const response = await frontendApi.createOrder(orderData);
 
-      console.log("orderData==", orderData);
-      if (!response?.success) {
-        throw new Error(response?.message || "Failed to create order");
+      if (!response || !response.id) {
+        console.error("Invalid response - missing id");
+        throw new Error("Failed to create order - no session returned");
       }
+
+      if (!response.payment_links?.web) {
+        console.error("Invalid response - missing payment link");
+        throw new Error("No payment link returned from server");
+      }
+
       return response;
     },
     onSuccess: (data) => {
-      console.dir("Order created successfully:", data);
-      // emptyCart();
+      console.log("Order created successfully:", data);
 
-      const paymentSessionId = data.data?.paymentSessionId;
-      const status = data.data?.status;
+      // Calculate items count
+      const itemsCount = items.filter((i) => !i.isFreeItem).length;
 
-      // If payment session ID is provided, initiate payment gateway
-      if (paymentSessionId) {
+      // Get amount from sdk_payload
+      const amount = parseFloat(data.sdk_payload?.payload?.amount || "0");
+
+      // Store order details for success screen
+      setOrderDetails({
+        order_id: data.order_id,
+        items_count: itemsCount,
+        amount: amount,
+        order_date: new Date().toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }),
+      });
+
+      emptyCart();
+
+      const paymentLink = data?.payment_links?.web;
+
+      if (paymentLink) {
         try {
-          // Calculate total amount for payment
-          const totalAmount = totalAfterDiscount + deliveryCalculation.charges;
-
-          // Store payment session for callback handling
-          storePaymentSession(paymentSessionId, paymentSessionId);
-
-          // Redirect to HDFC Payment Gateway
-          // Amount should be in paise (convert rupees to paise by multiplying by 100)
-          initiateHDFCPayment(
-            paymentSessionId,
-            paymentSessionId,
-            totalAmount * 100,
-          );
+          console.log("Redirecting to payment page:", paymentLink);
+          // Redirect directly to the payment link from backend
+          window.location.href = paymentLink;
         } catch (error) {
-          console.error("Payment initiation failed:", error);
+          console.error("Payment redirect failed:", error);
           toast.error("Failed to initiate payment. Please contact support.");
-          setOrderSuccess(true);
         }
       } else {
-        // If no payment session (shouldn't happen), show order success
-        const orderAmount =
-          data.data?.amount || totalAfterDiscount + deliveryCalculation.charges;
-
-        if (data.data?.order_id) {
-          // setOrderDetails({
-          //   order_id: data.data.order_id,
-          //   order_date: new Date().toLocaleDateString("en-IN", {
-          //     day: "numeric",
-          //     month: "long",
-          //     year: "numeric",
-          //   }),
-          //   items_count:
-          //     data.data.item_count || items.filter((i) => !i.isFreeItem).length,
-          //   amount: orderAmount,
-          // });
-        }
+        // If no payment link (shouldn't happen), show order success
+        console.warn("No payment link received from backend");
         setOrderSuccess(true);
+        toast.success("Order created! Redirecting to payment...");
       }
     },
     onError: (error: Error) => {
       console.error("Order creation failed:", error);
+      toast.error("Failed to create order. Please try again.");
     },
   });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const status = searchParams.get("status");
+    const orderId = searchParams.get("order_id");
+
+    if (status === "CHARGED" && orderId) {
+      console.log("=== PAYMENT SUCCESS ===");
+      console.log("Order ID:", orderId);
+      console.log("Redirecting to order details page...");
+
+      // Redirect to order details page
+      setTimeout(() => {
+        window.location.href = `/order-details/${orderId}`;
+      }, 500);
+    }
+  }, []);
 
   useEffect(() => {
     if (!addressData?.shipping_charge || items.length === 0) {

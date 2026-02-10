@@ -179,18 +179,31 @@ export const frontendApi = {
     customer_id: number;
     promo_code: string;
   }): Promise<{
-    success: boolean;
-    message: string;
-    data?: {
-      order_id: string;
-      amount: string;
-      currency: string;
-      customer_id: number;
-      items_count: number;
-      paymentSessionId: string;
-      status: string;
-      webhook_url: string;
+    id: string;
+    order_id: string;
+    payment_links: {
+      web: string;
     };
+    sdk_payload: {
+      currTime: string;
+      expiry: string;
+      payload: {
+        action: string;
+        amount: string;
+        clientAuthToken: string;
+        clientId: string;
+        currency: string;
+        customerEmail: string;
+        customerId: string;
+        customerPhone: string;
+        merchantId: string;
+        orderId: string;
+        returnUrl: string;
+      };
+      requestId: string;
+      service: string;
+    };
+    status: string;
   } | null> => {
     try {
       const response = await axiosClient.post("/create-order", body);
@@ -200,5 +213,9 @@ export const frontendApi = {
       console.error("Error creating order:", error);
       return null;
     }
+  },
+  getOrderDetails: async (orderId: string) => {
+    const response = await axiosClient.get(`/order-details/${orderId}`);
+    return response.data;
   },
 };
