@@ -2,6 +2,7 @@ import { TProduct } from "@/src/api/type";
 import CloseButton from "@/src/components/svg/CloseButton";
 import Confirm from "@/src/components/svg/Confirm";
 import Reset from "@/src/components/svg/Reset";
+import useBodyScrollLock from "@/src/hooks/useBodyScrollLock";
 import {
   Dialog,
   DialogPanel,
@@ -49,6 +50,7 @@ const CustomizeModal = ({
   existingCustomization,
 }: Props) => {
   const [ingredients, setIngredients] = useState<CustomIngredient[]>([]);
+  useBodyScrollLock(open);
 
   const parseQuantity = (value: string | number): number => {
     if (typeof value === "number") return value;
@@ -302,7 +304,10 @@ const CustomizeModal = ({
                       <div className="w-full text-end">Price</div>
                     </div>
 
-                    <div className="my-[0.625rem] max-h-[48svh] pr-5 custom-scroll  md:max-h-[50svh] overflow-y-auto space-y-[0.625rem]">
+                    <div
+                      data-lenis-prevent
+                      className="my-[0.625rem] max-h-[48svh] pr-5 custom-scroll  md:max-h-[50svh] overflow-y-auto space-y-[0.625rem]"
+                    >
                       {ingredients.map((item) => {
                         const itemPrice = calculateIngredientPrice(item);
 

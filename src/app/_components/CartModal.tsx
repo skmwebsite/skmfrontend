@@ -310,10 +310,10 @@ const CartModal = () => {
                                       item.isFreeItem ? "" : ""
                                     }`}
                                   >
-                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0  h-auto relative bg-[#FFF5E7] rounded-[0.25rem] ">
+                                    <div className="~w-[3.4140930176rem]/[7.5rem] shrink-0 overflow-hidden  h-auto relative bg-[#FFF5E7] rounded-[0.25rem] ">
                                       <Image
                                         fill
-                                        className="object-contain"
+                                        className="object-cover"
                                         src={item.image}
                                         alt={item.title}
                                       />

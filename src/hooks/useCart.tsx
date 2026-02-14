@@ -597,7 +597,6 @@ export const CartProvider: React.FC<{
       );
     });
 
-    // Trigger toast for each newly added free item
     newlyAddedFreeItems.forEach((freeItem: Item) => {
       // Find the original item
       const originalItem = state.items.find(

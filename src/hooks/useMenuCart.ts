@@ -237,6 +237,7 @@ export const useMenuCart = () => {
           unit: ingredient.unit || "gm",
           pricePerUnit: 0,
           raw_material_id: ingredient.raw_material_id,
+          rawMaterials: ingredient.raw_materials || [], // Include raw_materials for weight calculation
         }),
       );
     }
@@ -262,8 +263,10 @@ export const useMenuCart = () => {
             id: selectedSpiceLevel.id,
             level: selectedSpiceLevel.level,
             price: priceDetails?.spiceLevelPrice || selectedSpiceLevel.price,
+            quantity_in_gm: selectedSpiceLevel.quantity_in_gm || "0",
           }
         : undefined,
+      grinding: grinding || undefined,
       max_quantity: item.max_quantity || 15,
       quantity: (existingItem?.quantity || 0) + quantityChange,
     };
