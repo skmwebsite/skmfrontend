@@ -27,14 +27,50 @@ const convertToKg = (quantity: number, unit: string): number => {
   return quantity;
 };
 
+// Helper function to parse weight and unit from variant name (for type 2 products)
+// e.g., "500 gm" -> { weight: 500, unit: "gm" }
+// e.g., "1 kg" -> { weight: 1, unit: "kg" }
+const parseWeightFromName = (
+  name: string,
+): { weight: number; unit: string } | null => {
+  if (!name) return null;
+
+  // Match patterns like "500 gm", "1 kg", "500gm", "1kg", "500 g", "1.5 kg"
+  const match = name.match(
+    /(\d+(?:\.\d+)?)\s*(kg|gm|g|gram|grams|kilogram|kilograms)/i,
+  );
+  if (match) {
+    const weight = parseFloat(match[1]);
+    let unit = match[2].toLowerCase();
+    // Normalize unit
+    if (unit === "g" || unit === "gram" || unit === "grams") unit = "gm";
+    if (unit === "kilogram" || unit === "kilograms") unit = "kg";
+    return { weight, unit };
+  }
+  return null;
+};
+
 // Helper function to calculate total weight in kg
 const calculateTotalWeightInKg = (
   quantity: number,
   variantName?: string,
   variantUnit?: string,
+  productType?: number,
 ): number => {
-  if (!variantName || !variantUnit) return 0;
+  if (!variantName) return 0;
 
+  // For type 2 products, parse weight and unit from name
+  if (productType === 2) {
+    const parsed = parseWeightFromName(variantName);
+    if (parsed) {
+      const result = convertToKg(parsed.weight * quantity, parsed.unit);
+      return Math.round(result * 1e10) / 1e10;
+    }
+    return 0;
+  }
+
+  // For type 1 products, use separate name and unit
+  if (!variantUnit) return 0;
   const weightPerUnit = parseFloat(variantName) || 0;
   if (weightPerUnit === 0) return 0;
 
@@ -167,16 +203,19 @@ export const useMenuCart = () => {
         existingItem?.quantity || 0,
         variantName,
         variantUnit,
+        item.product_type,
       );
       const weightPerPieceInKg = calculateTotalWeightInKg(
         1,
         variantName,
         variantUnit,
+        item.product_type,
       );
 
+      // For type 2, we don't need variantUnit check since unit is parsed from name
       if (
         variantName &&
-        variantUnit &&
+        (item.product_type === 2 || variantUnit) &&
         weightPerPieceInKg > 0 &&
         currentWeightInKg + weightPerPieceInKg > maxQuantity
       ) {
@@ -292,6 +331,7 @@ export const useMenuCart = () => {
       newQuantity,
       selectedVariant?.name,
       selectedVariant?.unit,
+      item.product_type,
     );
     const promo = getPromoInfo(
       item.product_type,

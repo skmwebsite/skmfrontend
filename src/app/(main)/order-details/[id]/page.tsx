@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { frontendApi } from "@/src/api/api";
 import Lottie from "lottie-react";
 import successAnimation from "@public/lottie/success.json";
-import failedAnimation from "@public/lottie/success.json";
+import failedAnimation from "@public/lottie/failed.json";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";

@@ -10,7 +10,6 @@ import React from "react";
 type Props = {
   popular_products: TProduct[];
 };
-
 const SecondSection = ({ popular_products }: Props) => {
   return (
     <div>

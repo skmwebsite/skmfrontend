@@ -9,12 +9,49 @@ import CartBucket from "../svg/CartBucket";
 import Decrease from "../svg/Decrease";
 import Increase from "../svg/Increase";
 
+// Helper function to parse weight and unit from variant name (for type 2 products)
+// e.g., "500 gm" -> { weight: 500, unit: "gm" }
+// e.g., "1 kg" -> { weight: 1, unit: "kg" }
+const parseWeightFromName = (
+  name: string,
+): { weight: number; unit: string } | null => {
+  if (!name) return null;
+
+  // Match patterns like "500 gm", "1 kg", "500gm", "1kg", "500 g", "1.5 kg"
+  const match = name.match(
+    /(\d+(?:\.\d+)?)\s*(kg|gm|g|gram|grams|kilogram|kilograms)/i,
+  );
+  if (match) {
+    const weight = parseFloat(match[1]);
+    let unit = match[2].toLowerCase();
+    // Normalize unit
+    if (unit === "g" || unit === "gram" || unit === "grams") unit = "gm";
+    if (unit === "kilogram" || unit === "kilograms") unit = "kg";
+    return { weight, unit };
+  }
+  return null;
+};
+
 const calculateTotalWeightInKg = (
   quantity: number,
   variantName?: string,
   variantUnit?: string,
+  productType?: number,
 ): number => {
-  if (!variantName || !variantUnit) return 0;
+  if (!variantName) return 0;
+
+  // For type 2 products, parse weight and unit from name
+  if (productType === 2) {
+    const parsed = parseWeightFromName(variantName);
+    if (parsed) {
+      const result = convertToKg(parsed.weight * quantity, parsed.unit);
+      return Math.round(result * 1e10) / 1e10;
+    }
+    return 0;
+  }
+
+  // For type 1 products, use separate name and unit
+  if (!variantUnit) return 0;
   const weightPerUnit = parseFloat(variantName) || 0;
   if (weightPerUnit === 0) return 0;
   const result = convertToKg(weightPerUnit * quantity, variantUnit);
@@ -55,8 +92,21 @@ const CartButton = ({
       ? `-variant-${selectedVariant.id}`
       : "";
 
-    const ingredientsKey = customIngredients?.length
-      ? `-ing-${customIngredients
+    // For type 2 products without customization, include default variant ingredients
+    let ingredientsToUse = customIngredients;
+    if (
+      item.product_type === 2 &&
+      (!customIngredients || customIngredients.length === 0) &&
+      selectedVariant?.ingredients
+    ) {
+      ingredientsToUse = selectedVariant.ingredients.map((ingredient: any) => ({
+        id: ingredient.id,
+        qty: parseFloat(ingredient.quantity) || 0,
+      }));
+    }
+
+    const ingredientsKey = ingredientsToUse?.length
+      ? `-ing-${ingredientsToUse
           .sort((a, b) => a.id - b.id)
           .map((i) => `${i.id}-${i.qty}`)
           .join("_")}`
@@ -98,14 +148,16 @@ const CartButton = ({
     1,
     variantName,
     variantUnit,
+    item.product_type,
   );
   const currentTotalWeightInKg = weightPerPieceInKg * itemQuantity;
 
   const maxWeightKg = item.max_quantity || 15;
 
+  // For type 2, we don't need variantUnit check since unit is parsed from name
   const isMaxReached =
     variantName &&
-    variantUnit &&
+    (item.product_type === 2 || variantUnit) &&
     weightPerPieceInKg > 0 &&
     currentTotalWeightInKg + weightPerPieceInKg > maxWeightKg;
 
@@ -196,7 +248,7 @@ const CartButton = ({
             <AnimatePresence mode="wait">
               <motion.p
                 animate={{ opacity: 1, x: 0 }}
-                className="text-[1rem] min-w-[8ch] text-center select-none font-medium text-white"
+                className="text-[1rem] min-w-[8ch] text-center select-none font-medium text-white flex items-center justify-center"
                 exit={{
                   opacity: 0,
                   x: directionRef.current === "increase" ? -20 : 20,
@@ -207,6 +259,7 @@ const CartButton = ({
                 }}
                 key={itemQuantity}
                 transition={{ duration: 0.15, ease: "easeInOut" }}
+                style={{ display: "flex" }}
               >
                 {itemQuantity}
               </motion.p>
