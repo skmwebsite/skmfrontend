@@ -5,12 +5,7 @@ import React, { useState } from "react";
 import raj from "@public/images/rahul.png";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import Marquee from "react-fast-marquee";
-import Item1 from "@public/brands/Item1.png";
-import Item2 from "@public/brands/Item2.png";
-import Item3 from "@public/brands/Item3.png";
-import Item4 from "@public/brands/Item4.png";
-import Item5 from "@public/brands/Item5.png";
+
 import dot from "@public/svg/dots.svg";
 import banner2 from "@public/images/banner2.png";
 const testimonials = [
@@ -43,18 +38,7 @@ const testimonials = [
     image: "/images/rahul.png",
   },
 ];
-const brands = [
-  Item1,
-  Item2,
-  Item3,
-  Item4,
-  Item5,
-  Item1,
-  Item2,
-  Item3,
-  Item4,
-  Item5,
-];
+
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -73,7 +57,7 @@ const Testimonials = () => {
   const currentTestimonial = testimonials[currentIndex];
   return (
     <div className="~pt-[1.5625rem]/[5rem]">
-      <div className=" bg-gradient-to-b relative overflow-hidden rounded-[1rem] from-[#A11300] to-[#C02611] ~px-[0.3125rem]/[8.125rem] ~pb-[2rem]/[5rem] pt-[5rem] ">
+      <div className=" bg-gradient-to-b relative ~min-h-[34.0625rem]/[36.4375rem] overflow-hidden rounded-[1rem] from-[#A11300] to-[#C02611] ~px-[0.3125rem]/[8.125rem] ~pb-[2rem]/[4rem] pt-[4rem] ">
         <div className="md:flex hidden">
           <Image
             className="absolute opacity-[0.5] left-0 w-full top-0"
@@ -270,27 +254,6 @@ const Testimonials = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
-        </div>
-        <div className="mt-[1rem]">
-          <h2 className="~text-[0.75rem]/[1rem] text-center font-medium text-white leading-[120%] tracking-[-0.04em]">
-            Trusted by these brands:
-          </h2>
-          <div className="relative">
-            <div className="h-[22px]  ~w-[1rem]/[10rem] absolute z-40 left-[-1px] top-0 bg-gradient-to-r from-[#bc230e] to-transparent"></div>
-            <div className="h-[22px]  ~w-[1rem]/[10rem] absolute z-40 right-[-1px] top-0 bg-gradient-to-l from-[#bc230e] to-transparent"></div>
-
-            <Marquee className="~mt-[1rem]/[2rem] ">
-              {brands.map((item, index) => (
-                <div key={index} className="~mx-[1rem]/[2rem]">
-                  <Image
-                    src={item}
-                    alt={`brand-${index}`}
-                    className="~h-[1rem]/[1.375rem] w-auto"
-                  />
-                </div>
-              ))}
-            </Marquee>
           </div>
         </div>
       </div>

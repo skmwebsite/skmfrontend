@@ -632,6 +632,7 @@ const Hero = ({ product_details }: Props) => {
               {activeTab === "info" && (
                 <p>
                   {product_details.product_info ||
+                    product_details.meta_keywords ||
                     "No additional information available."}
                 </p>
               )}
