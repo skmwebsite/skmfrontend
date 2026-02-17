@@ -62,7 +62,7 @@ export const frontendApi = {
   EnquiryForm: async (formData: object) => {
     try {
       const response = await axiosClient.post("/contact-us", formData);
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (error) {
       console.log(error);
@@ -207,7 +207,7 @@ export const frontendApi = {
   } | null> => {
     try {
       const response = await axiosClient.post("/create-order", body);
-      console.log(response);
+      // console.log(response);
       return response.data;
     } catch (error) {
       console.error("Error creating order:", error);

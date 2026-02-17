@@ -103,12 +103,6 @@ const calculateCustomIngredientsWeightInKg = (
     return 0;
   }
 
-  console.log("=== INGREDIENT WEIGHT CALCULATION ===");
-  console.log(
-    "Raw customIngredients:",
-    JSON.stringify(customIngredients, null, 2),
-  );
-
   let runningTotal = 0;
 
   customIngredients.forEach((ingredient, index) => {
@@ -136,40 +130,16 @@ const calculateCustomIngredientsWeightInKg = (
 
     const gramsValue = convertToGrams(qty, unit, quantityInGrams);
 
-    console.log(
-      `[${index}] Ingredient: ${ingredient.name || ingredient.raw_material_id || "unknown"}`,
-      `| Raw qty: "${rawQty}" (type: ${typeof rawQty})`,
-      `| Parsed qty: ${qty}`,
-      `| Raw unit: "${rawUnit}"`,
-      `| quantity_in_grams: ${quantityInGrams}`,
-      `| Converted to grams: ${gramsValue}`,
-      `| Running total: ${runningTotal} + ${gramsValue} = ${runningTotal + gramsValue}`,
-    );
-
     runningTotal += gramsValue;
   });
 
   const totalKg = runningTotal / 1000;
-  console.log(`Final Total grams: ${runningTotal}`);
-  console.log(`Final Total kg: ${totalKg}`);
-  console.log("=======================================");
 
   return totalKg;
 };
 
 const calculateTotalWeight = (items: any[]): number => {
-  console.log("=== CALCULATE TOTAL WEIGHT ===");
-  console.log("Number of items:", items.length);
-
   return items.reduce((total, item, index) => {
-    console.log(`\n--- Item ${index} ---`);
-    console.log("Item ID:", item.id);
-    console.log("Item title:", item.title);
-    console.log("isFreeItem:", item.isFreeItem);
-    console.log("productType:", item.productType);
-    console.log("quantity:", item.quantity);
-    console.log("spiceLevel:", item.spiceLevel);
-
     if (item.isFreeItem) {
       console.log("Skipping free item");
       return total;
@@ -182,31 +152,16 @@ const calculateTotalWeight = (items: any[]): number => {
     if (item.spiceLevel?.quantity_in_gm) {
       const spiceGrams = parseFloat(item.spiceLevel.quantity_in_gm) || 0;
       spiceLevelWeightKg = spiceGrams / 1000;
-      console.log(
-        `Spice level weight: ${spiceGrams}g = ${spiceLevelWeightKg}kg`,
-      );
     }
 
     if (item.productType === "2") {
-      // For productType "2", calculate weight from customIngredients
-      console.log("customIngredients present:", !!item.customIngredients);
-      console.log(
-        "customIngredients length:",
-        item.customIngredients?.length || 0,
-      );
-
       if (item.customIngredients && item.customIngredients.length > 0) {
         const ingredientsWeightInKg = calculateCustomIngredientsWeightInKg(
           item.customIngredients,
         );
         const itemWeight =
           (ingredientsWeightInKg + spiceLevelWeightKg) * quantity;
-        console.log(
-          `Ingredients weight: ${ingredientsWeightInKg}kg + spice ${spiceLevelWeightKg}kg x ${quantity} = ${itemWeight}kg`,
-        );
-        console.log(
-          `Running total: ${total} + ${itemWeight} = ${total + itemWeight}kg`,
-        );
+
         return total + itemWeight;
       } else {
         // Fallback to variantName if no customIngredients
@@ -218,15 +173,11 @@ const calculateTotalWeight = (items: any[]): number => {
           const value = parseFloat(match[1]);
           const unit = match[2].toLowerCase();
           const variantKg = convertToKg(value, unit);
-          console.log(
-            `Fallback variant: ${value}${unit} = ${variantKg}kg + spice ${spiceLevelWeightKg}kg`,
-          );
+
           return total + (variantKg + spiceLevelWeightKg) * quantity;
         } else {
           const value = parseFloat(variantName) || 0;
-          console.log(
-            `Fallback parsed value: ${value} + spice ${spiceLevelWeightKg}kg`,
-          );
+
           return total + (value + spiceLevelWeightKg) * quantity;
         }
       }
@@ -234,9 +185,7 @@ const calculateTotalWeight = (items: any[]): number => {
       const variantName = item.variantName ? String(item.variantName) : "0";
       const variantUnit = item.variantUnit || "gm";
       const variantKg = convertToKg(parseFloat(variantName), variantUnit);
-      console.log(
-        `Standard item: ${variantName}${variantUnit} = ${variantKg}kg + spice ${spiceLevelWeightKg}kg`,
-      );
+
       return total + (variantKg + spiceLevelWeightKg) * quantity;
     }
   }, 0);
@@ -267,7 +216,6 @@ const calculateDeliveryCharges = (
 
     const additionalKgs = roundedWeight - 1;
 
-    console.log("additionalKgs", additionalKgs);
     const additionalCharges = additionalKgs * pricePerAdditionalKg;
     charges += additionalCharges;
 
@@ -440,11 +388,6 @@ const Delivery = ({
     const orderId = searchParams.get("order_id");
 
     if (status === "CHARGED" && orderId) {
-      console.log("=== PAYMENT SUCCESS ===");
-      console.log("Order ID:", orderId);
-      console.log("Redirecting to order details page...");
-
-      // Redirect to order details page
       setTimeout(() => {
         window.location.href = `/order-details/${orderId}`;
       }, 500);
@@ -474,7 +417,6 @@ const Delivery = ({
 
     const basePrice = parseFloat(addressData.shipping_charge.per_kg_price) || 0;
     const calculation = calculateDeliveryCharges(totalWeight, basePrice);
-    console.log("calculation", calculation);
     setDeliveryCalculation({
       charges: calculation.charges,
       breakdown: calculation.breakdown,

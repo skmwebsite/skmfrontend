@@ -180,12 +180,10 @@ export const useMenuCart = () => {
         weightPerPieceInKg > 0 &&
         currentWeightInKg + weightPerPieceInKg > maxQuantity
       ) {
-        console.log("❌ Maximum weight reached, blocking add");
         return;
       }
 
       if (!existingItem && maxQuantity <= 0) {
-        console.log("❌ Invalid max quantity");
         return;
       }
     }

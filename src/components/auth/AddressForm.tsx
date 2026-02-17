@@ -358,7 +358,10 @@ const AddressForm = ({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-4 h-[60svh] no-scrollbar overflow-y-auto ~pb-[2rem]/[3rem]">
+        <div
+          data-lenis-prevent
+          className="space-y-4 h-[60svh] no-scrollbar overflow-y-auto ~pb-[2rem]/[3rem]"
+        >
           <div>
             <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
               Pincode

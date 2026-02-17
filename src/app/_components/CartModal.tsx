@@ -289,7 +289,7 @@ const CartModal = () => {
                     </div>
                   </div>
 
-                  <div className="h-full overflow-y-auto">
+                  <div data-lenis-prevent className="h-full overflow-y-auto">
                     <AnimatePresence mode="wait">
                       {currentView === "cart" && (
                         <motion.div

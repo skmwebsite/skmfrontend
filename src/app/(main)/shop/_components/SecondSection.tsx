@@ -199,7 +199,10 @@ const SecondSection = ({ menuitems }: Props) => {
     <div className="relative flex min-h-[calc(100vh-16rem)] ~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem] ~pt-[1.6875rem]/[4.625rem] gap-[2.2875rem] w-full ">
       <div className="~w-[12rem]/[15.625rem] shrink-0">
         <div className="sticky top-[7rem]">
-          <div className="relative overflow-y-auto no-scrollbar max-h-[calc(100vh-8rem)]">
+          <div
+            data-lenis-prevent
+            className="relative overflow-y-auto no-scrollbar max-h-[calc(100vh-8rem)]"
+          >
             <h5 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[130%]">
               Shop
             </h5>
