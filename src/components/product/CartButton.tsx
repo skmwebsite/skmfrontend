@@ -289,7 +289,7 @@ const CartButton = ({
             <CartBucket className="~size-[1rem]/[1.25rem] z-40" />
             <span className="z-40">
               {maxWeightKg <= 0 || isMaxReached
-                ? "Out of Stock"
+                ? "Max Weight reached"
                 : "Add to Cart"}
             </span>
           </motion.button>
