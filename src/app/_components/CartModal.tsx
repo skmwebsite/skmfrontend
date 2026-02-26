@@ -3,8 +3,6 @@ import CloseIcon from "@/src/components/svg/CloseIcon";
 import DeleteIcon from "@/src/components/svg/DeleteIcon";
 import {
   useCart,
-  convertToKg,
-  getWeightPerPieceKg,
   isMaxWeightReached,
   getMaxItemCount,
 } from "@/src/hooks/useCart";
@@ -76,11 +74,17 @@ const CartModal = () => {
   const [isLoadingAddress, setIsLoadingAddress] = useState(true);
   const [promoCode, setPromoCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
+  const [promoData, setPromoData] = useState<{
+    discount_type: number;
+    discount_value: number;
+  } | null>(null);
 
   const calculateFinalTotal = () => {
     const totalAfterDiscount = cartNetTotal - discountAmount;
     return Math.max(totalAfterDiscount, 0);
   };
+
   const promoMutation = useMutation({
     mutationFn: (code: string) => frontendApi.getPromoCode(code),
 
@@ -95,11 +99,18 @@ const CartModal = () => {
       if (!res) {
         toast.error("Invalid promo code");
         setDiscountAmount(0);
+        setPromoData(null);
         return;
       }
 
       const discountValue = Number(res.discount_value);
       let discount = 0;
+
+      // Store promo data for recalculation when cart changes
+      setPromoData({
+        discount_type: res.discount_type,
+        discount_value: discountValue,
+      });
 
       if (res.discount_type === 1) {
         discount = discountValue;
@@ -112,6 +123,12 @@ const CartModal = () => {
       discount = Math.min(discount, cartNetTotal);
 
       setDiscountAmount(discount);
+      setShowPromoSuccess(true);
+
+      // Hide the success animation after 2 seconds
+      setTimeout(() => {
+        setShowPromoSuccess(false);
+      }, 2000);
 
       toast.success(`Promo applied! You saved ₹${discount.toFixed(2)}`);
     },
@@ -120,13 +137,40 @@ const CartModal = () => {
       toast.dismiss();
       toast.error("Promo code expired or invalid");
       setDiscountAmount(0);
+      setPromoData(null);
     },
   });
+
+  // Recalculate discount when cart total changes and promo is applied
+  useEffect(() => {
+    if (promoData && cartNetTotal > 0) {
+      let discount = 0;
+
+      if (promoData.discount_type === 1) {
+        // Fixed amount discount
+        discount = promoData.discount_value;
+      }
+
+      if (promoData.discount_type === 2) {
+        // Percentage discount
+        discount = (cartNetTotal * promoData.discount_value) / 100;
+      }
+
+      discount = Math.min(discount, cartNetTotal);
+      setDiscountAmount(discount);
+    } else if (cartNetTotal === 0) {
+      // Clear promo if cart is empty
+      setDiscountAmount(0);
+      setPromoData(null);
+      setPromoCode("");
+    }
+  }, [cartNetTotal, promoData]);
 
   const handleApplyPromo = () => {
     if (!promoCode.trim()) return;
     promoMutation.mutate(promoCode);
   };
+
   const fetchAddressMutation = useMutation({
     mutationFn: async (): Promise<AddressResponse> => {
       const response = await frontendApi.getCustomerAddress();
@@ -462,7 +506,7 @@ const CartModal = () => {
                               </div>
 
                               <div>
-                                <div className="~p-[1rem]/[1.5rem] border-b flex flex-col items-start border-b-[#00000014]">
+                                <div className="~p-[1rem]/[1.5rem] border-b flex flex-col items-start border-b-[#00000014] relative">
                                   <p className="underline tracking-[-0.03em] ~pb-[0.625rem]/[1.25rem] text-black  ~text-[0.75rem]/[1rem] leading-[120%] font-medium">
                                     Have a promo code?
                                   </p>
@@ -480,20 +524,97 @@ const CartModal = () => {
                                       className="bg-[#F8F5EE] py-[0.625rem] ~text-[0.75rem]/[1rem] px-[0.75rem] outline-none rounded-[0.625rem] w-full "
                                     />
                                     <button
-                                      onClick={handleApplyPromo}
-                                      disabled={
-                                        promoMutation.isPending ||
-                                        isPromoApplied
-                                      }
-                                      className="bg-black text-white p-[0.625rem] ~text-[0.75rem]/[1rem] rounded-[0.625rem] font-medium tracking-[-0.03em] leading-[120%]"
+                                      onClick={() => {
+                                        if (isPromoApplied) {
+                                          setPromoCode("");
+                                          setDiscountAmount(0);
+                                          setPromoData(null);
+                                        } else {
+                                          handleApplyPromo();
+                                        }
+                                      }}
+                                      disabled={promoMutation.isPending}
+                                      className="bg-black text-white p-[0.625rem] w-[10ch] ~text-[0.75rem]/[1rem] rounded-[0.625rem] font-medium tracking-[-0.03em] leading-[120%] relative overflow-hidden"
                                     >
                                       {isPromoApplied
-                                        ? "Applied"
+                                        ? "Reset"
                                         : promoMutation.isPending
                                           ? "Applying..."
                                           : "Apply"}
                                     </button>
                                   </div>
+
+                                  <AnimatePresence>
+                                    {showPromoSuccess && (
+                                      <motion.div
+                                        initial={{
+                                          opacity: 0,
+                                          scale: 0.5,
+                                          y: 10,
+                                        }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{
+                                          opacity: 0,
+                                          scale: 0.5,
+                                          y: -10,
+                                        }}
+                                        transition={{
+                                          type: "spring",
+                                          stiffness: 500,
+                                          damping: 25,
+                                        }}
+                                        className="absolute -top-2 right-4 z-10"
+                                      >
+                                        {/* Confetti burst */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                          {Array.from({ length: 12 }).map(
+                                            (_, i) => (
+                                              <ConfettiParticle
+                                                key={i}
+                                                index={i}
+                                              />
+                                            ),
+                                          )}
+                                        </div>
+
+                                        {/* Badge */}
+                                        <motion.div
+                                          className="relative bg-gradient-to-r from-[#EC5715] to-[#FF7E00] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg"
+                                          animate={{
+                                            scale: [1, 1.15, 0.95, 1.05, 1],
+                                          }}
+                                          transition={{
+                                            duration: 0.5,
+                                            ease: "easeOut",
+                                            delay: 0.1,
+                                          }}
+                                        >
+                                          {/* Shimmer sweep */}
+                                          <motion.div
+                                            className="absolute inset-0 rounded-full overflow-hidden"
+                                            initial={{ x: "-100%" }}
+                                            animate={{ x: "200%" }}
+                                            transition={{
+                                              duration: 0.6,
+                                              delay: 0.2,
+                                              ease: "easeInOut",
+                                            }}
+                                          >
+                                            <div className="w-1/3 h-full bg-white/40 skew-x-12" />
+                                          </motion.div>
+
+                                          <motion.span
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.1 }}
+                                            className="flex items-center gap-1 relative z-10"
+                                          >
+                                            Promo Applied!
+                                          </motion.span>
+                                        </motion.div>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                                 </div>
                                 <div className="~p-[1rem]/[1.5rem] ~space-y-[1rem]/[1.5rem]">
                                   <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between ">
@@ -501,10 +622,26 @@ const CartModal = () => {
                                     <p>₹{cartNetTotal.toFixed(2)}</p>
                                   </div>
                                   {isPromoApplied && (
-                                    <div className="flex font-medium ~text/[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between text-green-600">
+                                    <motion.div
+                                      initial={{ opacity: 0, height: 0 }}
+                                      animate={{ opacity: 1, height: "auto" }}
+                                      exit={{ opacity: 0, height: 0 }}
+                                      transition={{ duration: 0.3 }}
+                                      className="flex font-medium ~text/[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between text-green-600 overflow-hidden"
+                                    >
                                       <p>Discount Applied</p>
-                                      <p>-₹{discountAmount.toFixed(2)}</p>
-                                    </div>
+                                      <motion.p
+                                        initial={{ scale: 0.8 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{
+                                          type: "spring",
+                                          stiffness: 500,
+                                          damping: 25,
+                                        }}
+                                      >
+                                        -₹{discountAmount.toFixed(2)}
+                                      </motion.p>
+                                    </motion.div>
                                   )}
                                   <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between ">
                                     <p>Delivery</p>
@@ -513,7 +650,14 @@ const CartModal = () => {
                                   <div className="h-[1px] my-[1.5rem] bg-[#00000014] "></div>
                                   <div className="flex font-medium ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em] justify-between">
                                     <p>Total</p>
-                                    <p>₹{calculateFinalTotal().toFixed(2)}</p>
+                                    <motion.p
+                                      key={calculateFinalTotal()}
+                                      initial={{ scale: 1.2, color: "#10b981" }}
+                                      animate={{ scale: 1, color: "#000000" }}
+                                      transition={{ duration: 0.3 }}
+                                    >
+                                      ₹{calculateFinalTotal().toFixed(2)}
+                                    </motion.p>
                                   </div>
                                   <AnimatePresence mode="wait">
                                     <motion.div
@@ -678,3 +822,48 @@ const CartModal = () => {
 };
 
 export default CartModal;
+const ConfettiParticle = ({ index }: { index: number }) => {
+  const angle = (index / 12) * 360;
+  const distance = 30 + Math.random() * 20;
+  const rad = (angle * Math.PI) / 180;
+  const x = Math.cos(rad) * distance;
+  const y = Math.sin(rad) * distance;
+  const colors = [
+    "#FFD700",
+    "#FF6B6B",
+    "#4ECDC4",
+    "#45B7D1",
+    "#FFA07A",
+    "#98FB98",
+  ];
+  const color = colors[index % colors.length];
+  const size = 4 + Math.random() * 4;
+
+  return (
+    <motion.div
+      className="absolute rounded-sm pointer-events-none"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: color,
+        top: "50%",
+        left: "50%",
+        translateX: "-50%",
+        translateY: "-50%",
+      }}
+      initial={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
+      animate={{
+        x: [0, x * 0.5, x],
+        y: [0, y * 0.5 - 15, y + 10],
+        opacity: [1, 1, 0],
+        scale: [1, 1.2, 0.5],
+        rotate: [0, 180, 360],
+      }}
+      transition={{
+        duration: 0.7,
+        ease: "easeOut",
+        delay: 0.05,
+      }}
+    />
+  );
+};

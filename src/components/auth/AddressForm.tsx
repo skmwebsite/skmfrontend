@@ -360,7 +360,7 @@ const AddressForm = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div
           data-lenis-prevent
-          className="space-y-4 h-[60svh] no-scrollbar overflow-y-auto ~pb-[2rem]/[3rem]"
+          className="space-y-4 h-[60svh]  pr-4 overflow-y-auto ~pb-[2rem]/[3rem]"
         >
           <div>
             <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
@@ -384,7 +384,7 @@ const AddressForm = ({
             </div>
             {
               errors.pincode && (
-                <p className="mt-1 text-redcolor text-sm">
+                <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                   *{errors.pincode.message}
                 </p>
               )
@@ -411,7 +411,7 @@ const AddressForm = ({
               disabled={isLoading || isLoadingLocation || !isPincodeValid}
             />
             {errors.city && (
-              <p className="mt-1 text-redcolor text-sm">
+              <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                 *{errors.city.message}
               </p>
             )}
@@ -429,7 +429,7 @@ const AddressForm = ({
               disabled={isLoading || isLoadingLocation || !isPincodeValid}
             />
             {errors.state && (
-              <p className="mt-1 text-redcolor text-sm">
+              <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                 *{errors.state.message}
               </p>
             )}
@@ -446,7 +446,7 @@ const AddressForm = ({
               disabled={isLoading || !isPincodeValid}
             />
             {errors.street && (
-              <p className="mt-1 text-redcolor text-sm">
+              <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                 *{errors.street.message}
               </p>
             )}
@@ -464,7 +464,7 @@ const AddressForm = ({
               disabled={isLoading || !isPincodeValid}
             />
             {errors.name && (
-              <p className="mt-1 text-redcolor text-sm">
+              <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                 *{errors.name.message}
               </p>
             )}
@@ -482,7 +482,7 @@ const AddressForm = ({
               disabled={isLoading || !isPincodeValid}
             />
             {errors.email && (
-              <p className="mt-1 text-redcolor text-sm">
+              <p className="mt-1 text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
                 *{errors.email.message}
               </p>
             )}

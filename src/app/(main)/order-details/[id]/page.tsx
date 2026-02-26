@@ -22,7 +22,6 @@ const OrderDetailsPage = () => {
       if (!id) throw new Error("Order ID is required");
       const response = await frontendApi.getOrderDetails(id as string);
 
-      console.log("response:::::::::::", response);
       return {
         transaction_id: response.data?.transaction_id,
         order_id: response.data?.order_id,
@@ -187,12 +186,12 @@ const OrderDetailsPage = () => {
         {orderDetails.order_status !== null && (
           <div className="bg-white ~rounded-[0.74875rem]/[1rem] relative overflow-hidden">
             <div className="bg-main">
-              <h2 className="text-white py-[0.25rem] ~text-[1rem]/[1.25rem] font-medium px-[1.5rem]">
+              <h2 className="text-white py-[0.5rem] ~text-[1rem]/[1.25rem] font-medium px-[1rem]">
                 Order Details
               </h2>
             </div>
 
-            <div className="bg-[#F8F5EE] ~space-y-[0.25rem]/[0.5rem] ~text-[0.875rem]/[1rem] py-[1rem] px-[1rem] rounded-[0.5rem]">
+            <div className="bg-[#F8F5EE] ~space-y-[0.25rem]/[0.5rem] ~text-[0.875rem]/[1rem] py-[1rem] px-[1rem] ">
               <div className="flex justify-between">
                 <span className="font-semibold">Order ID:</span>
                 <span>#{orderDetails.order_id}</span>
@@ -217,7 +216,7 @@ const OrderDetailsPage = () => {
           </div>
         )}
         {orderDetails.order_status !== null && (
-          <div className="bg-[#F8F5EE] p-2 rounded-[0.5rem]">
+          <div className="bg-[#c0fac09e] p-[1rem] ~rounded-[0.74875rem]/[1rem]">
             <div className="flex items-start gap-3">
               <div>
                 <h3 className="font-semibold ~text-[0.875rem]/[1rem] text-black">

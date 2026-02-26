@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
@@ -35,10 +35,13 @@ const Hero = ({ product_details }: Props) => {
   const [customizedIngredients, setCustomizedIngredients] = useState<any>(null);
   const [isCustomized, setIsCustomized] = useState(false);
 
-  const tabs = [
-    { id: "description", label: "Description" },
-    { id: "info", label: "Product Information" },
-  ];
+  const tabs =
+    product_details.category_slug !== "dry-fruits"
+      ? [
+          { id: "description", label: "Description" },
+          { id: "info", label: "Product Information" },
+        ]
+      : [{ id: "description", label: "Description" }];
 
   const convertToGrams = (quantity: number, unit: string): number => {
     const unitLower = unit.toLowerCase();
@@ -630,7 +633,7 @@ const Hero = ({ product_details }: Props) => {
                 <p>{product_details.description}</p>
               )}
               {activeTab === "info" && (
-                <p>
+                <p className="whitespace-pre-line">
                   {product_details.product_info ||
                     product_details.meta_keywords ||
                     "No additional information available."}
