@@ -34,6 +34,7 @@ const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
   const schema = z.object({
     phone_number: z
       .string()
+      .max(15, { message: "Enter a valid phone number" })
       .min(10, { message: "Enter a valid phone number" })
       .regex(phoneNumberRegex, { message: "Only digits allowed" }),
     phone_code: z.string().nonempty("Phone code is required"),
@@ -83,13 +84,13 @@ const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
           />
           <input
             {...register("phone_number")}
-            className="bg-[#F8F5EE]  text-[#0000008F]  leading-[120%] tracking-[-0.03em] text-[1rem] w-full outline-none ~rounded-r-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+            className="bg-[#F8F5EE] no-spinner  text-[#0000008F]  leading-[120%] tracking-[-0.03em] text-[1rem] w-full outline-none ~rounded-r-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
             placeholder="Enter your number"
-            type="text"
+            type="number"
           />
         </div>
         {errors.phone_number && (
-          <p className="mt-1 text-redcolor text-sm">
+          <p className="mt-1  text-red-700 text-start ~text-[0.625rem]/[0.85rem]">
             *{errors.phone_number.message}
           </p>
         )}

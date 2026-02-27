@@ -293,6 +293,7 @@ export const useMenuCart = () => {
       variantId: selectedVariant?.id,
       variantName: String(selectedVariant?.name || ""),
       variantUnit: selectedVariant?.unit || "",
+      primary_quantity_in_grm: selectedVariant?.primary_quantity_in_grm || 0,
       customIngredients: ingredientsForCart,
       hasCustomizedIngredients: wasActuallyCustomized,
       spiceLevel: selectedSpiceLevel

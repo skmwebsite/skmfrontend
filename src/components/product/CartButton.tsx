@@ -32,6 +32,23 @@ const parseWeightFromName = (
   return null;
 };
 
+// Helper function to parse pcs (pieces) from variant name (for type 2 products)
+// e.g., "10 pcs" -> { quantity: 10, unit: "pcs" }
+// e.g., "5pcs" -> { quantity: 5, unit: "pcs" }
+const parsePcsFromName = (
+  name: string,
+): { quantity: number; unit: string } | null => {
+  if (!name) return null;
+
+  // Match patterns like "10 pcs", "5pcs", "10 pieces", "5 piece"
+  const match = name.match(/(\d+)\s*(pcs|pc|pieces|piece)/i);
+  if (match) {
+    const quantity = parseInt(match[1], 10);
+    return { quantity, unit: "pcs" };
+  }
+  return null;
+};
+
 const calculateTotalWeightInKg = (
   quantity: number,
   variantName?: string,
@@ -84,8 +101,8 @@ const CartButton = ({
   finalPrice?: number | null;
 }) => {
   const { items, updateCart } = useMenuCart();
-  const [showControls, setShowControls] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [showControls] = useState(true);
+  // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const generateMatchingKey = () => {
     const variantKey = selectedVariant?.id
@@ -144,6 +161,14 @@ const CartButton = ({
   );
   const variantUnit = cartItem?.variantUnit || selectedVariant?.unit || "";
 
+  const parsedPcs =
+    item.product_type === 2 ? parsePcsFromName(variantName) : null;
+
+  // Check if this is a "pcs" (pieces) product
+  // For type 1: check variantUnit, for type 2: also check if name contains "pcs"
+  const isPcsProduct =
+    variantUnit.toLowerCase() === "pcs" || parsedPcs !== null;
+
   const weightPerPieceInKg = calculateTotalWeightInKg(
     1,
     variantName,
@@ -154,35 +179,40 @@ const CartButton = ({
 
   const maxWeightKg = item.max_quantity || 15;
 
+  // For pcs products, use product's max_quantity as the limit (not variant's max_quantity which is the pcs per unit)
+  const maxPcsQuantity = item.max_quantity || 15;
+
   // For type 2, we don't need variantUnit check since unit is parsed from name
-  const isMaxReached =
-    variantName &&
-    (item.product_type === 2 || variantUnit) &&
-    weightPerPieceInKg > 0 &&
-    currentTotalWeightInKg + weightPerPieceInKg > maxWeightKg;
+  // For pcs products, check against maxPcsQuantity instead of weight
+  const isMaxReached = isPcsProduct
+    ? itemQuantity >= maxPcsQuantity
+    : variantName &&
+      (item.product_type === 2 || variantUnit) &&
+      weightPerPieceInKg > 0 &&
+      currentTotalWeightInKg + weightPerPieceInKg > maxWeightKg;
 
-  const resetButtonTimer = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  // const resetButtonTimer = () => {
+  //   if (timeoutRef.current) {
+  //     clearTimeout(timeoutRef.current);
+  //   }
 
-    if (itemQuantity > 0) {
-      setShowControls(true);
-      timeoutRef.current = setTimeout(() => {
-        setShowControls(false);
-      }, 5000);
-    }
-  };
+  //   if (itemQuantity > 0) {
+  //     setShowControls(true);
+  //     timeoutRef.current = setTimeout(() => {
+  //       setShowControls(false);
+  //     }, 5000);
+  //   }
+  // };
 
-  useEffect(() => {
-    resetButtonTimer();
+  // useEffect(() => {
+  //   resetButtonTimer();
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [itemQuantity]);
+  //   return () => {
+  //     if (timeoutRef.current) {
+  //       clearTimeout(timeoutRef.current);
+  //     }
+  //   };
+  // }, [itemQuantity]);
 
   const handleIncrease = () => {
     if (isMaxReached) {
@@ -281,16 +311,22 @@ const CartButton = ({
             initial={{ opacity: 0, x: -10 }}
             key={"add-to-cart"}
             onClick={handleIncrease}
-            disabled={maxWeightKg <= 0 || isMaxReached}
+            disabled={
+              isPcsProduct ? isMaxReached : maxWeightKg <= 0 || isMaxReached
+            }
             transition={{ duration: 0.15, ease: "easeInOut" }}
             type="button"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
             <CartBucket className="~size-[1rem]/[1.25rem] z-40" />
             <span className="z-40">
-              {maxWeightKg <= 0 || isMaxReached
-                ? "Max Weight reached"
-                : "Add to Cart"}
+              {isPcsProduct
+                ? isMaxReached
+                  ? "Max Quantity Reached"
+                  : "Add to Cart"
+                : maxWeightKg <= 0 || isMaxReached
+                  ? "Max Weight Reached"
+                  : "Add to Cart"}
             </span>
           </motion.button>
         )}

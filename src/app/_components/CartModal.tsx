@@ -61,6 +61,7 @@ const CartModal = () => {
     isCartOpen,
     closeCart,
     totalUniqueItems,
+    totalNumberItems,
     items,
     removeItem,
     updateItem,
@@ -253,7 +254,7 @@ const CartModal = () => {
 
   return (
     <Transition appear as={Fragment} show={isCartOpen}>
-      <Dialog as="div" className="relative z-[2000]" onClose={handleCloseCart}>
+      <Dialog as="div" className="relative z-[9999]" onClose={handleCloseCart}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-500"
@@ -301,9 +302,9 @@ const CartModal = () => {
                         </div>
                       )}
 
-                      {currentView === "cart" && totalUniqueItems > 0 && (
+                      {currentView === "cart" && totalNumberItems > 0 && (
                         <div className="px-[0.5rem] py-[0.1rem] min-w-[3.5ch] text-[0.875rem] cursor-pointer rounded-full bg-gradient-to-r from-[#EC5715] text-white to-[#FF7E00]">
-                          {totalUniqueItems}
+                          {totalNumberItems}
                         </div>
                       )}
                     </div>

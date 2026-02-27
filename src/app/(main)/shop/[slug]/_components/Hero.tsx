@@ -36,12 +36,13 @@ const Hero = ({ product_details }: Props) => {
   const [isCustomized, setIsCustomized] = useState(false);
 
   const tabs =
-    product_details.category_slug !== "dry-fruits"
-      ? [
+    product_details.category_slug === "dry-fruits" ||
+    product_details.category_slug === "tea"
+      ? [{ id: "description", label: "Description" }]
+      : [
           { id: "description", label: "Description" },
           { id: "info", label: "Product Information" },
-        ]
-      : [{ id: "description", label: "Description" }];
+        ];
 
   const convertToGrams = (quantity: number, unit: string): number => {
     const unitLower = unit.toLowerCase();
@@ -205,7 +206,6 @@ const Hero = ({ product_details }: Props) => {
     };
     return labels[level] || "Medium";
   };
-
   return (
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">

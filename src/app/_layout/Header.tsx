@@ -10,10 +10,17 @@ import Humburger from "@/src/components/svg/Humburger";
 import { useCart } from "@/src/hooks/useCart";
 import CloseButton from "@/src/components/svg/CloseButton";
 import CartModal from "../_components/CartModal";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -64,19 +71,31 @@ const Header = () => {
                   <div className="lg:flex hidden gap-[0.5rem] items-center font-inter font-medium text-[1rem] text-[#1A1A1A] leading-[1.3125rem] tracking-[-0.035em]">
                     <Link
                       href={"/shop"}
-                      className="px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/shop")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       Shop
                     </Link>
                     <Link
                       href={"/collections"}
-                      className="px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/collections")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       Collections
                     </Link>
                     <Link
                       href={"/about"}
-                      className="px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/about")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       About us
                     </Link>
@@ -160,19 +179,31 @@ const Header = () => {
                   <div className="lg:flex hidden gap-[0.5rem] items-center font-inter font-medium text-[1rem] text-[#1A1A1A] leading-[1.3125rem] tracking-[-0.035em]">
                     <Link
                       href={"/shop"}
-                      className="px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/shop")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       Shop
                     </Link>
                     <Link
                       href={"/collections"}
-                      className="px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/collections")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       Collections
                     </Link>
                     <Link
                       href={"/about"}
-                      className="px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
+                      className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
+                        isActive("/about")
+                          ? "font-bold text-main"
+                          : "font-medium"
+                      }`}
                     >
                       About us
                     </Link>
@@ -265,7 +296,9 @@ const Header = () => {
                 <Link
                   onClick={() => setOpen(!open)}
                   href={"/shop"}
-                  className="~text-[0.875rem]/[1rem] flex ~pb-[0.25rem]/[0.5rem] leading-[155%] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] "
+                  className={`~text-[0.875rem]/[1rem] flex ~pb-[0.25rem]/[0.5rem] leading-[155%] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
+                    isActive("/shop") ? "font-bold" : "font-medium"
+                  }`}
                 >
                   {" "}
                   Shop
@@ -273,14 +306,18 @@ const Header = () => {
                 <Link
                   onClick={() => setOpen(!open)}
                   href={"/collections"}
-                  className="~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] "
+                  className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
+                    isActive("/collections") ? "font-bold" : "font-medium"
+                  }`}
                 >
                   Collections
                 </Link>
                 <Link
                   onClick={() => setOpen(!open)}
                   href={"/about"}
-                  className="~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] "
+                  className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
+                    isActive("/about") ? "font-bold" : "font-medium"
+                  }`}
                 >
                   {" "}
                   About Us
@@ -288,7 +325,9 @@ const Header = () => {
                 <Link
                   onClick={() => setOpen(!open)}
                   href={"/contact-us"}
-                  className="~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] "
+                  className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
+                    isActive("/contact-us") ? "font-bold" : "font-medium"
+                  }`}
                 >
                   {" "}
                   Contact Us

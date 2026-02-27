@@ -1,7 +1,7 @@
 "use client";
 import Arrow from "@/src/components/svg/Arrow";
 import BorderRadius from "@/src/components/svg/BorderRadius";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -88,10 +88,21 @@ const Testimonials = () => {
     );
   };
 
+  // Autoplay every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) =>
+        prev === testimonials.length - 1 ? 0 : prev + 1,
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const currentTestimonial = testimonials[currentIndex];
   return (
     <div className="~pt-[1.5625rem]/[5rem]">
-      <div className=" bg-gradient-to-b relative ~min-h-[34.0625rem]/[36.4375rem] flex items-center overflow-hidden rounded-[1rem] from-[#A11300] to-[#C02611] ~px-[0.3125rem]/[7.5rem] ~pb-[2rem]/[4rem] pt-[4rem] ">
+      <div className=" bg-gradient-to-b relative ~min-h-[34.0625rem]/[36.4375rem] flex items-center  rounded-[1rem] from-[#A11300] to-[#C02611] ~px-[0.3125rem]/[7.5rem] ~pb-[2rem]/[4rem] pt-[4rem] ">
         <div className="md:flex hidden">
           <Image
             className="absolute opacity-[0.5] left-0 w-full top-0"
@@ -100,7 +111,7 @@ const Testimonials = () => {
           />
         </div>{" "}
         <div className="~w-[6rem]/[8rem] ~h-[3.3125rem]/[4.25rem] absolute top-0 right-0 flex justify-center items-center rounded-bl-[1rem] bg-white">
-          <BorderRadius className="absolute top-0 rotate-90 left-[-1.125rem] size-[1.125rem] text-white" />
+          <BorderRadius className="absolute top-0 rotate-90 left-[-1.115rem] size-[1.125rem] text-white" />
           <BorderRadius className="absolute right-0 rotate-90 bottom-[-1.125rem]  size-[1.125rem] text-white" />
           <div className="flex gap-[0.5rem] ">
             <button

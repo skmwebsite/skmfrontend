@@ -26,6 +26,7 @@ export type Item = {
   variantName?: string | number;
   category_has_offer?: number;
   max_quantity?: number;
+  primary_quantity_in_grm?: number;
   customIngredients?: any;
   hasCustomizedIngredients?: boolean;
   spiceLevel?: any;
@@ -73,6 +74,24 @@ export const convertToKg = (quantity: number, unit: string): number => {
   return quantity;
 };
 
+// Helper to check if item is a pcs (pieces) product
+export const isPcsProduct = (item: Item): boolean => {
+  const variantUnit = String(item.variantUnit || "").toLowerCase();
+  const variantName = String(item.variantName || "");
+  const productType = String(item.productType || "");
+
+  // Check if unit is pcs
+  if (variantUnit === "pcs") return true;
+
+  // For type 2 products, check if name contains pcs pattern
+  if (productType === "2") {
+    const pcsMatch = variantName.match(/(\d+)\s*(pcs|pc|pieces|piece)/i);
+    if (pcsMatch) return true;
+  }
+
+  return false;
+};
+
 export const getWeightPerPieceKg = (item: Item): number => {
   const variantName = String(item.variantName || "");
   const variantUnit = String(item.variantUnit || "");
@@ -82,6 +101,13 @@ export const getWeightPerPieceKg = (item: Item): number => {
 };
 
 export const isMaxWeightReached = (item: Item): boolean => {
+  // For pcs products, check against max_quantity as count limit
+  if (isPcsProduct(item)) {
+    const maxPcsQuantity = item.max_quantity || 15;
+    return item.quantity >= maxPcsQuantity;
+  }
+
+  // For weight-based products, use weight calculation
   const maxWeightKg = item.max_quantity || 15;
   const weightPerPieceKg = getWeightPerPieceKg(item);
   if (weightPerPieceKg <= 0) return false;
@@ -90,6 +116,12 @@ export const isMaxWeightReached = (item: Item): boolean => {
 };
 
 export const getMaxItemCount = (item: Item): number => {
+  // For pcs products, max_quantity is the direct count limit
+  if (isPcsProduct(item)) {
+    return item.max_quantity || 15;
+  }
+
+  // For weight-based products, calculate max count from weight
   const maxWeightKg = item.max_quantity || 15;
   const weightPerPieceKg = getWeightPerPieceKg(item);
   if (weightPerPieceKg <= 0) return maxWeightKg;

@@ -360,17 +360,17 @@ const AddressForm = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div
           data-lenis-prevent
-          className="space-y-4 h-[60svh]  pr-4 overflow-y-auto ~pb-[2rem]/[3rem]"
+          className="space-y-4   pr-4 overflow-y-auto ~pb-[2rem]/[3rem]"
         >
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-semibold leading-[120%] tracking-[-0.03em]">
               Pincode
             </h5>
             <div className="relative">
               <input
                 {...register("pincode")}
                 onChange={handlePincodeChange}
-                className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+                className="bg-[#F8F5EE] text-[#000000] leading-[120%] font-medium tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
                 placeholder="Enter your pincode"
                 type="text"
                 maxLength={6}
@@ -400,12 +400,12 @@ const AddressForm = ({
           </div>
 
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start font-semibold  leading-[120%] tracking-[-0.03em]">
               City
             </h5>
             <input
               {...register("city")}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+              className="bg-[#F8F5EE] text-[#000000] font-medium leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder={isLoadingLocation ? "Fetching city..." : "City"}
               type="text"
               disabled={isLoading || isLoadingLocation || !isPincodeValid}
@@ -418,12 +418,12 @@ const AddressForm = ({
           </div>
 
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start font-semibold  leading-[120%] tracking-[-0.03em]">
               State
             </h5>
             <input
               {...register("state")}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+              className="bg-[#F8F5EE] text-[#000000] font-medium leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder={isLoadingLocation ? "Fetching state..." : "State"}
               type="text"
               disabled={isLoading || isLoadingLocation || !isPincodeValid}
@@ -436,12 +436,12 @@ const AddressForm = ({
           </div>
 
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start font-semibold leading-[120%] tracking-[-0.03em]">
               Full Address
             </h5>
             <textarea
               {...register("street")}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] min-h-[80px] resize-none disabled:opacity-50"
+              className="bg-[#F8F5EE] text-[#000000] font-medium leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] min-h-[80px] resize-none disabled:opacity-50"
               placeholder="House No, Building, Street, Area"
               disabled={isLoading || !isPincodeValid}
             />
@@ -453,12 +453,12 @@ const AddressForm = ({
           </div>
 
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start font-semibold  leading-[120%] tracking-[-0.03em]">
               Full Name
             </h5>
             <input
               {...register("name")}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+              className="bg-[#F8F5EE] text-[#000000] font-medium leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder="Enter your full name"
               type="text"
               disabled={isLoading || !isPincodeValid}
@@ -471,12 +471,12 @@ const AddressForm = ({
           </div>
 
           <div>
-            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+            <h5 className="~text-[0.75rem]/[0.875rem] ~pb-[0.5rem]/[0.625rem] text-start font-semibold  leading-[120%] tracking-[-0.03em]">
               Email
             </h5>
             <input
               {...register("email")}
-              className="bg-[#F8F5EE] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
+              className="bg-[#F8F5EE] text-[#000000] font-medium leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem] disabled:opacity-50"
               placeholder="Enter your email"
               type="email"
               disabled={isLoading || !isPincodeValid}
@@ -489,7 +489,7 @@ const AddressForm = ({
           </div>
         </div>
 
-        <div className="~pb-[5rem]/[7rem] flex justify-center">
+        <div className="pb-[2rem] flex justify-center">
           <button
             className="w-full rounded-full border-2 border-main leading-[120%] tracking-[-0.03em] ~px-[0.75rem]/[1.5rem] ~text-[0.75rem]/[1rem] py-[0.625rem] bg-main font-medium text-white transition-all duration-300 enabled:hover:bg-white enabled:hover:text-main disabled:opacity-50 disabled:cursor-not-allowed md:w-fit"
             disabled={isLoading || isCheckingPincode || !isPincodeValid}

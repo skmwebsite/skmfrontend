@@ -45,7 +45,6 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const response = await getShopInnerPageApi(slug);
   const product_details = response?.product_details;
   const popular_products = response?.popular_products;
-  console.log("product_details", product_details);
   return (
     <div className="~pt-[4rem]/[8rem] ">
       {product_details && <Hero product_details={product_details} />}{" "}

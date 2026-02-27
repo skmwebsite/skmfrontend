@@ -184,6 +184,24 @@ const calculateTotalWeight = (items: any[]): number => {
     } else {
       const variantName = item.variantName ? String(item.variantName) : "0";
       const variantUnit = item.variantUnit || "gm";
+      const unitLower = variantUnit.toLowerCase();
+
+      // For pcs products, use primary_quantity_in_grm for weight calculation
+      if (
+        unitLower === "pcs" ||
+        unitLower === "pc" ||
+        unitLower === "piece" ||
+        unitLower === "pieces"
+      ) {
+        const primaryQuantityInGrm = item.primary_quantity_in_grm || 0;
+        if (primaryQuantityInGrm > 0) {
+          const weightKg = (primaryQuantityInGrm / 1000) * quantity;
+          return total + (weightKg + spiceLevelWeightKg * quantity);
+        }
+        // Fallback if no primary_quantity_in_grm
+        return total + spiceLevelWeightKg * quantity;
+      }
+
       const variantKg = convertToKg(parseFloat(variantName), variantUnit);
 
       return total + (variantKg + spiceLevelWeightKg) * quantity;
@@ -240,7 +258,6 @@ const prepareOrderItems = (items: any[]) => {
   return items
     .filter((item) => !item.isFreeItem)
     .map((item) => {
-      console.log(item);
       const orderItem: any = {
         product_id:
           typeof item.id === "string"
@@ -291,8 +308,6 @@ const Delivery = ({
     breakdown: [],
     totalWeight: 0,
   });
-
-  console.log(deliveryCalculation);
 
   const [orderDetails, setOrderDetails] = useState<{
     order_id: string;
