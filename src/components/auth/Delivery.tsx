@@ -298,7 +298,7 @@ const Delivery = ({
   setOrderSuccess,
   totalAfterDiscount,
 }: handleDeliveryProps) => {
-  const { items, emptyCart } = useCart();
+  const { items } = useCart();
   const [deliveryCalculation, setDeliveryCalculation] = useState<{
     charges: number;
     breakdown: string[];
@@ -368,8 +368,6 @@ const Delivery = ({
           year: "numeric",
         }),
       });
-
-      emptyCart();
 
       const paymentLink = data?.payment_links?.web;
       // setOrderSuccess(true);

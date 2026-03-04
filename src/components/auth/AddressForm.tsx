@@ -169,6 +169,11 @@ const AddressForm = ({
               setValue("city", location.city);
               setValue("state", location.state);
             } else {
+              setIsPincodeValid(false);
+              setError("pincode", {
+                type: "manual",
+                message: "Could not fetch location details for this pincode",
+              });
               toast.error("Could not fetch location details for this pincode");
             }
           } else {
@@ -298,8 +303,13 @@ const AddressForm = ({
             setValue("state", location.state);
             toast.success("Location updated successfully");
           } else {
+            setIsPincodeValid(false);
             setValue("city", "");
             setValue("state", "");
+            setError("pincode", {
+              type: "manual",
+              message: "Could not fetch location details for this pincode",
+            });
             toast.error("Could not fetch location details");
           }
         } else {

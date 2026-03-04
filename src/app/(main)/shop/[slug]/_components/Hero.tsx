@@ -206,6 +206,13 @@ const Hero = ({ product_details }: Props) => {
     };
     return labels[level] || "Medium";
   };
+
+  const rawText =
+    product_details.product_info ||
+    product_details.meta_keywords ||
+    "No additional information available.";
+
+  const formattedText = rawText.split("\n");
   return (
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
@@ -314,6 +321,65 @@ const Hero = ({ product_details }: Props) => {
                 })}
               </div>
             </div>
+
+            {product_details.product_type === 1 &&
+              product_details.has_offer === 1 && (
+                <div className="mt-[1.5rem] w-fit">
+                  <div
+                    className="relative flex items-center gap-2.5 px-4 py-2.5 overflow-hidden"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #EC5715 0%, #FF7E00 100%)",
+                      borderRadius: "4px 12px 12px 4px",
+                      boxShadow: "0 2px 12px rgba(236, 87, 21, 0.35)",
+                    }}
+                  >
+                    {/* Left notch dot */}
+
+                    {/* Shimmer sweep */}
+                    <div
+                      className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_ease-in-out_infinite]"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%)",
+                      }}
+                    />
+
+                    {/* Icon */}
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="shrink-0"
+                    >
+                      <path
+                        d="M20 12L13.586 5.586A2 2 0 0012.172 5H5a2 2 0 00-2 2v7.172a2 2 0 00.586 1.414L10.5 22.5"
+                        stroke="white"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <circle cx="8" cy="10" r="1.2" fill="white" />
+                      <path
+                        d="M16 16l2 2 4-4"
+                        stroke="rgba(255,255,255,0.85)"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+
+                    <p className="text-[0.78rem] font-semibold text-white leading-[120%] tracking-[-0.02em] relative z-10">
+                      Special Offer:{" "}
+                      <span className="font-bold">
+                        Each 5 kg Get 1 kg FREE!
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              )}
           </div>
 
           {product_details.product_type === 2 &&
@@ -633,10 +699,25 @@ const Hero = ({ product_details }: Props) => {
                 <p>{product_details.description}</p>
               )}
               {activeTab === "info" && (
-                <p className="whitespace-pre-line">
-                  {product_details.product_info ||
-                    product_details.meta_keywords ||
-                    "No additional information available."}
+                <p>
+                  {formattedText.map((line, index) => {
+                    const [title, value] = line.split(":");
+
+                    return (
+                      <span key={index} className="block">
+                        {value ? (
+                          <>
+                            <span className="font-semibold  text-main">
+                              {title}:
+                            </span>
+                            <span> {value.trim()}</span>
+                          </>
+                        ) : (
+                          line
+                        )}
+                      </span>
+                    );
+                  })}
                 </p>
               )}
             </div>

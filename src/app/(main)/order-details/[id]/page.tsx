@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { frontendApi } from "@/src/api/api";
 import Lottie from "lottie-react";
@@ -8,9 +9,11 @@ import failedAnimation from "@public/lottie/failed.json";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useCart } from "@/src/hooks/useCart";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
+  const { emptyCart } = useCart();
 
   const {
     data: orderDetails,
@@ -44,6 +47,12 @@ const OrderDetailsPage = () => {
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
+
+  useEffect(() => {
+    if (orderDetails && orderDetails.order_status !== null) {
+      emptyCart();
+    }
+  }, [orderDetails, emptyCart]);
 
   if (isLoading) {
     return (

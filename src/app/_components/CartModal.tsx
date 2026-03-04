@@ -254,7 +254,7 @@ const CartModal = () => {
 
   return (
     <Transition appear as={Fragment} show={isCartOpen}>
-      <Dialog as="div" className="relative z-[9999]" onClose={handleCloseCart}>
+      <Dialog as="div" className="relative z-[2000]" onClose={handleCloseCart}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-500"
@@ -289,9 +289,18 @@ const CartModal = () => {
                       {currentView === "login" && "Login to Continue"}
                       {currentView === "otp" && "Verify OTP"}
                       {currentView === "address" &&
-                        (addressData?.customer_address
-                          ? "Edit Address"
-                          : "Add Address")}
+                        (addressData?.customer_address ? (
+                          <div className="flex items-center gap-3">
+                            {" "}
+                            <ChevronDown
+                              onClick={() => setCurrentView("delivery")}
+                              className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
+                            />{" "}
+                            Edit Address
+                          </div>
+                        ) : (
+                          "Add Address"
+                        ))}
                       {!orderSuccess && currentView === "delivery" && (
                         <div className="flex items-center gap-3">
                           <ChevronDown
@@ -351,7 +360,7 @@ const CartModal = () => {
                                 {items.map((item, i) => (
                                   <div
                                     key={i}
-                                    className={`flex ~py-[1rem]/[1.5rem] border-b border-b-[#00000014] ~gap-[0.75rem]/[1.25rem] ${
+                                    className={`flex ~py-[1rem]/[1.5rem]  border-b border-b-[#00000014] ~gap-[0.75rem]/[1.25rem] ${
                                       item.isFreeItem ? "" : ""
                                     }`}
                                   >
