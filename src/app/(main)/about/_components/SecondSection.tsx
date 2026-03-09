@@ -133,14 +133,14 @@ const SecondSection = () => {
         </div>
         <div className="flex gap-[1rem] ~pt-[1.875rem]/[10rem] items-center">
           <h4 className=" text-main tracking-[-0.05em] font-medium shrink-0  ~text-[1.5rem]/[3rem]  leading-[120%]  ">
-            Our Promise
+            The Kakaji Way of Cooking
           </h4>
           <div className="h-[1px] w-full bg-gradient-to-r from-[#9A2923] to-[#FFCC00]"></div>
         </div>
         <div className="grid ~pt-[1.25rem]/[5rem]  lg:grid-cols-3 ~gap-[0.625rem]/[2.5rem]">
           <div className="px-[0.9375rem] bg-gradient-to-l text-white from-[#D66E3D] to-[#9A4A23] rounded-[1rem] ~py-[1.875rem]/[3.75rem]">
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2.25rem] leading-[120%] ">
-              Our Belief
+              Flavour Before Everything
             </h4>
             <p className="~text-[0.75rem]/[1.125rem] max-md:font-medium text-center ~pt-[1.25rem]/[4rem] leading-[130%]">
               We believe that good food begins with good spices. Every blend we
@@ -152,27 +152,24 @@ const SecondSection = () => {
           </div>
           <div className="px-[0.9375rem] bg-gradient-to-r text-white from-[#EC5715] to-[#FF7E00] rounded-[1rem] ~py-[1.875rem]/[3.75rem]">
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2.25rem] leading-[120%] ">
-              Our Standards
+              Less Effort, Deeper Taste
             </h4>
             <p className="~text-[0.75rem]/[1.125rem] max-md:font-medium text-center ~pt-[1.25rem]/[4rem] leading-[130%]">
-              Quality is the backbone of Shree Kakaji Masale. We follow strict
-              quality checks, advanced hygiene practices, and sustainable
-              sourcing methods to ensure every spice maintains its natural
-              color, aroma, and potency. Our processes are designed to preserve
-              the authentic character of each ingredient while staying
-              environmentally responsible.
+              Cooking should feel joyful, not complicated. Instead of mixing
+              multiple spices, our blends bring together carefully balanced
+              ingredients that work together seamlessly. Often, all you need is
+              one masala and salt to create a dish full of flavour.
             </p>
           </div>
           <div className="px-[0.9375rem] bg-gradient-to-r text-white from-[#A11300] to-[#C02611] rounded-[1rem] ~py-[1.875rem]/[3.75rem]">
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2.25rem] leading-[120%] ">
-              Our Partnerships
+              The Taste of Home
             </h4>
             <p className="~text-[0.75rem]/[1.125rem] max-md:font-medium text-center ~pt-[1.25rem]/[4rem] leading-[130%]">
-              We believe great spices start at the source. That’s why we
-              maintain long-term, trust-based relationships with farmers and
-              suppliers who share our values. These partnerships ensure ethical
-              sourcing, consistent quality, and support for the communities that
-              help bring our spices to life.
+              Across generations and regions, certain flavours instantly feel
+              familiar — comforting, warm, and deeply satisfying. Our masalas
+              are designed to recreate those timeless tastes that remind you of
+              traditional home kitchens.
             </p>
           </div>
         </div>

@@ -13,12 +13,6 @@ export const HDFC_SMART_GATEWAY_CONFIG = {
     baseUrl: "https://smartgateway.hdfc.bank.in",
     merchantId: process.env.HDFC_MERCHANT_ID,
   },
-
-  REDIRECT_URLS: {
-    success: `${process.env.NEXT_PUBLIC_BASE_URL}payment/success`,
-    failure: `${process.env.NEXT_PUBLIC_BASE_URL}payment/failure`,
-    cancel: `${process.env.NEXT_PUBLIC_BASE_URL}payment/cancel`,
-  },
 };
 
 export const isProduction = process.env.NODE_ENV === "production";

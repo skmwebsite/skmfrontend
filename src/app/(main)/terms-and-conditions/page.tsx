@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const page = () => {
@@ -7,327 +8,297 @@ const page = () => {
         <div className=" ~px-[0.84375rem]/[4rem] justify-center flex relative  flex-col items-center  z-50">
           <div className="~pt-[1.75rem]/[1rem]">
             <h1 className=" font-medium leading-[110%] text-center tracking-[-0.05em] bg-gradient-to-b bg-clip-text text-transparent  from-[#000000] to-[#66666697]  ~text-[1.5rem]/[4rem]">
-              Terms & Conditions{" "}
+              Terms & Conditions
             </h1>
 
             <p className="~text-[0.875rem]/[1.125rem] ~pt-[0.5rem]/[2.3125rem] text-center md:font-medium tracking-[-0.05em] text-[#1A1A1ABF] leading-[110%]">
-              Welcome to Shree Kakaji Masale! These terms and conditions outline
-              the rules and regulations for the use of Shree Kakaji Masale's
-              Website
+              (Website Use & Sale of Products)
+              <br />
+              Last Updated: March 2026
             </p>
           </div>
         </div>
       </div>
-      <div className="~py-[1.875rem]/[5rem] ~space-y-[0.75rem]/[1rem]">
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          By accessing this website we assume you accept these terms and
-          conditions. Do not continue to use Shree Kakaji Masale if you do not
-          agree to take all of the terms and conditions stated on this page.
-        </p>
+      <div className="~py-[1.875rem]/[5rem] ~space-y-[1.5rem]/[2rem]">
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            1. Legal Entity Disclosure
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-4">
+            This Website, www.shreekakajimasale.com ("Website"), is owned and
+            operated by:
+          </p>
+          <div className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-4 bg-[#F9FAFB] p-4 rounded-lg">
+            <p className="font-medium text-black">Rushab Babariya,</p>
+            <p>Sole Proprietor trading as Shree Kakaji Masale</p>
+            <p>
+              Business Address: Om Plaza, Shop No 2, Trimurti Chowk,
+              Trimurti-Kamatwade Rd, Nashik, Maharashtra 422008
+            </p>
+            <p>GSTIN: 27AVFPB7806F1ZS</p>
+            <p>FSSAI License No.: 11518027001668</p>
+            <p>
+              Customer Care:{" "}
+              <span className="">
+                {" "}
+                <Link
+                  href={"tel:+917277331111"}
+                  target="_blank"
+                  className="text-main font-medium hover:underline"
+                >
+                  +91 7277331111
+                </Link>
+              </span>
+            </p>
+            <p>
+              Email:
+              <span className="">
+                {" "}
+                <Link
+                  href={"mailto:shreekakajimasale@gmail.com"}
+                  target="_blank"
+                  className="text-main font-medium hover:underline"
+                >
+                  shreekakajimasale@gmail.com
+                </Link>
+              </span>
+            </p>
+          </div>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            For the purposes of these Terms & Conditions:
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">1.1</span> "Company", "We", "Us", or
+            "Our" shall mean: Rushab Babariya, sole proprietor trading under the
+            name and style of Shree Kakaji Masale, having GSTIN 27AVFPB7806F1ZS
+            and FSSAI License No. 11518027001668.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">1.2</span> "Website" means
+            www.shreekakajimasale.com and all associated pages.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">1.3</span> "User", "You", or
+            "Customer" means any individual accessing or purchasing through the
+            Website.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">1.4</span> "Products" means food
+            products including spices, masalas, pickles and related consumable
+            goods offered for sale.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          The following terminology applies to these Terms and Conditions,
-          Privacy Statement and Disclaimer Notice and all Agreements: "Client",
-          "You" and "Your" refers to you, the person log on this website and
-          compliant to the Company's terms and conditions. "The Company",
-          "Ourselves", "We", "Our" and "Us", refers to our Company. "Party",
-          "Parties", or "Us", refers to both the Client and ourselves. All terms
-          refer to the offer, acceptance and consideration of payment necessary
-          to undertake the process of our assistance to the Client in the most
-          appropriate manner for the express purpose of meeting the Client's
-          needs in respect of provision of the Company's stated services, in
-          accordance with and subject to, prevailing law of India. Any use of
-          the above terminology or other words in the singular, plural,
-          capitalization and/or he/she or they, are taken as interchangeable and
-          therefore as referring to same.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            2. Acceptance of Terms
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            By accessing the Website, browsing, placing an order, or using any
+            services provided herein, you ("User" or "Customer") agree to be
+            bound by these Terms & Conditions.
+            <br />
+            <br />
+            If you do not agree, you must discontinue use of the Website.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Cookies
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We employ the use of cookies. By accessing Shree Kakaji Masale, you
-          agreed to use cookies in agreement with the Shree Kakaji Masale's
-          Privacy Policy.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            3. Eligibility
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            The Website may be used only by individuals who:
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            (a) are at least eighteen (18) years of age;
+            <br />
+            (b) are competent to contract under Indian law; and
+            <br />
+            (c) provide accurate and complete information at the time of
+            purchase.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            The Company reserves the right to refuse service where eligibility
+            criteria are not satisfied.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Most interactive websites use cookies to let us retrieve the user's
-          details for each visit. Cookies are used by our website to enable the
-          functionality of certain areas to make it easier for people visiting
-          our website. Some of our affiliate/advertising partners may also use
-          cookies.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            4. Products and Regulatory Compliance
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">4.1</span> The Company sells food
+            products including spices, masalas, pickles and related edible goods
+            ("Products").
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">4.2</span> All Products are sold in
+            compliance with the Food Safety and Standards Act, 2006 and
+            applicable regulations.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">4.3</span> Product images displayed on
+            the Website are illustrative in nature. Due to the natural
+            characteristics of agricultural produce, variations in colour,
+            aroma, texture and appearance may occur and shall not constitute
+            defect.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">4.4</span> Customers are responsible
+            for reviewing ingredient information for allergen concerns before
+            consumption.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          License
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Unless otherwise stated, Shree Kakaji Masale and/or its licensors own
-          the intellectual property rights for all material on Shree Kakaji
-          Masale. All intellectual property rights are reserved. You may access
-          this from Shree Kakaji Masale for your own personal use subjected to
-          restrictions set in these terms and conditions.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            5. Pricing and Taxation
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">5.1</span> All prices are displayed in
+            Indian Rupees (INR).
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">5.2</span> Prices are inclusive of
+            applicable GST unless otherwise specified.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">5.3</span> The Company reserves the
+            right to revise prices, correct typographical errors, and cancel
+            orders placed at incorrect prices.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">5.4</span> In case of cancellation due
+            to pricing or stock error, a full refund shall be issued.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          You must not:
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            6. Payment Terms
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">6.1</span> The Website operates on
+            prepaid mode only. Cash on Delivery (COD) is not available.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">6.2</span> Payments are processed
+            through third-party payment gateway providers.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">6.3</span> The Company shall not be
+            liable for payment gateway downtime, transaction failures, or
+            banking delays beyond its control.
+          </p>
+        </section>
 
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>Republish material from Shree Kakaji Masale</li>
-          <li>Sell, rent or sub-license material from Shree Kakaji Masale</li>
-          <li>
-            Reproduce, duplicate or copy material from Shree Kakaji Masale
-          </li>
-          <li>Redistribute content from Shree Kakaji Masale</li>
-        </ul>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            7. Order Confirmation
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">7.1</span> An order is deemed accepted
+            only upon successful payment confirmation.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <span className="font-medium">7.2</span> The Company reserves the
+            right to cancel orders due to:
+          </p>
+          <ul className="list-disc pl-5 space-y-1 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <li>Stock unavailability</li>
+            <li>Regulatory restrictions</li>
+            <li>Suspected fraudulent activity</li>
+            <li>Technical errors</li>
+          </ul>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          This Agreement shall begin on the date hereof. Our Terms and
-          Conditions were created with the help of the.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            8. Shipping and Delivery
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Shipping and cancellation terms are governed by the Shipping &
+            Cancellation Policy available separately on the Website.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Parts of this website offer an opportunity for users to post and
-          exchange opinions and information in certain areas of the website.
-          Shree Kakaji Masale does not filter, edit, publish or review Comments
-          prior to their presence on the website. Comments do not reflect the
-          views and opinions of Shree Kakaji Masale,its agents and/or
-          affiliates. Comments reflect the views and opinions of the person who
-          post their views and opinions. To the extent permitted by applicable
-          laws, Shree Kakaji Masale shall not be liable for the Comments or for
-          any liability, damages or expenses caused and/or suffered as a result
-          of any use of and/or posting of and/or appearance of the Comments on
-          this website.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            9. Returns and Refunds
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Returns and refunds are governed by the Return, Refund & Replacement
+            Policy available separately on the Website.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Shree Kakaji Masale reserves the right to monitor all Comments and to
-          remove any Comments which can be considered inappropriate, offensive
-          or causes breach of these Terms and Conditions.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            10. Intellectual Property
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            All trademarks, logos, packaging designs, product images, website
+            content and materials are proprietary to the Company and protected
+            under Indian intellectual property laws.
+            <br />
+            <br />
+            Unauthorized reproduction or use is strictly prohibited.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          You warrant and represent that:
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            11. User Obligations
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            The User agrees not to:
+          </p>
+          <ul className="list-disc pl-5 space-y-1 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            <li>Attempt unauthorized access to Website systems</li>
+            <li>Introduce malicious code</li>
+            <li>Copy or scrape Website content</li>
+            <li>Use the Website for unlawful purposes</li>
+          </ul>
+        </section>
 
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>
-            You are entitled to post the Comments on our website and have all
-            necessary licenses and consents to do so;
-          </li>
-          <li>
-            The Comments do not invade any intellectual property right,
-            including without limitation copyright, patent or trademark of any
-            third party;
-          </li>
-          <li>
-            The Comments do not contain any defamatory, libelous, offensive,
-            indecent or otherwise unlawful material which is an invasion of
-            privacy
-          </li>
-          <li>
-            The Comments will not be used to solicit or promote business or
-            custom or present commercial activities or unlawful activity.
-          </li>
-        </ul>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            12. Limitation of Liability
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Nothing herein excludes liability that cannot be excluded under
+            applicable law.
+            <br />
+            <br />
+            To the maximum extent permitted by law, the Company shall not be
+            liable for indirect, incidental or consequential damages arising
+            from use of the Website.
+          </p>
+        </section>
 
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          You hereby grant Shree Kakaji Masale a non-exclusive license to use,
-          reproduce, edit and authorize others to use, reproduce and edit any of
-          your Comments in any and all forms, formats or media.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            13. Force Majeure
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            The Company shall not be liable for delays or failure due to events
+            beyond reasonable control including natural disasters, governmental
+            actions, transport disruptions or similar events.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Hyperlinking to our Content
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          The following organizations may link to our Website without prior
-          written approval:
-        </p>
-
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>Government agencies;</li>
-          <li>Search engines;</li>
-          <li>News organizations;</li>
-          <li>
-            Online directory distributors may link to our Website in the same
-            manner as they hyperlink to the Websites of other listed businesses;
-            and
-          </li>
-          <li>
-            System wide Accredited Businesses except soliciting non-profit
-            organizations, charity shopping malls, and charity fundraising
-            groups which may not hyperlink to our Web site.
-          </li>
-        </ul>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          These organizations may link to our home page, to publications or to
-          other Website information so long as the link: (a) is not in any way
-          deceptive; (b) does not falsely imply sponsorship, endorsement or
-          approval of the linking party and its products and/or services; and
-          (c) fits within the context of the linking party's site.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We may consider and approve other link requests from the following
-          types of organizations:
-        </p>
-
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>commonly-known consumer and/or business information sources;</li>
-          <li>dot.com community sites;</li>
-          <li>associations or other groups representing charities;</li>
-          <li>online directory distributors;</li>
-          <li>internet portals;</li>
-          <li>accounting, law and consulting firms; and</li>
-          <li>educational institutions and trade associations.</li>
-        </ul>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We will approve link requests from these organizations if we decide
-          that: (a) the link would not make us look unfavorably to ourselves or
-          to our accredited businesses; (b) the organization does not have any
-          negative records with us; (c) the benefit to us from the visibility of
-          the hyperlink compensates the absence of Shree Kakaji Masale; and (d)
-          the link is in the context of general resource information.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          These organizations may link to our home page so long as the link: (a)
-          is not in any way deceptive; (b) does not falsely imply sponsorship,
-          endorsement or approval of the linking party and its products or
-          services; and (c) fits within the context of the linking party's site.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          If you are one of the organizations listed in paragraph 2 above and
-          are interested in linking to our website, you must inform us by
-          sending an e-mail to Shree Kakaji Masale. Please include your name,
-          your organization name, contact information as well as the URL of your
-          site, a list of any URLs from which you intend to link to our Website,
-          and a list of the URLs on our site to which you would like to link.
-          Wait 2-3 weeks for a response.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Approved organizations may hyperlink to our Website as follows:
-        </p>
-
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>By use of our corporate name; or</li>
-          <li>By use of the uniform resource locator being linked to; or</li>
-          <li>
-            By use of any other description of our Website being linked to that
-            makes sense within the context and format of content on the linking
-            party's site.
-          </li>
-        </ul>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          No use of Shree Kakaji Masale's logo or other artwork will be allowed
-          for linking absent a trademark license agreement.
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          iFrames
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Without prior approval and written permission, you may not create
-          frames around our Webpages that alter in any way the visual
-          presentation or appearance of our Website.
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Content Liability
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We shall not be hold responsible for any content that appears on your
-          Website. You agree to protect and defend us against all claims that is
-          rising on your Website. No link(s) should appear on any Website that
-          may be interpreted as libelous, obscene or criminal, or which
-          infringes, otherwise violates, or advocates the infringement or other
-          violation of, any third party rights.
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Your Privacy
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Please read Privacy Policy
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Reservation of Rights
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We reserve the right to request that you remove all links or any
-          particular link to our Website. You approve to immediately remove all
-          links to our Website upon request. We also reserve the right to amen
-          these terms and conditions and it's linking policy at any time. By
-          continuously linking to our Website, you agree to be bound to and
-          follow these linking terms and conditions.
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Removal of links from our website
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          If you find any link on our Website that is offensive for any reason,
-          you are free to contact and inform us any moment. We will consider
-          requests to remove links but we are not obligated to or so or to
-          respond to you directly.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We do not ensure that the information on this website is correct, we
-          do not warrant its completeness or accuracy; nor do we promise to
-          ensure that the website remains available or that the material on the
-          website is kept up to date.
-        </p>
-
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Disclaimer
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          To the maximum extent permitted by applicable law, we exclude all
-          representations, warranties and conditions relating to our website and
-          the use of this website. Nothing in this disclaimer will:
-        </p>
-
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>
-            limit or exclude our or your liability for death or personal injury;
-          </li>
-          <li>
-            limit or exclude our or your liability for fraud or fraudulent
-            misrepresentation;
-          </li>
-          <li>
-            limit any of our or your liabilities in any way that is not
-            permitted under applicable law; or
-          </li>
-          <li>
-            exclude any of our or your liabilities that may not be excluded
-            under applicable law.
-          </li>
-        </ul>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          The limitations and prohibitions of liability set in this Section and
-          elsewhere in this disclaimer: (a) are subject to the preceding
-          paragraph; and (b) govern all liabilities arising under the
-          disclaimer, including liabilities arising in contract, in tort and for
-          breach of statutory duty.
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          As long as the website and the information and services on the website
-          are provided free of charge, we will not be liable for any loss or
-          damage of any nature.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            14. Governing Law and Jurisdiction
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            These Terms shall be governed by the laws of India.
+            <br />
+            Courts at Nashik, Maharashtra shall have exclusive jurisdiction.
+          </p>
+        </section>
       </div>
     </div>
   );

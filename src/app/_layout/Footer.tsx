@@ -112,6 +112,12 @@ const Footer = () => {
               >
                 Collections
               </Link>{" "}
+              <Link
+                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
+                href="/about"
+              >
+                About us
+              </Link>{" "}
             </div>
             <div className="flex flex-col gap-[1rem] ">
               <h4 className="font-semibold text-[1rem] leading-[120%] tracking-[-0.04em] text-black">
@@ -122,6 +128,18 @@ const Footer = () => {
                 href="/terms-and-conditions"
               >
                 Terms & Conditions
+              </Link>
+              <Link
+                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
+                href="/shipping-and-cancellation-policy"
+              >
+                Shipping & Cancellation
+              </Link>
+              <Link
+                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
+                href="/return-and-refund-policy"
+              >
+                Return & Refund
               </Link>
               <Link
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
@@ -145,7 +163,9 @@ const Footer = () => {
             <span>
               <Link
                 className="text-black hover:underline underline-offset-2"
-                href={"https://www.urbanhubinnovations.com"}
+                href={
+                  "https://www.urbanhubinnovations.com/?ref=shreekakajimasale"
+                }
                 target="_blank"
               >
                 Urbanhub Innovations
@@ -161,7 +181,9 @@ const Footer = () => {
           <span>
             <Link
               className="text-black hover:underline underline-offset-2"
-              href={"https://www.urbanhubinnovations.com"}
+              href={
+                "https://www.urbanhubinnovations.com/?ref=shreekakajimasale"
+              }
               target="_blank"
             >
               Urbanhub Innovations

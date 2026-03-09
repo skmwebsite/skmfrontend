@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const PrivacyPolicyPage = () => {
@@ -11,179 +12,159 @@ const PrivacyPolicyPage = () => {
             </h1>
 
             <p className="~text-[0.875rem]/[1.125rem] ~pt-[0.5rem]/[2.3125rem] text-center md:font-medium tracking-[-0.05em] text-[#1A1A1ABF] leading-[110%]">
-              Protecting your privacy is our priority. This Privacy Policy
-              explains how Shree Kakaji Masale collects, uses, and safeguards
-              your information.
+              (Digital Personal Data Protection Act, 2023 Compliant)
+              <br />
+              Last Updated: March 2026
             </p>
           </div>
         </div>
       </div>
-      <div className="~py-[1.875rem]/[5rem] ~space-y-[0.75rem]/[1rem]">
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          This Privacy Policy governs the manner in which Shree Kakaji Masale
-          collects, uses, maintains, and discloses information collected from
-          users (each, a "User") of the https://shreekakajimasale.com/#/ website
-          ("Site"). This privacy policy applies to the Site and all products and
-          services offered by Shree Kakaji Masale.
-        </p>
+      <div className="~py-[1.875rem]/[5rem] ~space-y-[1.5rem]/[2rem]">
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            1. Introduction
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            This Privacy Policy describes how the Company collects, processes,
+            stores and protects Personal Data in compliance with applicable
+            Indian law.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Personal Identification Information
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We may collect personal identification information from Users in a
-          variety of ways, including, but not limited to, when Users visit our
-          site, register on the site, place an order, subscribe to the
-          newsletter, respond to a survey, fill out a form, and in connection
-          with other activities, services, features or resources we make
-          available on our Site. Users may be asked for, as appropriate, name,
-          email address, mailing address, phone number, and payment information.
-          Users may, however, visit our Site anonymously. We will collect
-          personal identification information from Users only if they
-          voluntarily submit such information to us.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            2. Data Collected
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            The Company may collect Personal Data including name, contact
+            number, email address, billing and shipping address, order details,
+            transaction references, IP address and device information necessary
+            for order fulfilment and Website security.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Non-Personal Identification Information
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We may collect non-personal identification information about Users
-          whenever they interact with our Site. Non-personal identification
-          information may include the browser name, the type of computer, and
-          technical information about Users' means of connection to our Site,
-          such as the operating system and the Internet service providers
-          utilized and other similar information.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            3. Purpose of Processing
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Personal Data is processed for order fulfilment, customer support,
+            fraud prevention, regulatory compliance and marketing communications
+            (with consent).
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Web Browser Cookies
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Our Site may use "cookies" to enhance User experience. User's web
-          browser places cookies on their hard drive for record-keeping purposes
-          and sometimes to track information about them. Users may choose to set
-          their web browser to refuse cookies or to alert you when cookies are
-          being sent. If they do so, note that some parts of the Site may not
-          function properly.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            4. Legal Basis
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Processing is undertaken based on consent, contractual necessity,
+            and legal obligations.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          How We Use Collected Information
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Shree Kakaji Masale may collect and use Users' personal information
-          for the following purposes:
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            5. Data Sharing
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-2">
+            Data may be shared with courier partners, payment gateways, IT
+            service providers and authorities where legally required.
+          </p>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] font-medium">
+            The Company does not sell Personal Data.
+          </p>
+        </section>
 
-        <ul className="list-disc pl-5 space-y-2 ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          <li>
-            To improve customer service: Information you provide helps us
-            respond to your customer service requests and support needs more
-            efficiently.
-          </li>
-          <li>
-            To personalize user experience: We may use information in the
-            aggregate to understand how our Users as a group use the services
-            and resources provided on our Site.
-          </li>
-          <li>
-            To improve our Site: We may use feedback you provide to improve our
-            products and services.
-          </li>
-          <li>
-            To process payments: We may use the information Users provide about
-            themselves when placing an order only to provide service to that
-            order. We do not share this information with outside parties except
-            to the extent necessary to provide the service.
-          </li>
-          <li>To run a promotion, contest, survey, or other Site feature.</li>
-          <li>
-            To send periodic emails: We may use the email address to send User
-            information and updates pertaining to their order. It may also be
-            used to respond to their inquiries, questions, and/or other
-            requests.
-          </li>
-        </ul>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            6. Data Retention
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Personal Data is retained only as long as necessary for legal
+            compliance, taxation, dispute resolution and operational
+            requirements.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          How We Protect Your Information
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We adopt appropriate data collection, storage, and processing
-          practices and security measures to protect against unauthorized
-          access, alteration, disclosure, or destruction of your personal
-          information, username, password, transaction information, and data
-          stored on our Site.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            7. Data Principal Rights
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Under applicable law, Users may request access, correction, erasure
+            or withdrawal of consent by contacting the Company via email.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Sharing Your Personal Information
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          We do not sell, trade, or rent Users' personal identification
-          information to others. We may share generic aggregated demographic
-          information not linked to any personal identification information
-          regarding visitors and users with our business partners, trusted
-          affiliates, and advertisers for the purposes outlined above.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            8. Security
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Reasonable technical safeguards are implemented; however, absolute
+            security cannot be guaranteed.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Third-Party Websites
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Users may find advertising or other content on our Site that link to
-          the sites and services of our partners, suppliers, advertisers,
-          sponsors, licensors, and other third parties. We do not control the
-          content or links that appear on these sites and are not responsible
-          for the practices employed by websites linked to or from our Site.
-          Browsing and interaction on any other website, including websites
-          which have a link to our Site, is subject to that website's own terms
-          and policies.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            9. Children
+          </h2>
+          <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%]">
+            Services are not intended for individuals under eighteen (18) years
+            of age.
+          </p>
+        </section>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Changes to This Privacy Policy
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          Shree Kakaji Masale has the discretion to update this privacy policy
-          at any time. When we do, we will revise the updated date at the bottom
-          of this page. We encourage Users to frequently check this page for any
-          changes to stay informed about how we are helping to protect the
-          personal information we collect. You acknowledge and agree that it is
-          your responsibility to review this privacy policy periodically and
-          become aware of modifications.
-        </p>
+        <section>
+          <h2 className="~text-[1.25rem]/[1.75rem] font-medium tracking-[-0.03em] leading-[120%] text-black mb-4">
+            10. Grievance Redressal
+          </h2>
+          <div className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[160%] mb-4 bg-[#F9FAFB] p-4 rounded-lg">
+            <p className="mb-2">
+              <span className="font-medium">Grievance Officer:</span> Rushab
+              Babariya
+            </p>
+            <p className="mb-2">
+              <span className="font-medium">Address:</span> Om Plaza, Shop No 2,
+              Trimurti Chowk, Trimurti-Kamatwade Rd, Nashik, Maharashtra 422008
+            </p>
+            <p className="mb-2">
+              <span className="font-medium">Phone:</span>{" "}
+              <span className="">
+                {" "}
+                <Link
+                  href={"tel:+917277331111"}
+                  target="_blank"
+                  className="text-main font-medium hover:underline"
+                >
+                  +91 7277331111
+                </Link>
+              </span>
+            </p>
 
-        <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Your Acceptance of These Terms
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          By using this Site, you signify your acceptance of this policy. If you
-          do not agree to this policy, please do not use our Site. Your
-          continued use of the Site following the posting of changes to this
-          policy will be deemed your acceptance of those changes.
-        </p>
-
-        {/* <h2 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[120%] text-black mt-8 mb-4">
-          Contacting Us
-        </h2>
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
-          If you have any questions about this Privacy Policy, the practices of
-          this site, or your dealings with this site, please contact us at:
-          <br />
-          <br />
-          Shree Kakaji Masale
-          <br />
-          Email: privacy@shreekakajimasale.com
-          <br />
-          Phone: [Your Contact Number]
-          <br />
-          Address: [Your Business Address]
-        </p>
-
-        <p className="~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%] italic mt-8">
-          This document was last updated on January 1, 2024
-        </p> */}
+            <p className="mb-2">
+              <span className="font-medium">Email:</span>{" "}
+              <span className="">
+                {" "}
+                <Link
+                  href={"mailto:shreekakajimasale@gmail.com"}
+                  target="_blank"
+                  className="text-main font-medium hover:underline"
+                >
+                  shreekakajimasale@gmail.com
+                </Link>
+              </span>
+            </p>
+            <p>
+              Complaints will be acknowledged within forty-eight (48) hours and
+              addressed within reasonable time in accordance with applicable
+              law.
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ export type TShop = {
   name: string;
   slug: string;
   colour: string;
+  has_offer: number;
   products: TProduct[];
 };
 

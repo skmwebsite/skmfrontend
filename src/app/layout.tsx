@@ -6,6 +6,7 @@ import QueryProvider from "../provider/QueryClientProvider";
 import ProgressProvider from "../provider/ProgressProvider";
 import IphoneViewportGuard from "../components/IphoneViewportGuard";
 import { AuthProvider } from "../provider/AuthProvider";
+import { absoluteBaseUrl } from "../utils/BaseUrl";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -16,6 +17,11 @@ export const metadata: Metadata = {
   title: "Shree Kakaji Masale Shop Now",
   description:
     "Shree Kakaji Masale delivers authentic, natural spices with a commitment to quality, sustainability, and trusted supply chain partnerships.",
+  metadataBase: new URL(`${absoluteBaseUrl}`),
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
