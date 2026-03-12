@@ -4,18 +4,24 @@ import CartIcon from "@/src/components/svg/CartIcon";
 import Logo from "@/src/components/svg/Logo";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Humburger from "@/src/components/svg/Humburger";
 import { useCart } from "@/src/hooks/useCart";
 import CloseButton from "@/src/components/svg/CloseButton";
 import CartModal from "../_components/CartModal";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import SearchIcon from "@/src/components/svg/SearchIcon";
+import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -27,10 +33,98 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const { totalNumberItems, openCart, closeCart, isCartOpen } = useCart();
+
+  const { totalNumberItems, openCart, isCartOpen } = useCart();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    setIsSearchOpen(false);
+    setSearchQuery("");
+    router.push(`/shop?q=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleOpenSearch = () => {
+    setIsSearchOpen(true);
+  };
+
+  const SearchButton = ({ className }: { className?: string }) => (
+    <button
+      type="button"
+      onClick={handleOpenSearch}
+      className="m-[0.25rem]"
+      aria-label="Open search"
+    >
+      <SearchIcon className={className} />
+    </button>
+  );
 
   return (
     <>
+      {/* Search Dialog */}
+      <Dialog
+        open={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        className="relative z-[99999]"
+      >
+        <DialogBackdrop
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+        />
+
+        <div className="fixed inset-0 flex items-start justify-center pt-[20vh] px-4">
+          <DialogPanel
+            as={motion.div}
+            initial={{ opacity: 0, y: -16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.97 }}
+            className="w-full max-w-[32rem] bg-white rounded-[1rem] shadow-2xl overflow-hidden"
+          >
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center gap-[0.75rem] px-[1.25rem] ~py-[0.625rem]/[1rem]"
+            >
+              <SearchIcon className="size-[1.25rem] shrink-0 text-[#1A1A1A]/50" />
+              <input
+                ref={inputRef}
+                autoFocus
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search Product"
+                className="flex-1 text-[1rem] font-medium text-[#1A1A1A] placeholder:text-[#1A1A1A]/40 bg-transparent outline-none leading-[1.5] tracking-[-0.02em]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors"
+                  aria-label="Clear search"
+                >
+                  <CloseButton className="size-[1.125rem]" />
+                </button>
+              )}
+            </form>
+            {searchQuery.trim() && (
+              <div className="border-t border-[#00000010] px-[1.25rem] py-[0.875rem]">
+                <button
+                  type="button"
+                  onClick={handleSearchSubmit as any}
+                  className="flex items-center gap-[0.5rem] text-[0.875rem] font-medium text-main hover:underline"
+                >
+                  <SearchIcon className="size-[0.875rem]" />
+                  Search for &ldquo;{searchQuery}&rdquo;
+                </button>
+              </div>
+            )}
+          </DialogPanel>
+        </div>
+      </Dialog>
+
       {isCartOpen === true && <CartModal />}
       {open && (
         <AnimatePresence>
@@ -57,9 +151,9 @@ const Header = () => {
             >
               <div className="w-full flex  items-center relative">
                 <BorderRadius className="text-white absolute ~size-[0.6428571343rem]/[1.125rem] ~left-[0.75rem]/[1.5rem] lg:left-0 z-30 max-lg:~bottom-[-0.6428571343rem]/[-1.125rem] lg:~top-[3.0025rem]/[5.25rem]" />
-                <BorderRadius className="text-white absolute ~size-[0.6428571343rem]/[1.125rem] ~right-[0.745rem]/[1.5rem] max-lg:~bottom-[-0.6428571343rem]/[-1.125rem] lg:~left-[27rem]/[31rem] z-30 max-lg:rotate-90 lg:top-0" />
+                <BorderRadius className="text-white absolute ~size-[0.6428571343rem]/[1.125rem] ~right-[0.745rem]/[1.5rem] max-lg:~bottom-[-0.6428571343rem]/[-1.125rem] lg:~left-[27rem]/[33rem] z-30 max-lg:rotate-90 lg:top-0" />
 
-                <motion.div className="flex gap-[1rem] max-lg:justify-between items-center ~rounded-br-[0.5rem]/[1rem] max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem] w-full lg:~w-[27rem]/[31rem] bg-white">
+                <motion.div className="flex gap-[1rem] max-lg:justify-between items-center ~rounded-br-[0.5rem]/[1rem] max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem] w-full lg:~w-[27rem]/[33rem] bg-white">
                   <Link href={"/"}>
                     <div className="flex items-center justify-center gap-[0.5rem]">
                       <Logo className="~w-[3rem]/[5.8555626869rem] shrink-0" />
@@ -100,7 +194,7 @@ const Header = () => {
                       About us
                     </Link>
 
-                    <div></div>
+                    <SearchButton className="size-[22px]" />
                     <motion.div
                       onClick={() => {
                         openCart();
@@ -117,7 +211,9 @@ const Header = () => {
                       <CartIcon className="shrink-0 m-[0.25rem] ~size-[1.125rem]/[1.5rem] " />
                     </motion.div>
                   </div>
-                  <div className="flex items-center lg:hidden gap-[1rem]">
+
+                  <div className="flex items-center lg:hidden gap-[0.8rem]">
+                    <SearchButton className="~size-[1.125rem]/[1.375rem]" />
                     <motion.div
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
@@ -142,7 +238,7 @@ const Header = () => {
                         onClick={() => {
                           setOpen(!open);
                         }}
-                        className="shrink-0 ~w-[1.25rem]/[1.5rem]"
+                        className="shrink-0 mt-1 ~w-[1.25rem]/[1.5rem]"
                       />
                     </motion.div>
                   </div>
@@ -166,7 +262,7 @@ const Header = () => {
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className="flex gap-[1rem] items-center max-lg:justify-between max-lg:shadow-sm  ~rounded-[0.5rem]/[1rem]  max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem]  w-full lg:~w-[27rem]/[31rem] bg-white  "
+                  className="flex gap-[1rem] items-center max-lg:justify-between max-lg:shadow-sm  ~rounded-[0.5rem]/[1rem]  max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem]  w-full lg:~w-[27rem]/[33rem] bg-white  "
                 >
                   <Link href={"/"}>
                     <div className="flex items-center justify-center gap-[0.5rem]">
@@ -208,7 +304,7 @@ const Header = () => {
                       About us
                     </Link>
 
-                    <div></div>
+                    <SearchButton className="size-[22px]" />
 
                     <motion.div
                       whileHover={{ scale: 1.1 }}
@@ -226,7 +322,8 @@ const Header = () => {
                       <CartIcon className="shrink-0 m-[0.25rem] ~size-[1.125rem]/[1.5rem] " />
                     </motion.div>
                   </div>
-                  <div className="flex items-center lg:hidden gap-[1rem]">
+                  <div className="flex items-center lg:hidden gap-[0.75rem]">
+                    <SearchButton className="~size-[1.125rem]/[1.375rem]" />
                     <motion.div
                       onClick={() => {
                         openCart();

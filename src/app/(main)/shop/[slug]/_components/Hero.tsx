@@ -479,13 +479,15 @@ const Hero = ({ product_details }: Props) => {
                     <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
                       <p className=" flex gap-[0.5rem] items-center">
                         <GradientTick /> Your Customised Mix for{" "}
-                        {selectedVariant?.name}
+                        {selectedVariant?.formatted_name}{" "}
+                        {selectedVariant?.formatted_unit}
                       </p>
                     </div>
                   ) : (
                     <div className=" text-[#0000008F] ~text-[0.875rem]/[1rem] font-medium tracking-[-0.03em] leading-[120%]">
                       Currently using recommended Shree Kakaji Mix for{" "}
-                      {selectedVariant?.name}
+                      {selectedVariant?.formatted_name}{" "}
+                      {selectedVariant?.formatted_unit}
                     </div>
                   )}
                 </div>
@@ -501,7 +503,7 @@ const Hero = ({ product_details }: Props) => {
                   <span className="group-hover:text-white duration-500 ease-in-out transition-colors relative z-20">
                     {isCustomized
                       ? "Edit Ingredients"
-                      : "Customise Ingredients"}
+                      : "Customize Ingredients"}
                   </span>
                 </button>
               )}

@@ -2,13 +2,10 @@
 
 import { useCart } from "@/src/hooks/useCart";
 import Location from "../svg/Location";
-import PickUp from "../svg/PickUp";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { frontendApi } from "@/src/api/api";
-import Lottie from "lottie-react";
-import successAnimation from "@public/lottie/success.json";
-import Link from "next/link";
+
 import toast from "react-hot-toast";
 
 type View = "cart" | "login" | "otp" | "pickup" | "address" | "delivery";
@@ -298,9 +295,9 @@ const Delivery = ({
   setCurrentView,
   addressData,
   isLoading,
-  closeCart,
+
   orderType,
-  orderSuccess,
+
   setOrderSuccess,
   totalAfterDiscount,
 }: handleDeliveryProps) => {
@@ -335,7 +332,7 @@ const Delivery = ({
     mutationFn: async (orderData: {
       items: {
         product_id: number;
-        // product_type: number;
+
         variant_id: number;
         quantity: number;
         yadi_ingredients?: { raw_material_id: number; quantity: number }[];
@@ -476,94 +473,6 @@ const Delivery = ({
     }
   };
 
-  if (orderSuccess) {
-    return (
-      <div className="~px-[1rem]/[1.5rem] ~pb-[1rem]/[1.5rem] flex flex-col justify-center items-center h-full">
-        <div className="mb-6">
-          <Lottie
-            animationData={successAnimation}
-            loop={false}
-            style={{ width: 120, height: 120 }}
-          />
-        </div>
-
-        <div className="text-center">
-          <h2 className="~text-[1.5rem]/[2rem] font-bold text-[#000000]">
-            Thank you for your order!
-          </h2>
-
-          <p className="~text-[0.875rem]/[1rem] pt-1 ~pb-[1rem]/[3rem] text-[#1A1A1ABF] max-w-md">
-            Your order has been successfully placed. We'll send shipping updates
-            and details to your email as soon as your order ships.
-          </p>
-
-          <div className=" bg-[#F8F5EE] ~space-y-[0.25rem]/[0.5rem] ~text-[0.875rem]/[1rem] py-[1rem] px-[1rem] rounded-[0.5rem] ">
-            {orderDetails && (
-              <>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Order :</span>
-                  <span className=" ">#{orderDetails.order_id}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Order Date:</span>
-                  <span className="">{orderDetails.order_date}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Total Amount:</span>
-                  <span className="font-bold text-main">
-                    ₹{" "}
-                    <span className="font-bold text-main">
-                      {orderDetails.amount.toFixed(2)}
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="mt-4 text-left w-full">
-            <h4 className="~text-[0.875rem]/[1rem] font-semibold mb-2">
-              Order Summary:
-            </h4>
-            <div className="space-y-1 text-sm">
-              {orderDetails ? (
-                <>
-                  <div className="flex justify-between">
-                    <span>Items:</span>
-                    <span>{orderDetails.items_count} item(s)</span>
-                  </div>
-                  {items.filter((item) => item.isFreeItem)?.length > 0 && (
-                    <div className="flex justify-between">
-                      <span>Free items:</span>
-                      <span className="text-green-600">
-                        {items.filter((item) => item.isFreeItem).length} item(s)
-                      </span>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-gray-500 text-sm">
-                  Processing payment...
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <Link
-              href={"/shop"}
-              onClick={closeCart}
-              className="~text-[0.75rem]/[1rem] group relative w-full overflow-hidden flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white py-[0.78125rem] px-8"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
-              <span className="relative z-20">Continue Shopping</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (isLoading && orderType === 1) {
     return (
       <div className="~px-[1rem]/[1.5rem] ">
@@ -614,27 +523,6 @@ const Delivery = ({
               onClick={handleCopyAddress}
               className="~text-[0.75rem]/[0.875rem] font-semibold py-1 px-2 duration-300 ease-in-out transition-all hover:bg-[#F8F5EE] rounded-[0.5rem] cursor-pointer h-fit text-main flex items-center gap-1"
             >
-              <svg
-                className="size-[20px]"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
               Copy
             </button>
           </div>

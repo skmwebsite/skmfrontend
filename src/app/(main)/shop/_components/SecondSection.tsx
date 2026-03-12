@@ -6,8 +6,7 @@ import { motion } from "motion/react";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import ProductCard from "@/src/app/_components/ProductCard";
 import { TShop } from "@/src/api/type";
-import SearchIcon from "@/src/components/svg/SearchIcon";
-import { useDebounce } from "@/src/hooks/useDebounce";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   menuitems: TShop[];
@@ -15,8 +14,9 @@ type Props = {
 
 const SecondSection = ({ menuitems }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("q") ?? "";
 
   const isResponsiveUi = useMediaQuery("(max-width: 1024px)");
 
@@ -24,13 +24,13 @@ const SecondSection = ({ menuitems }: Props) => {
 
   const isClickScrollingRef = useRef(false);
 
-  // Filter menu items based on search term
+  // Filter menu items based on search term from params
   const filteredMenuItems = menuitems.filter((section) => {
-    if (debouncedSearchTerm === "") {
+    if (searchTerm === "") {
       return true;
     }
     return section.products.some((product) =>
-      product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
 
@@ -118,12 +118,12 @@ const SecondSection = ({ menuitems }: Props) => {
     }, 1000);
   };
 
-  // Scroll to top when search is performed
+  // Scroll to top when search param is present
   useEffect(() => {
-    if (debouncedSearchTerm !== "") {
+    if (searchTerm !== "") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [debouncedSearchTerm]);
+  }, [searchTerm]);
 
   if (isResponsiveUi) {
     return (
@@ -137,19 +137,7 @@ const SecondSection = ({ menuitems }: Props) => {
           </p>
         </div>
 
-        {/* Search input for mobile */}
         <div className="sticky ~top-[3.87rem]/[5.6rem] z-[600] bg-white pt-[0.5rem]">
-          <div className="relative ~px-[1rem]/[1.5rem] pb-[0.5rem]">
-            <SearchIcon className="left-[1.8rem] absolute top-1/2 -translate-y-1/2 size-[1rem] lg:hidden" />
-            <input
-              type="text"
-              placeholder="Search for products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="lg:hidden border border-main/60 pl-[2.5rem] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[1rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~pr-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
-            />
-          </div>
-
           <div
             className="no-scrollbar ~text-[0.75rem]/[1rem] font-medium tracking-[-0.03em] ~px-[1rem]/[1.5rem] flex w-full gap-[1.5rem] overflow-x-auto bg-white py-[0.5rem] lg:hidden"
             ref={scrollContainerRef}
@@ -202,13 +190,21 @@ const SecondSection = ({ menuitems }: Props) => {
                   </div>
                   <div key={slug} id={slug}>
                     <div key={slug} className="grid grid-cols-2 gap-[1rem]">
-                      {section.products.map((item) => (
-                        <ProductCard
-                          key={item.id}
-                          section={section.name}
-                          item={item}
-                        />
-                      ))}
+                      {section.products
+                        .filter((product) =>
+                          searchTerm === ""
+                            ? true
+                            : product.name
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase()),
+                        )
+                        .map((item) => (
+                          <ProductCard
+                            key={item.id}
+                            section={section.name}
+                            item={item}
+                          />
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -310,18 +306,7 @@ const SecondSection = ({ menuitems }: Props) => {
       </div>
 
       <div className="w-full">
-        <div className="mb-10 z-[999] sticky ~pt-[4.5rem]/[6.75rem] ~rounded-b-[0.5rem]/[1rem] bg-white top-[0rem]">
-          <div className="relative">
-            <SearchIcon className="left-4 absolute top-1/2 -translate-y-1/2 size-[1rem]" />
-            <input
-              type="text"
-              placeholder="Search for products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-main/60 pl-[2.5rem] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[1rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~pr-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
-            />
-          </div>
-        </div>
+        <div className="~pt-[4.5rem]/[6.75rem]" />
 
         <div className="w-full">
           {filteredMenuItems.length === 0 ? (
@@ -356,13 +341,21 @@ const SecondSection = ({ menuitems }: Props) => {
                       <div className="h-[1px] ml-[12px] w-full bg-[#D9D9D9]" />
                     </div>
                     <div className="hidden grid-cols-1 ~pt-[1rem]/[2.3125rem] ~pb-[1rem]/[3.75rem] ~gap-[1.5rem]/[3rem] md:grid lg:grid-cols-2 xl:grid-cols-3">
-                      {section.products.map((item) => (
-                        <ProductCard
-                          section={section.name}
-                          key={item.id}
-                          item={item}
-                        />
-                      ))}
+                      {section.products
+                        .filter((product) =>
+                          searchTerm === ""
+                            ? true
+                            : product.name
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase()),
+                        )
+                        .map((item) => (
+                          <ProductCard
+                            section={section.name}
+                            key={item.id}
+                            item={item}
+                          />
+                        ))}
                     </div>
                   </motion.div>
                 );

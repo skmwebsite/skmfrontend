@@ -234,8 +234,13 @@ const CartModal = () => {
   };
 
   const handlePickup = () => {
-    setOrderType(2);
-    setCurrentView("delivery");
+    if (addressData?.customer_address) {
+      setOrderType(2);
+      setCurrentView("delivery");
+    } else {
+      setOrderType(2);
+      setCurrentView("address");
+    }
   };
 
   const handleDelivery = () => {
@@ -312,7 +317,14 @@ const CartModal = () => {
                             Edit Address
                           </div>
                         ) : (
-                          "Add Address"
+                          <div className="flex items-center gap-3">
+                            {" "}
+                            <ChevronDown
+                              onClick={() => setCurrentView("pickup")}
+                              className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
+                            />{" "}
+                            Add Address
+                          </div>
                         ))}
 
                       {currentView === "pickup" && (
@@ -824,6 +836,7 @@ const CartModal = () => {
                           className="h-full"
                         >
                           <AddressForm
+                            orderType={orderType}
                             onAddressSubmitted={handleAddressSubmitted}
                             existingAddress={addressData?.customer_address}
                             isEditing={!!addressData?.customer_address}

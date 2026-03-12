@@ -26,6 +26,7 @@ interface AddressFormProps {
   onAddressSubmitted: () => void;
   existingAddress?: CustomerAddress | null;
   isEditing?: boolean;
+  orderType: number;
 }
 
 // Define address data type for API
@@ -82,6 +83,7 @@ const AddressForm = ({
   onAddressSubmitted,
   existingAddress,
   isEditing = false,
+  orderType,
 }: AddressFormProps) => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [isCheckingPincode, setIsCheckingPincode] = useState(false);
@@ -346,9 +348,11 @@ const AddressForm = ({
     <div className="~px-[1rem]/[1.5rem] ">
       <div className="~pt-[1rem]/[2.563rem] ~pb-[1rem]/[2rem]">
         <p className="text-[0.875rem] ~pt-[0.5rem]/[1rem] text-center tracking-[-0.05em] text-[#1A1A1ABF] leading-[110%]">
-          {isEditing
-            ? "Update your delivery address details below"
-            : "Please provide your delivery address to complete your purchase"}
+          {orderType === 1
+            ? isEditing
+              ? "Update your delivery address details below"
+              : "Please provide your delivery address to complete your purchase"
+            : "You selected store pickup. Please proceed to complete your purchase."}
         </p>
       </div>
 

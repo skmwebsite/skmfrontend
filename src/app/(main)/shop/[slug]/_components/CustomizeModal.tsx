@@ -87,7 +87,6 @@ const CustomizeModal = ({
 
     const unit = ingredient.unit?.toLowerCase() || "gm";
 
-    // For pieces: price & quantity_in_grams are for `name` pieces, divide to get per-piece
     if (unit === "pcs" || unit === "pc") {
       const mat = rawMaterials[0];
       if (!mat) return 0;
@@ -104,7 +103,6 @@ const CustomizeModal = ({
       smallTier.quantity_in_grams ||
       convertToGrams(parseFloat(smallTier.name), smallTier.unit);
 
-    // If quantity exceeds the small tier limit and a bulk tier exists, use bulk pricing
     if (quantityInGrams > smallTierLimit && bulkTier) {
       return (
         quantityInGrams *
@@ -113,7 +111,6 @@ const CustomizeModal = ({
       );
     }
 
-    // Otherwise use small tier pricing
     return (
       quantityInGrams *
       (smallTier.price_per_gms || smallTier.price / (smallTierLimit || 1))
@@ -124,7 +121,6 @@ const CustomizeModal = ({
     return currentIngredients.some((ing) => ing.qty !== ing.defaultQty);
   };
 
-  // Helper function to check if an ingredient is edited
   const isIngredientEdited = (ingredient: CustomIngredient): boolean => {
     return ingredient.qty !== ingredient.defaultQty;
   };
@@ -155,11 +151,14 @@ const CustomizeModal = ({
     }
   }, [open, selectedVariant, existingCustomization]);
 
-  const updateQuantity = (id: number, change: number) => {
+  const updateQuantity = (id: number, change: number, unit?: string) => {
+    const unitLower = unit?.toLowerCase() || "";
+    const step =
+      unitLower === "pcs" || unitLower === "pc" ? Math.sign(change) : change;
     setIngredients((prev) =>
       prev.map((item) =>
         item.id === id && item.editable === 1
-          ? { ...item, qty: Math.max(0, item.qty + change) }
+          ? { ...item, qty: Math.max(0, item.qty + step) }
           : item,
       ),
     );
@@ -319,10 +318,11 @@ const CustomizeModal = ({
                     >
                       {ingredients.map((item) => {
                         const itemPrice = calculateIngredientPrice(item);
-
-                        console.log("itemPrice", itemPrice, item);
                         const isEditable = item.editable === 1;
                         const isEdited = isIngredientEdited(item);
+                        const isPcs =
+                          item.unit?.toLowerCase() === "pcs" ||
+                          item.unit?.toLowerCase() === "pc";
 
                         return (
                           <div
@@ -333,7 +333,6 @@ const CustomizeModal = ({
                           >
                             <div className="py-[0.75rem] ~text-[0.8125rem]/[1rem] w-full leading-[120%] tracking-[-0.03em] flex items-center gap-1">
                               {item.name}
-
                               {!isEditable && (
                                 <span className="ml-2 text-xs text-[#0000007A]">
                                   (Fixed)
@@ -346,7 +345,9 @@ const CustomizeModal = ({
                               }`}
                             >
                               <button
-                                onClick={() => updateQuantity(item.id, -5)}
+                                onClick={() =>
+                                  updateQuantity(item.id, -5, item.unit)
+                                }
                                 disabled={!isEditable}
                                 className={`~size-[2rem]/[2.5rem] text-main flex items-center justify-center shrink-0 ~rounded-[0.25rem]/[0.5rem] bg-[#F8F5EE] duration-300 ease-in-out transition-all ${
                                   isEditable
@@ -360,7 +361,7 @@ const CustomizeModal = ({
                                 type="number"
                                 value={item.qty}
                                 min={0}
-                                step={1}
+                                step={isPcs ? 1 : 5}
                                 disabled={!isEditable}
                                 onChange={(e) =>
                                   handleInputChange(item.id, e.target.value)
@@ -376,7 +377,9 @@ const CustomizeModal = ({
                                 }`}
                               />
                               <button
-                                onClick={() => updateQuantity(item.id, 5)}
+                                onClick={() =>
+                                  updateQuantity(item.id, 5, item.unit)
+                                }
                                 disabled={!isEditable}
                                 className={`~size-[2rem]/[2.5rem] text-main flex items-center justify-center shrink-0 ~rounded-[0.25rem]/[0.5rem] bg-[#F8F5EE] duration-300 ease-in-out transition-all ${
                                   isEditable
