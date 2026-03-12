@@ -38,21 +38,6 @@ interface AddressData {
   email: string;
 }
 
-// Interface for pincode check response
-interface PincodeCheckResponse {
-  status: boolean;
-  message: string;
-  data: {
-    id: number;
-    uuid: string;
-    zone: string;
-    from_pincode: string;
-    to_pincode: string;
-    price: number;
-    exclude_pincodes: string[];
-  } | null;
-}
-
 const fetchLocationByPincode = async (pincode: string) => {
   const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
 

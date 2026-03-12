@@ -47,70 +47,60 @@ export type TPromoCode = {
 };
 export type TVariant = {
   id: number;
-  uuid: string;
   name: string;
   unit: string;
-  min_quantity: string;
-  max_quantity: string;
+  formatted_name: string;
+  formatted_unit: string;
+  min_quantity?: string;
+  max_quantity?: string;
+
   price: number;
   has_grind: 0 | 1;
-  grind_quantity: string;
   grind_price: number;
   status: 0 | 1;
-  is_customizable: 0 | 1;
-  ingredients: TIngredient[];
-  spice_levels: TSpiceLevel[];
-  is_primary: boolean;
+  is_customizable?: 0 | 1;
+  ingredients?: TIngredient[];
+  spice_levels?: TSpiceLevel[];
 };
 export type TIngredient = {
   id: number;
-  uuid: string;
+  raw_material_id: number;
   raw_material_name: string;
   quantity: string;
-  unit: "gm" | "kg";
+  unit: string;
   price: number;
-  quantity_in_gm: number;
+  editable: 0 | 1;
   raw_materials: {
     id: number;
-    uuid: string;
     name: string;
     unit: string;
+    formatted_name: string;
+    formatted_unit: string;
     price: number;
     quantity_in_grams: number;
     price_per_gms: number;
-    is_primary: boolean;
   }[];
 };
 export type TSpiceLevel = {
   id: number;
-  uuid: string;
   level: number;
-  quantity: string;
-  price: number;
-  is_default: 0 | 1;
   quantity_in_gm: string;
+  price: number;
 };
 export type TProduct = {
   product_type: number;
   max_quantity: number;
-  category_slug: string;
-  meta_title: string;
-  meta_description: string;
-  meta_keywords: string;
+  category_slug?: string;
+
   id: number;
-  colour: string;
+  colour?: string;
   has_offer: number;
-  uuid: string;
   name: string;
   slug: string;
-  category_id: number;
-  description: string;
-  product_info: string;
-  images: string[];
-  tags: number;
-  price: number;
-  quantity: string;
-  unit: string;
+  description?: string;
+  product_information?: string;
+  images?: string[];
+  status?: number;
   thumbnail_image: string;
   category_name: string;
   variants: TVariant[];
@@ -118,4 +108,11 @@ export type TProduct = {
 export type TShopInner = {
   product_details: TProduct;
   popular_products: TProduct[];
+};
+
+export type TMeta = {
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  name: string;
 };

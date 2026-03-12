@@ -24,10 +24,11 @@ type RawMaterial = {
   id: number;
   name: string;
   unit: string;
+  formatted_name: string;
+  formatted_unit: string;
   price: number;
   quantity_in_grams?: number;
   price_per_gms?: number;
-  is_primary: boolean;
 };
 
 type CustomIngredient = {
@@ -39,6 +40,7 @@ type CustomIngredient = {
   pricePerUnit: number;
   rawMaterials: RawMaterial[];
   editable: number;
+  raw_material_id?: number;
 };
 
 const CustomizeModal = ({
@@ -52,6 +54,7 @@ const CustomizeModal = ({
   const [ingredients, setIngredients] = useState<CustomIngredient[]>([]);
   useBodyScrollLock(open);
 
+  console.log("selectedVariant", selectedVariant);
   const parseQuantity = (value: string | number): number => {
     if (typeof value === "number") return value;
     return parseFloat(value) || 0;
@@ -65,7 +68,7 @@ const CustomizeModal = ({
 
     return {
       min: convertToGrams(minQty, "gm"),
-      max: convertToGrams(maxQty, "kg"),
+      max: convertToGrams(maxQty, "gm"),
     };
   };
 
@@ -78,76 +81,52 @@ const CustomizeModal = ({
     return quantity;
   };
 
-  const calculatePricePerGram = (
-    quantity: number,
-    unit: string,
-    rawMaterials: RawMaterial[],
-  ): number => {
-    if (!rawMaterials || rawMaterials.length === 0) {
-      return 0;
-    }
-
-    if (unit.toLowerCase() === "pcs" || unit.toLowerCase() === "pc") {
-      const primaryMaterial = rawMaterials.find((m) => m.is_primary);
-      if (primaryMaterial) {
-        return primaryMaterial.price || 0;
-      }
-      return rawMaterials[0]?.price || 0;
-    }
-
-    const quantityInGrams = convertToGrams(quantity, unit);
-    const primaryTier = rawMaterials.find((m) => m.is_primary);
-    const bulkTier = rawMaterials.find((m) => !m.is_primary);
-
-    if (!primaryTier) {
-      return 0;
-    }
-
-    const primaryQuantityInGrams = convertToGrams(
-      parseFloat(primaryTier.name),
-      primaryTier.unit,
-    );
-
-    if (quantityInGrams <= primaryQuantityInGrams) {
-      return primaryTier.price / primaryQuantityInGrams;
-    }
-
-    if (bulkTier) {
-      const bulkQuantityInGrams = convertToGrams(
-        parseFloat(bulkTier.name),
-        bulkTier.unit,
-      );
-      return bulkTier.price / bulkQuantityInGrams;
-    }
-
-    return primaryTier.price / primaryQuantityInGrams;
-  };
-
   const calculateIngredientPrice = (ingredient: CustomIngredient): number => {
-    if (
-      ingredient.unit.toLowerCase() === "pcs" ||
-      ingredient.unit.toLowerCase() === "pc"
-    ) {
-      const primaryMaterial = ingredient.rawMaterials.find((m) => m.is_primary);
-      if (primaryMaterial && primaryMaterial.quantity_in_grams) {
-        const pricePerPiece =
-          (Number(primaryMaterial.name) || 0) * (primaryMaterial.price || 0);
-        return ingredient.qty * pricePerPiece;
-      }
-      return ingredient.qty * (primaryMaterial?.price || 0);
+    const rawMaterials = ingredient.rawMaterials;
+    if (!rawMaterials || rawMaterials.length === 0) return 0;
+
+    const unit = ingredient.unit?.toLowerCase() || "gm";
+
+    // For pieces: price & quantity_in_grams are for `name` pieces, divide to get per-piece
+    if (unit === "pcs" || unit === "pc") {
+      const mat = rawMaterials[0];
+      if (!mat) return 0;
+      const pcsInTier = parseFloat(mat.name) || 1;
+      const pricePerPiece = mat.price / pcsInTier;
+      return ingredient.qty * pricePerPiece;
     }
 
     const quantityInGrams = convertToGrams(ingredient.qty, ingredient.unit);
-    const pricePerGram = calculatePricePerGram(
-      ingredient.qty,
-      ingredient.unit,
-      ingredient.rawMaterials,
+    const smallTier = rawMaterials[0];
+    const bulkTier =
+      rawMaterials.length > 1 ? rawMaterials[rawMaterials.length - 1] : null;
+    const smallTierLimit =
+      smallTier.quantity_in_grams ||
+      convertToGrams(parseFloat(smallTier.name), smallTier.unit);
+
+    // If quantity exceeds the small tier limit and a bulk tier exists, use bulk pricing
+    if (quantityInGrams > smallTierLimit && bulkTier) {
+      return (
+        quantityInGrams *
+        (bulkTier.price_per_gms ||
+          bulkTier.price / (bulkTier.quantity_in_grams || 1))
+      );
+    }
+
+    // Otherwise use small tier pricing
+    return (
+      quantityInGrams *
+      (smallTier.price_per_gms || smallTier.price / (smallTierLimit || 1))
     );
-    return quantityInGrams * pricePerGram;
   };
 
   const checkForChanges = (currentIngredients: CustomIngredient[]) => {
     return currentIngredients.some((ing) => ing.qty !== ing.defaultQty);
+  };
+
+  // Helper function to check if an ingredient is edited
+  const isIngredientEdited = (ingredient: CustomIngredient): boolean => {
+    return ingredient.qty !== ingredient.defaultQty;
   };
 
   useEffect(() => {
@@ -206,11 +185,13 @@ const CustomizeModal = ({
   const calculateTotalInGrams = () => {
     return ingredients.reduce((total, item) => {
       if (
-        item.unit.toLowerCase() === "pcs" ||
-        item.unit.toLowerCase() === "pc"
+        item.rawMaterials.at(0)?.unit.toLowerCase() === "pcs" ||
+        item.rawMaterials.at(0)?.unit.toLowerCase() === "pc"
       ) {
-        const primaryMaterial = item.rawMaterials.find((m) => m.is_primary);
-        const gramsPerPiece = primaryMaterial?.quantity_in_grams || 1;
+        const primaryMaterial = item.rawMaterials.at(0);
+        const pcsInTier = parseFloat(primaryMaterial?.name || "1") || 1;
+        const gramsPerPiece =
+          (primaryMaterial?.quantity_in_grams || 0) / pcsInTier;
         return total + item.qty * gramsPerPiece;
       }
       return total + convertToGrams(item.qty, item.unit);
@@ -231,10 +212,37 @@ const CustomizeModal = ({
     }
 
     const hasChanges = checkForChanges(ingredients);
-    const ingredientsWithPrice = ingredients.map((ing) => ({
-      ...ing,
-      pricePerUnit: calculatePricePerGram(ing.qty, ing.unit, ing.rawMaterials),
-    }));
+    const ingredientsWithPrice = ingredients.map((ing) => {
+      const rawMaterials = ing.rawMaterials;
+      const unit = ing.unit?.toLowerCase() || "gm";
+      let pricePerUnit = 0;
+
+      if (unit === "pcs" || unit === "pc") {
+        const pcsInTier = parseFloat(rawMaterials[0]?.name || "1") || 1;
+        pricePerUnit = (rawMaterials[0]?.price || 0) / pcsInTier;
+      } else if (rawMaterials.length > 0) {
+        const quantityInGrams = convertToGrams(ing.qty, ing.unit);
+        const smallTier = rawMaterials[0];
+        const bulkTier =
+          rawMaterials.length > 1
+            ? rawMaterials[rawMaterials.length - 1]
+            : null;
+        const smallTierLimit =
+          smallTier.quantity_in_grams ||
+          convertToGrams(parseFloat(smallTier.name), smallTier.unit);
+
+        if (quantityInGrams > smallTierLimit && bulkTier) {
+          pricePerUnit =
+            bulkTier.price_per_gms ||
+            bulkTier.price / (bulkTier.quantity_in_grams || 1);
+        } else {
+          pricePerUnit =
+            smallTier.price_per_gms || smallTier.price / (smallTierLimit || 1);
+        }
+      }
+
+      return { ...ing, pricePerUnit };
+    });
     onConfirm(ingredientsWithPrice, hasChanges);
   };
 
@@ -283,7 +291,8 @@ const CustomizeModal = ({
                     <h3 className="~text-[0.875rem]/[1.5rem] flex items-center font-medium leading-[120%] tracking-[-0.03em] text-black">
                       Customise Ingredients &nbsp;{" "}
                       <div className="bg-gradient-to-r from-[#EC5715] to-[#FF7E00] leading-[120%] text-white rounded-full font-medium py-[0.25rem] px-[0.625rem] ~text-[0.875rem]/[1rem]">
-                        {selectedVariant?.name}
+                        {selectedVariant.formatted_name}{" "}
+                        {selectedVariant.formatted_unit}
                       </div>
                     </h3>
                     <p className="text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.03em]">
@@ -311,24 +320,31 @@ const CustomizeModal = ({
                       {ingredients.map((item) => {
                         const itemPrice = calculateIngredientPrice(item);
 
+                        console.log("itemPrice", itemPrice, item);
                         const isEditable = item.editable === 1;
+                        const isEdited = isIngredientEdited(item);
 
                         return (
                           <div
                             key={item.id}
-                            className={`grid grid-cols-3 items-center w-full ${
+                            className={`grid grid-cols-3 items-center w-full transition-colors duration-300 ${
                               !isEditable ? "opacity-50" : ""
-                            }`}
+                            } `}
                           >
-                            <div className="py-[0.75rem] ~text-[0.8125rem]/[1rem] w-full leading-[120%] tracking-[-0.03em]">
+                            <div className="py-[0.75rem] ~text-[0.8125rem]/[1rem] w-full leading-[120%] tracking-[-0.03em] flex items-center gap-1">
                               {item.name}
+
                               {!isEditable && (
                                 <span className="ml-2 text-xs text-[#0000007A]">
                                   (Fixed)
                                 </span>
                               )}
                             </div>
-                            <div className="font-medium ~text-[0.8125rem]/[1rem] gap-[0.6875rem] tracking-[-0.03em] items-center flex justify-center">
+                            <div
+                              className={`font-medium ~text-[0.8125rem]/[1rem] gap-[0.6875rem] tracking-[-0.03em] items-center flex justify-center ${
+                                isEdited && isEditable ? "text-main" : ""
+                              }`}
+                            >
                               <button
                                 onClick={() => updateQuantity(item.id, -5)}
                                 disabled={!isEditable}
@@ -336,7 +352,7 @@ const CustomizeModal = ({
                                   isEditable
                                     ? "hover:bg-gray-100 cursor-pointer"
                                     : "cursor-not-allowed"
-                                }`}
+                                } `}
                               >
                                 -
                               </button>
@@ -353,6 +369,10 @@ const CustomizeModal = ({
                                   isEditable
                                     ? "focus:ring-1 focus:ring-main"
                                     : "cursor-not-allowed"
+                                } ${
+                                  isEdited && isEditable
+                                    ? "border border-main/30 "
+                                    : ""
                                 }`}
                               />
                               <button
@@ -362,12 +382,18 @@ const CustomizeModal = ({
                                   isEditable
                                     ? "hover:bg-gray-100 cursor-pointer"
                                     : "cursor-not-allowed"
-                                }`}
+                                } }`}
                               >
                                 +
                               </button>
                             </div>
-                            <div className="py-[1.25rem] text-end">
+                            <div
+                              className={`py-[1.25rem] text-end ${
+                                isEdited && isEditable
+                                  ? "text-main font-medium"
+                                  : ""
+                              }`}
+                            >
                               ₹{itemPrice.toFixed(2)}
                             </div>
                           </div>

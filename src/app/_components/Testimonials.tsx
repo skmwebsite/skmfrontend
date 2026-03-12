@@ -4,7 +4,6 @@ import BorderRadius from "@/src/components/svg/BorderRadius";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-
 import dot from "@public/svg/dots.svg";
 import banner2 from "@public/images/banner2.png";
 const testimonials = [
@@ -13,63 +12,63 @@ const testimonials = [
     text: "Kakaji Masale has been with me through different phases of life - from messy hostel kitchens to my new home. It carries the same quality and taste as the masalas our grandmothers used to grind by hand. Today, I feel like I’m giving them rest, because Kakaji Masale delivers those memories with the same love and warmth. My personal favorite is Kala Masala, Khandeshi Masala and Chole Masala.",
     name: "Deepika",
     role: "31 | Product Designer",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Deepika-Sharma.jpeg",
   },
   {
     id: 2,
     text: "Kakaji Masale mujhe us zamane ki yaad dilate hain jab masale dhoop mein sukha kar ghar par peese jaate the. Iski khushboo aur swaad bilkul shuddh lagta hai. Apne parivaar ke liye main is par poora bharosa karti hoon.",
     name: "Saroj",
     role: "64 | Homemaker",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Saroj.jpeg",
   },
   {
     id: 3,
     text: "The masalas added immense flavor to our food. As young humans who have just started cooking I was deeply appreciative of the taste that these spices added to my dishes. This made cooking simple and an experience I looked forward to! If you are someone who gets overwhelmed by too many choices on the market and want one stop shop for the best tasting and ethically sourced spices Shree Kakaji Masale is your spot!",
     name: "Aakanksha Nyati",
     role: "28 | Psychologist",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Aakanksha-Nyati.jpeg",
   },
   {
     id: 4,
     text: "I used to live by myself & my roommates in a flat during college, these masalas were the only thing that reminded me of home & brought taste to our experiments 😅 Really flavourful & feels superior. A must have!",
     name: "Muskan Vadera",
     role: "27 | Brand Manager",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Muskan-Vadera.jpeg",
   },
   {
     id: 5,
     text: "Mumma’s food tastes best when she uses the red masala packet with the kaka on it.",
     name: "Viyona",
     role: "9 | Student",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Viyona.jpeg",
   },
   {
     id: 6,
     text: "My personal favourites are the Chole Masala, Misal Masala, and Sev Bhaji Masala, Tikka Masala-they bring out authentic flavours just like traditional homemade recipes. The Kitchen King Masala is my go-to basic masala and works beautifully in everyday dishes, adding depth and balance without overpowering the food. They also supply pickle masala, which is equally impressive.",
     name: "Neha ",
     role: "37 | Procurement Specialist",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Neha-Sharma.jpeg",
   },
   {
     id: 7,
     text: "I have been using Kakaji Masala regularly for the last four years. Their Khichdi Masala deserves a special mention—it is just great and adds a comforting, perfectly spiced taste that makes khichdi even more enjoyable. Another standout for me is their no onion/no garlic Goda Masala. It is my first choice of spice for everyday cooking, and honestly, it tastes even better than many masalas that include onion and garlic. ",
     name: "Dani More ",
     role: "34 | Pastry Chef",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Dani-More.jpeg",
   },
   {
     id: 8,
     text: "Kakaji Masala has become my most trusted spice brands. Their Punjabi Gravy Masala is a real lifesaver for me. I prepare gravy in bulk for weekly cooking, and this masala adds such rich, delicious taste to all my meals. Another absolute favorite is their Shev Bhaji Masala. Dhaba-style shev bhaji on the Mumbai-Nashik route is one of my most loved dishes, and Kakaji’s masala has beautifully recreated that authentic flavour which you can take anywhere. ",
     name: "Sai More ",
     role: "34 | Operations Lead",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Sai-More.jpeg",
   },
   {
     id: 9,
     text: "I’ve had a wonderful experience with Kakaji Masala. What truly sets them apart is that they grind all their spices in-house and use no preservatives, which really reflects in the aroma, freshness, and taste of their masalas. They cater to local, national and even export their products, which makes it so easy for people living away from home to recreate the same comforting, home-style meals. This is truly a blessing for anyone craving authentic Indian flavours abroad. ",
     name: "Sanjay ",
     role: "",
-    image: "/images/avatar.jpeg",
+    image: "/testimonial/Sanjay-Sharma.jpg",
   },
 ];
 

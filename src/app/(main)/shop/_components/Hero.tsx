@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import collection from "@public/images/shop-banner.png";
+import collection from "@public/assets/shop-banner.png";
 import Badge from "@/src/components/Badge";
 const HeroSection = () => {
   return (
@@ -9,7 +9,7 @@ const HeroSection = () => {
         <Image
           alt=""
           src={collection}
-          className=" absolute rotate-[-270deg] md:rotate-0 scale-x-[-1] right-0 max-md:~bottom-[-3rem]/[-20rem] h-auto w-full   md:h-[29.9045696259rem] md:w-auto"
+          className=" absolute rotate-180 max-md:rotate-[-90deg]  scale-x-[-1] right-0 max-md:~bottom-[-9rem]/[-100rem] h-auto w-full   md:h-[29.9045696259rem] md:w-auto"
         />
         <div className=" ~px-[0.84375rem]/[4rem] justify-center flex relative  flex-col items-center  z-50">
           <Badge title="Shop" />

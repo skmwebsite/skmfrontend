@@ -1,15 +1,15 @@
 import Image from "next/image";
 
-import collection from "@public/images/collection.png";
+import collection from "@public/assets/collection-banner.png";
 import Badge from "@/src/components/Badge";
 const HeroSection = () => {
   return (
     <div>
-      <div className=" w-full  overflow-hidden rounded-[1rem] justify-center flex items-center bg-[#F8F5EE] ~h-[23.9375rem]/[29.0625rem] relative">
+      <div className=" w-full  overflow-hidden rounded-[1rem] justify-center flex items-center bg-[#F8F5EE] ~h-[27.9375rem]/[29.0625rem] relative">
         <Image
           alt=""
           src={collection}
-          className="~h-[10.2718200684rem]/[21.7306976318rem] absolute right-0 ~bottom-[0]/[6.6rem] ~w-[8.4808349609rem]/[17.9417533875rem]"
+          className=" ~h-[10.9375rem]/[29.0625rem]  bottom-0  absolute right-0 w-auto"
         />
         <div className=" ~px-[0.84375rem]/[4rem] justify-center flex relative  flex-col items-center  z-50">
           <Badge title="Collections" />

@@ -3,8 +3,8 @@
 import { TProduct } from "@/src/api/type";
 import { useMenuCart } from "@/src/hooks/useMenuCart";
 import { convertToKg, isMaxWeightReached } from "@/src/hooks/useCart";
-import { AnimatePresence, calcLength, motion } from "motion/react";
-import { useRef, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useRef, useState } from "react";
 import CartBucket from "../svg/CartBucket";
 import Decrease from "../svg/Decrease";
 import Increase from "../svg/Increase";
@@ -157,9 +157,10 @@ const CartButton = ({
   const directionRef = useRef<"increase" | "decrease">("increase");
 
   const variantName = String(
-    cartItem?.variantName || selectedVariant?.name || "",
+    cartItem?.variantName || selectedVariant?.formatted_name || "",
   );
-  const variantUnit = cartItem?.variantUnit || selectedVariant?.unit || "";
+  const variantUnit =
+    cartItem?.variantUnit || selectedVariant?.formatted_unit || "";
 
   const parsedPcs =
     item.product_type === 2 ? parsePcsFromName(variantName) : null;

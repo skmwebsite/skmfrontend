@@ -243,7 +243,7 @@ export const useMenuCart = () => {
 
     // Ensure totalPrice is never null
     if (totalPrice === null) {
-      totalPrice = selectedVariant?.price || item.price || 0;
+      totalPrice = selectedVariant?.price || 0;
     }
 
     // Generate full cart item key WITH price for storage
@@ -291,8 +291,11 @@ export const useMenuCart = () => {
       price: totalPrice,
       productType: String(item.product_type),
       variantId: selectedVariant?.id,
-      variantName: String(selectedVariant?.name || ""),
-      variantUnit: selectedVariant?.unit || "",
+      variantName: String(
+        selectedVariant?.formatted_name || selectedVariant?.name || "",
+      ),
+      variantUnit:
+        selectedVariant?.formatted_unit || selectedVariant?.unit || "",
       primary_quantity_in_grm: selectedVariant?.primary_quantity_in_grm || 0,
       customIngredients: ingredientsForCart,
       hasCustomizedIngredients: wasActuallyCustomized,
@@ -357,7 +360,7 @@ export const useMenuCart = () => {
     selectedSpiceLevel?: any,
     grinding?: string | null,
   ): number => {
-    let totalPrice = selectedVariant?.price || item.price || 0;
+    let totalPrice = selectedVariant?.price || 0;
 
     if (customIngredients && customIngredients.length > 0) {
       const customIngredientsPrice = customIngredients.reduce((total, ing) => {

@@ -3,6 +3,8 @@ import Hero from "./_components/Hero";
 import { frontendApi } from "@/src/api/api";
 import SecondSection from "./_components/SecondSection";
 import { TShopInner } from "@/src/api/type";
+import { Metadata } from "next";
+import { metaTagsApi } from "@/src/api/meta-tags";
 
 export const dynamic = "force-dynamic";
 
@@ -17,26 +19,20 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const productDetails = await getShopInnerPageApi(slug);
-  const productDetailsInner = productDetails?.product_details;
-  let seo = {};
+}): Promise<Metadata> {
+  const slug = (await params).slug;
+  const metaTagDTO = await metaTagsApi.getShopInnerPageTags(slug);
 
-  if (productDetailsInner) {
-    seo = {
-      title: productDetailsInner.meta_title || productDetailsInner.name,
-      description:
-        productDetailsInner.meta_description || productDetailsInner.name,
-      keywords: productDetailsInner.meta_keywords || productDetailsInner.name,
-    };
-  }
+  const seo = metaTagDTO;
+  if (!seo) return {};
 
   return {
-    ...seo,
+    title: seo.meta_title,
+    description: seo.meta_description,
     alternates: {
       canonical: `/shop/${slug}`,
     },
+    keywords: seo.meta_keywords,
   };
 }
 
@@ -44,7 +40,6 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
   const response = await getShopInnerPageApi(slug);
   const product_details = response?.product_details;
-  console.log(product_details);
   const popular_products = response?.popular_products;
   return (
     <div className="~pt-[4rem]/[8rem] ">

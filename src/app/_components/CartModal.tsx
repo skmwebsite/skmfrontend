@@ -27,8 +27,9 @@ import { useMutation } from "@tanstack/react-query";
 import { frontendApi } from "@/src/api/api";
 import ChevronDown from "@/src/components/svg/ChevronDown";
 import toast from "react-hot-toast";
+import PickUp from "@/src/components/svg/PickUp";
 
-type View = "cart" | "login" | "otp" | "address" | "delivery";
+type View = "cart" | "login" | "otp" | "pickup" | "address" | "delivery";
 interface CustomerAddress {
   id: number;
   name: string;
@@ -72,6 +73,7 @@ const CartModal = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [currentView, setCurrentView] = useState<View>("cart");
   const [addressData, setAddressData] = useState<AddressResponse | null>(null);
+  const [orderType, setOrderType] = useState<1 | 2>(2);
   const [isLoadingAddress, setIsLoadingAddress] = useState(true);
   const [promoCode, setPromoCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -210,7 +212,7 @@ const CartModal = () => {
 
   const handleCheckout = () => {
     if (isLoggedIn) {
-      setCurrentView("delivery");
+      setCurrentView("pickup");
     } else {
       setCurrentView("login");
     }
@@ -219,7 +221,7 @@ const CartModal = () => {
   useEffect(() => {
     if (tempData?.is_registered === undefined) return;
 
-    setCurrentView(tempData.is_registered ? "address" : "delivery");
+    setCurrentView(tempData.is_registered ? "pickup" : "delivery");
   }, [tempData?.is_registered]);
 
   const handleOTPVerified = () => {};
@@ -231,8 +233,19 @@ const CartModal = () => {
     setCurrentView("delivery");
   };
 
-  const handleDelivery = () => {
+  const handlePickup = () => {
+    setOrderType(2);
     setCurrentView("delivery");
+  };
+
+  const handleDelivery = () => {
+    if (addressData?.customer_address) {
+      setOrderType(1);
+      setCurrentView("delivery");
+    } else {
+      setOrderType(1);
+      setCurrentView("address");
+    }
   };
 
   const handleBackToCart = () => {
@@ -301,10 +314,20 @@ const CartModal = () => {
                         ) : (
                           "Add Address"
                         ))}
-                      {!orderSuccess && currentView === "delivery" && (
+
+                      {currentView === "pickup" && (
                         <div className="flex items-center gap-3">
                           <ChevronDown
                             onClick={() => setCurrentView("cart")}
+                            className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
+                          />
+                          Choose Your Option
+                        </div>
+                      )}
+                      {!orderSuccess && currentView === "delivery" && (
+                        <div className="flex items-center gap-3">
+                          <ChevronDown
+                            onClick={() => setCurrentView("pickup")}
                             className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
                           />
                           Delivery Details
@@ -416,8 +439,9 @@ const CartModal = () => {
                                           } ~px-[0.75rem]/[0.875rem] ~py-[0.3rem]/[0.375rem]`}
                                         >
                                           {String(item.variantName)}{" "}
-                                          {item.productType !== "2" &&
-                                            String(item.variantUnit)}
+                                          {String(item.variantUnit)}{" "}
+                                          {/* {item.productType !== "2" &&
+                                            String(item.variantUnit)} */}
                                         </div>
                                         {item.hasCustomizedIngredients && (
                                           <div className="~text-[0.625rem]/[0.875rem] rounded-[0.3125rem] font-medium tracking-[-0.03em] leading-[120%] bg-[#F8F5EE] ~px-[0.75rem]/[0.875rem] ~py-[0.3rem]/[0.375rem]">
@@ -757,6 +781,39 @@ const CartModal = () => {
                           <LoginOTPForm onOTPVerified={handleOTPVerified} />
                         </motion.div>
                       )}
+
+                      {currentView === "pickup" && (
+                        <motion.div
+                          key="pickup-content"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.3 }}
+                          className="h-full"
+                        >
+                          <div className="flex flex-col gap-[1rem] h-full ~px-[2rem]/[5rem] pb-[40%] items-center justify-center">
+                            <PickUp className="~w-[10rem]/[12rem]" />
+                            <div className="~text-[1rem]/[2rem] leading-[120%] ~mb-[0.5rem]/[1.25rem] tracking-[-0.03em] font-medium text-[#181D27] ">
+                              How would you like to receive your order?
+                            </div>
+
+                            <button
+                              onClick={handlePickup}
+                              className="~text-[0.75rem]/[1rem] group overflow-hidden relative w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white py-[0.78125rem]"
+                            >
+                              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                              <span className="z-30">Pick Up</span>
+                            </button>
+                            <button
+                              onClick={handleDelivery}
+                              className="~text-[0.75rem]/[1rem] group overflow-hidden relative w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] border border-main transition-all duration-700 ease-in-out hover:text-white hover:border-transparent  font-medium text-main py-[0.78125rem]"
+                            >
+                              <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                              <span className="z-30">Delivery</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
                       {currentView === "address" && (
                         <motion.div
                           key="address-content"
@@ -773,6 +830,7 @@ const CartModal = () => {
                           />
                         </motion.div>
                       )}
+
                       {currentView === "delivery" && (
                         <motion.div
                           key="delivery-content"
@@ -784,6 +842,7 @@ const CartModal = () => {
                         >
                           {" "}
                           <Delivery
+                            orderType={orderType}
                             promoCode={promoCode}
                             totalAfterDiscount={calculateFinalTotal()}
                             orderSuccess={orderSuccess}

@@ -131,6 +131,12 @@ const Footer = () => {
               </Link>
               <Link
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
+                href="/privacy-and-policy"
+              >
+                Privacy policy
+              </Link>
+              <Link
+                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/shipping-and-cancellation-policy"
               >
                 Shipping & Cancellation
@@ -139,13 +145,7 @@ const Footer = () => {
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/return-and-refund-policy"
               >
-                Return & Refund
-              </Link>
-              <Link
-                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
-                href="/privacy-and-policy"
-              >
-                Privacy policy
+                Return, Refund & Replacement
               </Link>
               <Link
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"

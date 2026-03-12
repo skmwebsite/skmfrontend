@@ -14,9 +14,7 @@ type Props = {
 };
 
 const ProductCard = ({ item, section }: Props) => {
-  const [selectedVariant, setSelectedVariant] = useState(
-    item?.variants?.find((v) => v.is_primary) ?? item?.variants?.[0],
-  );
+  const [selectedVariant, setSelectedVariant] = useState(item?.variants?.[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -60,15 +58,15 @@ const ProductCard = ({ item, section }: Props) => {
   };
 
   // Calculate final price for CartButton
-  const finalPrice = selectedVariant?.price || item.price || 0;
+  const finalPrice = selectedVariant?.price || 0;
   return (
     <div className="">
       <Link
         href={`/shop/${item.slug}`}
         className="bg-cream group cursor-pointer relative overflow-hidden items-center flex w-full justify-center rounded-[0.75rem]"
       >
-        <div className="relative ~h-[8.9340820313rem]/[17.0830421448rem] w-full">
-          {/* ~w-[7.9340820313rem]/[14.6875rem] */}
+        <div className="relative  aspect-square w-full">
+          {/* ~w-[7.9340820313rem]/[14.6875rem]  ~h-[8.9340820313rem]/[17.0830421448rem] */}
           <Image
             loading="lazy"
             src={item.thumbnail_image}
@@ -132,8 +130,8 @@ const ProductCard = ({ item, section }: Props) => {
             >
               <div className="flex items-center ~gap-[0.2rem]/[0.4rem]">
                 <div>
-                  {selectedVariant.name}
-                  {selectedVariant.unit}
+                  {selectedVariant.formatted_name}
+                  {selectedVariant.formatted_unit}
                 </div>
                 <p className="text-[#00000029] font-bold">/</p>
                 <div>₹{selectedVariant.price.toFixed(2)}</div>
@@ -161,8 +159,8 @@ const ProductCard = ({ item, section }: Props) => {
                     >
                       <div className="flex items-center gap-[0.4rem] font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] text-main">
                         <div>
-                          {variant.name}
-                          {variant.unit}
+                          {variant.formatted_name}
+                          {variant.formatted_unit}
                         </div>
                         <p className="text-[#00000029] font-bold">/</p>
                         <div>₹{variant.price.toFixed(2)}</div>
@@ -194,14 +192,11 @@ const ProductCard = ({ item, section }: Props) => {
           <button className="px-[1rem] flex justify-between outline-none font-semibold tracking-[-0.03em] leading-[120%] ~text-[0.75rem]/[1rem] w-full text-main py-[0.5rem] bg-[#F8F5EE] rounded-[1rem]">
             <div className="flex items-center gap-[0.4rem]">
               <div>
-                {item.quantity}
-                {item.unit}
+                {item.variants?.[0]?.formatted_name}
+                {item.variants?.[0]?.formatted_unit}
               </div>
               <p className="text-[#00000029] font-bold">/</p>
-              <div>₹{item.price.toFixed(2)}</div>
-              <div className="line-through ~text-[0.75rem]/[0.875rem] text-black">
-                ₹{item?.price?.toFixed(2)}
-              </div>
+              <div>₹{item.variants?.[0]?.price?.toFixed(2)}</div>
             </div>
           </button>
         )}

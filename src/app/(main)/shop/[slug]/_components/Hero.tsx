@@ -16,8 +16,11 @@ type Props = {
 };
 
 const Hero = ({ product_details }: Props) => {
+  console.log("product_details", product_details);
   const [open, setOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(product_details.images[0]);
+  const [selectedImage, setSelectedImage] = useState(
+    product_details.images?.[0],
+  );
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [selectedVariant, setSelectedVariant] = useState(
@@ -61,10 +64,9 @@ const Hero = ({ product_details }: Props) => {
         if (unit === "gm" || unit === "g") return total + qty;
 
         if (unit === "pcs" || unit === "pc") {
-          const primaryMaterial = ing.rawMaterials?.find(
-            (m: any) => m.is_primary,
-          );
-          const gramsPerPiece = primaryMaterial?.quantity_in_grams || 15;
+          const mat = ing.rawMaterials?.[0];
+          const pcsInTier = parseFloat(mat?.name || "1") || 1;
+          const gramsPerPiece = (mat?.quantity_in_grams || 0) / pcsInTier;
           return total + qty * gramsPerPiece;
         }
 
@@ -82,10 +84,9 @@ const Hero = ({ product_details }: Props) => {
       if (unit === "gm" || unit === "g") return total + qty;
 
       if (unit === "pcs" || unit === "pc") {
-        const primaryMaterial = ingredient.raw_materials?.find(
-          (m: any) => m.is_primary,
-        );
-        const gramsPerPiece = primaryMaterial?.quantity_in_grams || 15;
+        const mat = ingredient.raw_materials?.[0];
+        const pcsInTier = parseFloat(mat?.name || "1") || 1;
+        const gramsPerPiece = (mat?.quantity_in_grams || 0) / pcsInTier;
         return total + qty * gramsPerPiece;
       }
 
@@ -126,9 +127,9 @@ const Hero = ({ product_details }: Props) => {
       // For pieces (pcs), use the price from rawMaterials directly
       if (unit === "pcs" || unit === "pc") {
         if (ing.rawMaterials && ing.rawMaterials.length > 0) {
-          // Use the price from the first raw material (it's the price per piece)
           const rawMaterial = ing.rawMaterials[0];
-          const pricePerPiece = rawMaterial?.price || 0;
+          const pcsInTier = parseFloat(rawMaterial?.name || "1") || 1;
+          const pricePerPiece = (rawMaterial?.price || 0) / pcsInTier;
           const price = qty * pricePerPiece;
           return total + Math.round(price * 100) / 100;
         }
@@ -142,15 +143,26 @@ const Hero = ({ product_details }: Props) => {
 
       // Fallback calculation for other ingredients without pricePerUnit
       if (ing.rawMaterials && ing.rawMaterials.length > 0) {
-        const primaryMaterial = ing.rawMaterials.find((m: any) => m.is_primary);
-        if (primaryMaterial) {
-          const quantityInGrams = convertToGrams(qty, unit);
-          const pricePerGram =
-            primaryMaterial.price_per_gms ||
-            primaryMaterial.price / (primaryMaterial.quantity_in_grams || 1);
-          const price = quantityInGrams * pricePerGram;
-          return total + Math.round(price * 100) / 100;
+        const quantityInGrams = convertToGrams(qty, unit);
+        const smallTier = ing.rawMaterials[0];
+        const bulkTier =
+          ing.rawMaterials.length > 1
+            ? ing.rawMaterials[ing.rawMaterials.length - 1]
+            : null;
+        const smallTierLimit = smallTier.quantity_in_grams || 0;
+
+        let pricePerGram: number;
+        if (quantityInGrams > smallTierLimit && bulkTier) {
+          pricePerGram =
+            bulkTier.price_per_gms ||
+            bulkTier.price / (bulkTier.quantity_in_grams || 1);
+        } else {
+          pricePerGram =
+            smallTier.price_per_gms || smallTier.price / (smallTierLimit || 1);
         }
+
+        const price = quantityInGrams * pricePerGram;
+        return total + Math.round(price * 100) / 100;
       }
 
       // Last resort: use ingredient price if available
@@ -163,6 +175,8 @@ const Hero = ({ product_details }: Props) => {
     const basePrice = isCustomized
       ? customIngredientsTotal
       : selectedVariant?.price || 0;
+
+    console.log("basePrice", basePrice);
     const total = basePrice + spiceLevelPrice + grindingPrice;
     return Math.round(total * 100) / 100; // Round to 2 decimal places
   }, [
@@ -208,11 +222,10 @@ const Hero = ({ product_details }: Props) => {
   };
 
   const rawText =
-    product_details.product_info ||
-    product_details.meta_keywords ||
+    product_details.product_information ||
     "No additional information available.";
 
-  const formattedText = rawText.split("\n");
+  const formattedText = rawText.split("<br>");
   return (
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
@@ -227,7 +240,7 @@ const Hero = ({ product_details }: Props) => {
       <div className="flex lg:flex-row flex-col relative ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] ~gap-[1rem]/[3rem]">
         <div className="lg:w-[60%] flex flex-col-reverse h-full lg:sticky lg:~top-[4.5rem]/[6.9rem] lg:flex-row gap-[1.5rem]">
           <div className="flex flex-row max-lg:overflow-x-auto no-scrollbar lg:flex-col gap-[0.625rem]">
-            {product_details.images.map((image, index) => (
+            {product_details.images?.map((image, index) => (
               <div
                 key={index}
                 className="size-[5.25rem] shrink-0 relative overflow-hidden rounded-[8px] bg-[#FFF5E7] cursor-pointer hover:opacity-80 transition-opacity"
@@ -258,7 +271,7 @@ const Hero = ({ product_details }: Props) => {
 
             <div className="relative aspect-square">
               <Image
-                src={selectedImage}
+                src={selectedImage || ""}
                 alt="Product"
                 fill
                 className="object-cover transition-transform duration-200 ease-out"
@@ -304,15 +317,15 @@ const Hero = ({ product_details }: Props) => {
                       {isSelected ? (
                         <div className="p-[0.125rem] bg-gradient-to-b from-[#EC5715] to-[#FF7E00] w-fit rounded-[0.625rem]">
                           <div className="px-[1.125rem] bg-[#F8F5EE] rounded-[0.5rem] text-[0.75rem] font-medium py-[0.375rem]">
-                            {variant.name}
-                            {variant.unit}
+                            {variant.formatted_name}
+                            {variant.formatted_unit}
                           </div>
                         </div>
                       ) : (
                         <div className="p-[0.125rem] bg-[#f8f5ee] w-fit rounded-[0.625rem]">
                           <div className="px-[1.125rem] bg-[#F8F5EE] rounded-[0.5rem] text-[0.75rem] font-medium py-[0.375rem]">
-                            {variant.name}
-                            {variant.unit}
+                            {variant.formatted_name}
+                            {variant.formatted_unit}
                           </div>
                         </div>
                       )}
@@ -330,7 +343,7 @@ const Hero = ({ product_details }: Props) => {
                     style={{
                       background:
                         "linear-gradient(135deg, #EC5715 0%, #FF7E00 100%)",
-                      borderRadius: "4px 12px 12px 4px",
+                      borderRadius: "8px 8px 8px 8px",
                       boxShadow: "0 2px 12px rgba(236, 87, 21, 0.35)",
                     }}
                   >
@@ -653,7 +666,7 @@ const Hero = ({ product_details }: Props) => {
           <div className="~pt-[1.125rem]/[1.5rem]">
             <div className={`grid ~gap-[0.75rem]/[1rem] `}>
               <CartButton
-                section={product_details.category_name}
+                section={product_details.category_name || ""}
                 item={product_details}
                 selectedVariant={selectedVariant}
                 customIngredients={customizedIngredients}
@@ -694,7 +707,7 @@ const Hero = ({ product_details }: Props) => {
               })}
             </div>
 
-            <div className="~pt-[0.75rem]/[2.5rem] ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-[#0000008F] leading-[120%]">
+            <div className="~pt-[0.75rem]/[2.5rem] ~text-[0.875rem]/[1rem] tracking-[-0.03em] text-black  leading-[130%]">
               {activeTab === "description" && (
                 <p>{product_details.description}</p>
               )}
@@ -707,7 +720,7 @@ const Hero = ({ product_details }: Props) => {
                       <span key={index} className="block">
                         {value ? (
                           <>
-                            <span className="font-semibold  text-main">
+                            <span className="font-medium  text-[#0000008F]">
                               {title}:
                             </span>
                             <span> {value.trim()}</span>

@@ -168,7 +168,6 @@ export const frontendApi = {
       product_type: number;
       variant_id: number;
       quantity: number;
-      customer_note: "Pack properly";
       yadi_variant?: {
         variant_id: number;
         ingredients: { raw_material_id: number; quantity: number }[];
@@ -176,7 +175,7 @@ export const frontendApi = {
       spice_level?: number;
       has_grind?: boolean;
     }[];
-    customer_id: number;
+    order_type: 1 | 2;
     promo_code: string;
   }): Promise<{
     id: string;

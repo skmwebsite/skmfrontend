@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import hero1 from "@public/images/hero-bg.png";
-import hero2 from "@public/images/banner-2.png";
-import hero3 from "@public/images/banner-3.png";
+import hero1 from "@public/assets/Banner1.png";
+import hero2 from "@public/assets/Banner2.png";
+import hero3 from "@public/assets/Banner3.png";
 import Arrow from "@/src/components/svg/Arrow";
 import Link from "next/link";
 

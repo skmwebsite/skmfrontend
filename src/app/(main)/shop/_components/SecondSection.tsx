@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import ProductCard from "@/src/app/_components/ProductCard";
 import { TShop } from "@/src/api/type";
+import SearchIcon from "@/src/components/svg/SearchIcon";
+import { useDebounce } from "@/src/hooks/useDebounce";
 
 type Props = {
   menuitems: TShop[];
@@ -13,16 +15,28 @@ type Props = {
 
 const SecondSection = ({ menuitems }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const isResponsiveUi = useMediaQuery("(max-width: 1024px)");
 
   const [activeSection, setActiveSection] = useState<string>("");
 
+  const isClickScrollingRef = useRef(false);
+
+  // Filter menu items based on search term
+  const filteredMenuItems = menuitems.filter((section) => {
+    if (debouncedSearchTerm === "") {
+      return true;
+    }
+    return section.products.some((product) =>
+      product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
+    );
+  });
+
   if (menuitems.length === 0) {
     return null;
   }
-
-  const isClickScrollingRef = useRef(false);
 
   useEffect(() => {
     if (!menuitems?.length) {
@@ -103,6 +117,14 @@ const SecondSection = ({ menuitems }: Props) => {
       isClickScrollingRef.current = false;
     }, 1000);
   };
+
+  // Scroll to top when search is performed
+  useEffect(() => {
+    if (debouncedSearchTerm !== "") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [debouncedSearchTerm]);
+
   if (isResponsiveUi) {
     return (
       <div className="relative min-h-[calc(100vh-16rem)] w-full">
@@ -114,16 +136,29 @@ const SecondSection = ({ menuitems }: Props) => {
             Explore our range of spices, seasonings, and more.
           </p>
         </div>
-        <div className="sticky ~top-[3.87rem]/[5.6rem] z-[600]">
+
+        {/* Search input for mobile */}
+        <div className="sticky ~top-[3.87rem]/[5.6rem] z-[600] bg-white pt-[0.5rem]">
+          <div className="relative ~px-[1rem]/[1.5rem] pb-[0.5rem]">
+            <SearchIcon className="left-[1.8rem] absolute top-1/2 -translate-y-1/2 size-[1rem] lg:hidden" />
+            <input
+              type="text"
+              placeholder="Search for products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="lg:hidden border border-main/60 pl-[2.5rem] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[1rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~pr-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+            />
+          </div>
+
           <div
             className="no-scrollbar ~text-[0.75rem]/[1rem] font-medium tracking-[-0.03em] ~px-[1rem]/[1.5rem] flex w-full gap-[1.5rem] overflow-x-auto bg-white py-[0.5rem] lg:hidden"
             ref={scrollContainerRef}
           >
-            {menuitems?.map((section) => {
+            {filteredMenuItems?.map((section) => {
               const slug = section.slug;
               return (
                 <motion.button
-                  className="flex shrink-0  "
+                  className="flex shrink-0"
                   data-section={slug}
                   key={slug}
                   layoutId={`position-${slug}`}
@@ -132,10 +167,10 @@ const SecondSection = ({ menuitems }: Props) => {
                 >
                   <span
                     style={{ color: section.colour }}
-                    className={`shrink-0 grow-1   cursor-pointer ${
+                    className={`shrink-0 grow-1 cursor-pointer ${
                       activeSection === slug &&
                       "underline decoration-[1px] underline-offset-2"
-                    } uppercase  `}
+                    } uppercase`}
                   >
                     {section.name}
                   </span>
@@ -144,28 +179,29 @@ const SecondSection = ({ menuitems }: Props) => {
             })}
           </div>
         </div>
+
         <div>
-          <div className="relative pt-[1rem] ~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem]  flex gap-[1rem] flex-col ">
-            {menuitems?.map((section) => {
+          <div className="relative pt-[1rem] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] flex gap-[1rem] flex-col">
+            {filteredMenuItems?.map((section) => {
               const slug = section.slug;
               return (
                 <div key={slug}>
                   <div
                     style={{ color: section.colour }}
-                    className={`~text-[1rem]/[1.5rem]  flex ~gap-[0.625rem]/[0.75rem] mt-[0.75rem] mb-[1.5rem] whitespace-nowrap uppercase leading-[120%] tracking-[-0.03em] items-center font-semibold `}
+                    className="~text-[1rem]/[1.5rem] flex ~gap-[0.625rem]/[0.75rem] mt-[0.75rem] mb-[1.5rem] whitespace-nowrap uppercase leading-[120%] tracking-[-0.03em] items-center font-semibold"
                   >
                     <div
                       style={{ backgroundColor: section.colour }}
-                      className={`~size-[0.625rem]/[0.875rem] shrink-0 rounded-full `}
-                    ></div>
+                      className="~size-[0.625rem]/[0.875rem] shrink-0 rounded-full"
+                    />
                     {section.name}{" "}
                     <div className="~text-[0.875rem]/[1.25rem] font-normal tracking-[-0.54px]">
                       ({section.products.length})
                     </div>
-                    <div className="h-[1px] ~ml-[0.5rem]/[0.75rem] w-full bg-[#D9D9D9]"></div>
+                    <div className="h-[1px] ~ml-[0.5rem]/[0.75rem] w-full bg-[#D9D9D9]" />
                   </div>
                   <div key={slug} id={slug}>
-                    <div key={slug} className="grid grid-cols-2 gap-[1rem] ">
+                    <div key={slug} className="grid grid-cols-2 gap-[1rem]">
                       {section.products.map((item) => (
                         <ProductCard
                           key={item.id}
@@ -178,7 +214,7 @@ const SecondSection = ({ menuitems }: Props) => {
                 </div>
               );
             })}
-            {menuitems.length === 0 && (
+            {filteredMenuItems.length === 0 && (
               <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
                 <p className="~text-[1rem]/[1.5rem] font-neueHaasMedium text-redcolor/70">
                   No items found.
@@ -196,9 +232,9 @@ const SecondSection = ({ menuitems }: Props) => {
   }
 
   return (
-    <div className="relative flex min-h-[calc(100vh-16rem)] ~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem] ~pt-[1.6875rem]/[4.625rem] gap-[2.2875rem] w-full ">
-      <div className="~w-[12rem]/[15.625rem] shrink-0">
-        <div className="sticky top-[7rem]">
+    <div className="relative flex min-h-[calc(100vh-16rem)] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] gap-[2.2875rem] w-full">
+      <div className="~w-[12rem]/[15.625rem] ~pt-[1.6875rem]/[6.75rem]  shrink-0">
+        <div className="sticky  top-[7rem]">
           <div
             data-lenis-prevent
             className="relative overflow-y-auto no-scrollbar max-h-[calc(100vh-8rem)]"
@@ -210,7 +246,7 @@ const SecondSection = ({ menuitems }: Props) => {
               Explore our range of spices, seasonings, and more.
             </p>
             <div className="pt-[1rem] flex flex-col gap-[0.5rem]">
-              {menuitems?.map((section) => {
+              {filteredMenuItems?.map((section) => {
                 const slug = section.slug;
                 return (
                   <motion.button
@@ -223,7 +259,7 @@ const SecondSection = ({ menuitems }: Props) => {
                     <div className="flex items-center gap-[0.75rem]">
                       <div className="size-[0.875rem] rounded-full bg-[#EBEBEB] relative overflow-hidden">
                         <motion.div
-                          className={`absolute inset-0 rounded-full`}
+                          className="absolute inset-0 rounded-full"
                           initial={false}
                           style={{ backgroundColor: section.colour }}
                           animate={{
@@ -274,48 +310,66 @@ const SecondSection = ({ menuitems }: Props) => {
       </div>
 
       <div className="w-full">
-        {menuitems.length === 0 ? (
-          <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
-            <p className="~text-[1rem]/[1.5rem] font-bold text-main/70">
-              No items found.
-            </p>
+        <div className="mb-10 z-[999] sticky ~pt-[4.5rem]/[6.75rem] ~rounded-b-[0.5rem]/[1rem] bg-white top-[0rem]">
+          <div className="relative">
+            <SearchIcon className="left-4 absolute top-1/2 -translate-y-1/2 size-[1rem]" />
+            <input
+              type="text"
+              placeholder="Search for products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-main/60 pl-[2.5rem] text-[#0000008F] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[1rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~pr-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+            />
           </div>
-        ) : (
-          <div className="">
-            {menuitems?.map((section) => {
-              const slug = section.slug;
-              return (
-                <motion.div
-                  className="bg-white"
-                  id={slug}
-                  key={slug}
-                  layoutId={`menu-${slug}`}
-                >
-                  <div
-                    style={{ color: section.colour }}
-                    className={`text-[1.5rem]  flex gap-[0.75rem] whitespace-nowrap uppercase leading-[120%] tracking-[-0.54px] items-center font-semibold`}
+        </div>
+
+        <div className="w-full">
+          {filteredMenuItems.length === 0 ? (
+            <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
+              <p className="~text-[1rem]/[1.5rem] font-bold text-main/70">
+                No items found.
+              </p>
+            </div>
+          ) : (
+            <div>
+              {filteredMenuItems?.map((section) => {
+                const slug = section.slug;
+                return (
+                  <motion.div
+                    className="bg-white"
+                    id={slug}
+                    key={slug}
+                    layoutId={`menu-${slug}`}
                   >
-                    <div className="size-[0.875rem] shrink-0 rounded-full"></div>
-                    {section.name}{" "}
-                    <div className="text-[1.25rem] font-normal tracking-[-0.54px]">
-                      ({section.products.length})
-                    </div>
-                    <div className="h-[1px] ml-[12px] w-full bg-[#D9D9D9]"></div>
-                  </div>
-                  <div className="hidden grid-cols-1 ~pt-[1rem]/[2.3125rem] ~pb-[1rem]/[3.75rem] ~gap-[1.5rem]/[3rem] md:grid lg:grid-cols-2 xl:grid-cols-3">
-                    {section.products.map((item) => (
-                      <ProductCard
-                        section={section.name}
-                        key={item.id}
-                        item={item}
+                    <div
+                      style={{ color: section.colour }}
+                      className="text-[1.5rem] flex gap-[0.75rem] whitespace-nowrap uppercase leading-[120%] tracking-[-0.54px] items-center font-semibold"
+                    >
+                      <div
+                        style={{ backgroundColor: section.colour }}
+                        className="size-[0.875rem] shrink-0 rounded-full"
                       />
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+                      {section.name}{" "}
+                      <div className="text-[1.25rem] font-normal tracking-[-0.54px]">
+                        ({section.products.length})
+                      </div>
+                      <div className="h-[1px] ml-[12px] w-full bg-[#D9D9D9]" />
+                    </div>
+                    <div className="hidden grid-cols-1 ~pt-[1rem]/[2.3125rem] ~pb-[1rem]/[3.75rem] ~gap-[1.5rem]/[3rem] md:grid lg:grid-cols-2 xl:grid-cols-3">
+                      {section.products.map((item) => (
+                        <ProductCard
+                          section={section.name}
+                          key={item.id}
+                          item={item}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
