@@ -165,13 +165,10 @@ export const frontendApi = {
   createOrder: async (body: {
     items: {
       product_id: number;
-      product_type: number;
+
       variant_id: number;
       quantity: number;
-      yadi_variant?: {
-        variant_id: number;
-        ingredients: { raw_material_id: number; quantity: number }[];
-      };
+      yadi_ingredients?: { raw_material_id: number; quantity: number }[];
       spice_level?: number;
       has_grind?: boolean;
     }[];

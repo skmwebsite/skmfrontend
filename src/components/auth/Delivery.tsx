@@ -286,10 +286,7 @@ const prepareOrderItems = (items: any[]) => {
           price_per_unit: ing.pricePerUnit,
         }));
 
-        orderItem.yadi_variant = {
-          variant_id: item.variantId,
-          ingredients: ingredients,
-        };
+        orderItem.yadi_ingredients = ingredients;
       }
 
       return orderItem;
@@ -338,15 +335,12 @@ const Delivery = ({
     mutationFn: async (orderData: {
       items: {
         product_id: number;
-        product_type: number;
+        // product_type: number;
         variant_id: number;
         quantity: number;
-        yadi_variant: {
-          variant_id: number;
-          ingredients: { raw_material_id: number; quantity: number }[];
-        };
-        spice_level: number;
-        has_grind: boolean;
+        yadi_ingredients?: { raw_material_id: number; quantity: number }[];
+        spice_level?: number;
+        has_grind?: boolean;
       }[];
       order_type: 1 | 2;
       promo_code: string;
