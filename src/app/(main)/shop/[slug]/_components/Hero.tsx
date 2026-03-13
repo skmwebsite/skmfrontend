@@ -105,17 +105,19 @@ const Hero = ({ product_details }: Props) => {
     const spiceQuantity = parseFloat(selectedSpiceLevel.quantity_in_gm) || 0;
     if (spiceQuantity === 0) return 0;
 
-    const pricePerGram = selectedSpiceLevel.price / spiceQuantity;
-
-    return totalIngredientsWeight * pricePerGram;
-  }, [selectedSpiceLevel, totalIngredientsWeight]);
+    // Use direct price from spice level
+    return selectedSpiceLevel.price;
+  }, [selectedSpiceLevel]);
 
   const grindingPrice = useMemo(() => {
     if (grinding !== "Yes" || selectedVariant?.has_grind !== 1) return 0;
 
-    const weightInKg = totalIngredientsWeight / 1000;
+    const spiceQuantity =
+      parseFloat(selectedSpiceLevel?.quantity_in_gm || "0") || 0;
+    const totalWeightIncludingSpice = totalIngredientsWeight + spiceQuantity;
+    const weightInKg = totalWeightIncludingSpice / 1000;
     return selectedVariant.grind_price * weightInKg;
-  }, [grinding, selectedVariant, totalIngredientsWeight]);
+  }, [grinding, selectedVariant, selectedSpiceLevel, totalIngredientsWeight]);
 
   const customIngredientsTotal = useMemo(() => {
     if (!isCustomized || !customizedIngredients) return 0;
@@ -230,6 +232,7 @@ const Hero = ({ product_details }: Props) => {
     <div>
       <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
         <Link
+          prefetch={false}
           href={`/shop#${product_details.category_slug}`}
           className="flex gap-[0.45rem] ~mb-[0.75rem]/[1rem] px-[0.875rem] ~text-[0.875rem]/[1rem] py-[0.5rem] rounded-full w-fit hover:bg-[#F8F5EE] duration-300 ease-in-out transition-all"
         >
@@ -601,33 +604,6 @@ const Hero = ({ product_details }: Props) => {
                               +₹{spiceLevelPrice.toFixed(2)}
                             </span>
                           </div>
-                          <div className="pl-3 ~text-[0.625rem]/[0.75rem] text-[#00000066]">
-                            <div className="flex justify-between">
-                              <span>
-                                Spice quantity:{" "}
-                                {selectedSpiceLevel.quantity_in_gm}g
-                              </span>
-                              <span>
-                                ₹{selectedSpiceLevel.price.toFixed(2)}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>
-                                Ingredients weight:{" "}
-                                {totalIngredientsWeight.toFixed(0)}g
-                              </span>
-                              <span>
-                                ₹
-                                {(
-                                  selectedSpiceLevel.price /
-                                  parseFloat(
-                                    selectedSpiceLevel.quantity_in_gm || "1",
-                                  )
-                                ).toFixed(4)}
-                                /g
-                              </span>
-                            </div>
-                          </div>
                         </div>
                       )}
 
@@ -649,6 +625,15 @@ const Hero = ({ product_details }: Props) => {
                                 {(totalIngredientsWeight / 1000).toFixed(3)}kg
                               </span>
                             </div>
+                            {selectedSpiceLevel &&
+                              selectedSpiceLevel.price > 0 && (
+                                <div className="flex justify-between">
+                                  <span>Spice quantity</span>
+                                  <span>
+                                    {selectedSpiceLevel.quantity_in_gm}g
+                                  </span>
+                                </div>
+                              )}
                           </div>
                         </div>
                       )}

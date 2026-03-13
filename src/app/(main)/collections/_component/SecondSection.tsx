@@ -19,6 +19,7 @@ const SecondSection = ({ collections }: Props) => {
       {yadiCollection && (
         <div className="~pt-[2.125rem]/[5rem]">
           <Link
+            prefetch={false}
             href={`/shop#${yadiCollection.slug}`}
             className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem] flex md:flex-row flex-col gap-[2rem] justify-between relative items-center pt-[7.4375rem] pb-[2.875rem] md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]"
           >

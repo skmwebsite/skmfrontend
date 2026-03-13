@@ -154,7 +154,7 @@ const Header = () => {
                 <BorderRadius className="text-white absolute ~size-[0.6428571343rem]/[1.125rem] ~right-[0.745rem]/[1.5rem] max-lg:~bottom-[-0.6428571343rem]/[-1.125rem] lg:~left-[27rem]/[33rem] z-30 max-lg:rotate-90 lg:top-0" />
 
                 <motion.div className="flex gap-[1rem] max-lg:justify-between items-center ~rounded-br-[0.5rem]/[1rem] max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem] w-full lg:~w-[27rem]/[33rem] bg-white">
-                  <Link href={"/"}>
+                  <Link prefetch={false} href={"/"}>
                     <div className="flex items-center justify-center gap-[0.5rem]">
                       <Logo className="~w-[3rem]/[5.8555626869rem] shrink-0" />
                       <p className="font-bold leading-[120%] tracking-[-0.03em] lg:hidden text-main ~text-[0.75rem]/[0.875rem]">
@@ -164,6 +164,7 @@ const Header = () => {
                   </Link>
                   <div className="lg:flex hidden gap-[0.5rem] items-center font-inter font-medium text-[1rem] text-[#1A1A1A] leading-[1.3125rem] tracking-[-0.035em]">
                     <Link
+                      prefetch={false}
                       href={"/shop"}
                       className={`px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/shop")
@@ -174,6 +175,7 @@ const Header = () => {
                       Shop
                     </Link>
                     <Link
+                      prefetch={false}
                       href={"/collections"}
                       className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/collections")
@@ -184,6 +186,7 @@ const Header = () => {
                       Collections
                     </Link>
                     <Link
+                      prefetch={false}
                       href={"/about"}
                       className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#F8F5EE] hover:text-main hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/about")
@@ -264,7 +267,7 @@ const Header = () => {
                   transition={{ duration: 0.3 }}
                   className="flex gap-[1rem] items-center max-lg:justify-between max-lg:shadow-sm  ~rounded-[0.5rem]/[1rem]  max-lg:py-[1rem] py-[0.75rem] ~px-[0.75rem]/[1.5rem] max-lg:~px-[1rem]/[2rem]  w-full lg:~w-[27rem]/[33rem] bg-white  "
                 >
-                  <Link href={"/"}>
+                  <Link prefetch={false} href={"/"}>
                     <div className="flex items-center justify-center gap-[0.5rem]">
                       <Logo className="~w-[3rem]/[5.8555626869rem] shrink-0" />
                       <p className="font-bold leading-[120%] tracking-[-0.03em] lg:hidden text-main ~text-[0.75rem]/[0.875rem]">
@@ -274,6 +277,7 @@ const Header = () => {
                   </Link>
                   <div className="lg:flex hidden gap-[0.5rem] items-center font-inter font-medium text-[1rem] text-[#1A1A1A] leading-[1.3125rem] tracking-[-0.035em]">
                     <Link
+                      prefetch={false}
                       href={"/shop"}
                       className={`px-[0.875rem] py-[0.5rem] leading-[100%] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/shop")
@@ -284,6 +288,7 @@ const Header = () => {
                       Shop
                     </Link>
                     <Link
+                      prefetch={false}
                       href={"/collections"}
                       className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/collections")
@@ -294,6 +299,7 @@ const Header = () => {
                       Collections
                     </Link>
                     <Link
+                      prefetch={false}
                       href={"/about"}
                       className={`px-[0.875rem] leading-[100%] py-[0.5rem] hover:bg-[#9A2923]/10 hover:rounded-[0.5rem] transition-all duration-300 ease-in-out ${
                         isActive("/about")
@@ -373,7 +379,7 @@ const Header = () => {
             >
               <div className="flex items-center justify-between">
                 {" "}
-                <Link href={"/"}>
+                <Link prefetch={false} href={"/"}>
                   <div
                     onClick={() => setOpen(!open)}
                     className="flex items-center justify-center gap-[0.5rem]"
@@ -391,6 +397,7 @@ const Header = () => {
               </div>
               <div className="pt-[2.25rem] space-y-[0.85rem]  ">
                 <Link
+                  prefetch={false}
                   onClick={() => setOpen(!open)}
                   href={"/shop"}
                   className={`~text-[0.875rem]/[1rem] flex ~pb-[0.25rem]/[0.5rem] leading-[155%] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
@@ -401,6 +408,7 @@ const Header = () => {
                   Shop
                 </Link>
                 <Link
+                  prefetch={false}
                   onClick={() => setOpen(!open)}
                   href={"/collections"}
                   className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
@@ -410,6 +418,7 @@ const Header = () => {
                   Collections
                 </Link>
                 <Link
+                  prefetch={false}
                   onClick={() => setOpen(!open)}
                   href={"/about"}
                   className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
@@ -420,6 +429,7 @@ const Header = () => {
                   About Us
                 </Link>
                 <Link
+                  prefetch={false}
                   onClick={() => setOpen(!open)}
                   href={"/contact-us"}
                   className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${

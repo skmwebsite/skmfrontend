@@ -6,7 +6,7 @@ import {
   isMaxWeightReached,
   getMaxItemCount,
 } from "@/src/hooks/useCart";
-import bag from "@public/images/empty-bag.png";
+import bag from "@public/images/shopping-cart-market.png";
 import {
   Dialog,
   DialogPanel,

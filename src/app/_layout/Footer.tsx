@@ -95,24 +95,28 @@ const Footer = () => {
                 Pages
               </h4>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/"
               >
                 Home
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/shop"
               >
                 Shop
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/collections"
               >
                 Collections
               </Link>{" "}
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/about"
               >
@@ -124,30 +128,35 @@ const Footer = () => {
                 Information
               </h4>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/terms-and-conditions"
               >
                 Terms & Conditions
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/privacy-and-policy"
               >
                 Privacy policy
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/shipping-and-cancellation-policy"
               >
                 Shipping & Cancellation
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/return-and-refund-policy"
               >
                 Return, Refund & Replacement
               </Link>
               <Link
+                prefetch={false}
                 className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
                 href="/contact-us"
               >

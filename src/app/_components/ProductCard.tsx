@@ -62,6 +62,7 @@ const ProductCard = ({ item, section }: Props) => {
   return (
     <div className="">
       <Link
+        prefetch={false}
         href={`/shop/${item.slug}`}
         className="bg-cream group cursor-pointer relative overflow-hidden items-center flex w-full justify-center rounded-[0.75rem]"
       >
@@ -204,6 +205,7 @@ const ProductCard = ({ item, section }: Props) => {
         <div className="~mt-[0.5rem]/[0.75rem]">
           {item.product_type === 2 ? (
             <Link
+              prefetch={false}
               href={`/shop/${item.slug}`}
               className="~text-[0.75rem]/[1rem] overflow-hidden relative group w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white ~py-[0.75rem]/[0.78125rem]"
             >

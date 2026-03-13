@@ -370,7 +370,10 @@ export const useMenuCart = () => {
     }
 
     if (selectedSpiceLevel && selectedSpiceLevel.price > 0) {
-      totalPrice += selectedSpiceLevel.price;
+      const spiceQuantity = parseFloat(selectedSpiceLevel.quantity_in_gm) || 0;
+      if (spiceQuantity > 0) {
+        totalPrice += selectedSpiceLevel.price;
+      }
     }
 
     if (grinding === "Yes" && selectedVariant?.has_grind === 1) {
@@ -378,8 +381,13 @@ export const useMenuCart = () => {
       const unit = selectedVariant?.unit?.toLowerCase() || "gm";
       const variantKg = convertToKg(parseFloat(variantName), unit);
 
+      // Include spice level quantity in total weight for grinding
+      const spiceQuantity = parseFloat(selectedSpiceLevel?.quantity_in_gm) || 0;
+      const spiceWeightKg = spiceQuantity / 1000;
+      const totalWeightKg = variantKg + spiceWeightKg;
+
       if (selectedVariant.grind_price) {
-        totalPrice += selectedVariant.grind_price * variantKg;
+        totalPrice += selectedVariant.grind_price * totalWeightKg;
       }
     }
 

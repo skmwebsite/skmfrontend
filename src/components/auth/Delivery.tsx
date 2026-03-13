@@ -59,8 +59,8 @@ const SHOP_ADDRESS = {
   pincode: "422008",
   fullAddress:
     "Shop No 2, Om Plaza, Trimurti Chowk, Trimurti-Kamatwade road, Nashik, Maharashtra - 422008",
-  phone: "+91 1234567890",
-  email: "info@shreekakajimasale.com",
+  phone: "+91 7277331111",
+  email: "shreekakajimasalensk@gmail.com",
 };
 
 const convertToKg = (quantity: number, unit: string): number => {
@@ -700,7 +700,7 @@ const Delivery = ({
             )}
             <div className="flex justify-between">
               <span>Total weight:</span>
-              <span>{deliveryCalculation.totalWeight.toFixed(2)} kg</span>
+              <span>{deliveryCalculation.totalWeight} kg</span>
             </div>
           </div>
         </div>

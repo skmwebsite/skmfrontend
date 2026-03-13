@@ -25,6 +25,7 @@ const OrderDetailsPage = () => {
       if (!id) throw new Error("Order ID is required");
       const response = await frontendApi.getOrderDetails(id as string);
 
+      console.log("response", response);
       return {
         transaction_id: response.data?.transaction_id,
         order_id: response.data?.order_id,
@@ -48,6 +49,7 @@ const OrderDetailsPage = () => {
     gcTime: 10 * 60 * 1000,
   });
 
+  console.log("orderDetails", orderDetails);
   useEffect(() => {
     if (orderDetails && orderDetails.order_status !== null) {
       emptyCart();
@@ -241,6 +243,7 @@ const OrderDetailsPage = () => {
         )}
         <div className="grid sm:grid-cols-2 ~gap-[0.75rem]/[1rem]">
           <Link
+            prefetch={false}
             href="/shop"
             className="~text-[0.75rem]/[1rem] h-fit group overflow-hidden relative w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-[#F8F5EE] font-medium text-black py-[0.78125rem]"
           >
@@ -250,6 +253,7 @@ const OrderDetailsPage = () => {
             </span>
           </Link>
           <Link
+            prefetch={false}
             href="/"
             className="relative ~text-[0.75rem]/[1rem] group overflow-hidden  w-full flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white py-[0.78125rem]"
           >

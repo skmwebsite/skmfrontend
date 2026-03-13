@@ -9,7 +9,7 @@ type Props = {
 
 const CategoryCard = ({ category }: Props) => {
   return (
-    <Link href={`/shop#${category.slug}`} className="group">
+    <Link prefetch={false} href={`/shop#${category.slug}`} className="group">
       <div className="bg-cream cursor-pointer overflow-hidden  relative items-center flex w-full justify-center rounded-[1rem]">
         <div className="bg-main text-white ~text-[0.75rem]/[0.875rem] leading-[120%] tracking-[-0.03em] px-[1rem] py-[0.5rem] group-hover:opacity-100 opacity-0 transition-opacity ease-in-out duration-500 absolute bottom-0 left-0 rounded-tr-[1rem]">
           {category.products_count} Products

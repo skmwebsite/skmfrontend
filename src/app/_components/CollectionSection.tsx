@@ -25,7 +25,11 @@ const CollectionSection = ({ categories }: Props) => {
         {categories.slice(0, 5).map((item, i) => (
           <CategoryCard key={i} category={item} />
         ))}{" "}
-        <Link href={"/collections"} className="group min-h-[16.0625rem] h-full">
+        <Link
+          prefetch={false}
+          href={"/collections"}
+          className="group min-h-[16.0625rem] h-full"
+        >
           <div className="bg-cream cursor-pointer h-full relative items-center flex w-full justify-center rounded-[0.75rem]">
             <div className="  leading-[120%] tracking-[-0.05em] text-main font-medium ~text-[1.5rem]/[3rem] ">
               View All

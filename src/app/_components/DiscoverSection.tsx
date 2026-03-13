@@ -1,8 +1,8 @@
 import React from "react";
-import discover from "@public/images/discover.png";
-import Image from "next/image";
+// import discover from "@public/images/discover.png";
+// import Image from "next/image";
 import BorderRadius from "@/src/components/svg/BorderRadius";
-import Arrow from "@/src/components/svg/Arrow";
+// import Arrow from "@/src/components/svg/Arrow";
 import Discover from "@/src/components/svg/Discover";
 import Refresh from "@/src/components/svg/Refresh";
 import Sheild from "@/src/components/svg/Sheild";
@@ -20,7 +20,7 @@ const DiscoverSection = () => {
           Our time-tested process delivers unmatched quality.
         </p>
       </div>
-      <div className="w-full group cursor-pointer relative ~mt-[1.5rem]/[3rem] flex justify-center items-center overflow-hidden  ~h-[25rem]/[32.1993751526rem]">
+      {/* <div className="w-full group cursor-pointer relative ~mt-[1.5rem]/[3rem] flex justify-center items-center overflow-hidden  ~h-[25rem]/[32.1993751526rem]">
         <p className="~text-[1rem]/[3rem] leading-[120%] max-w-[30ch] z-20 text-center text-white font-medium tracking-[-0.04em]">
           Crafted with care for the perfect taste Experience the richness in
           every bite
@@ -46,7 +46,7 @@ const DiscoverSection = () => {
             <Arrow className="size-[1.25rem] text-main   transition-all group-hover:text-white duration-700 ease-in-out  -rotate-45" />
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid lg:grid-cols-3 ~pt-[1.5rem]/[3rem] ~gap-[1rem]/[3rem]">
         <div className="bg-cream  ~rounded-[0.75rem]/[1rem] relative ~p-[1.875rem]/[2rem]">

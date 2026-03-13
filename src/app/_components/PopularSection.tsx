@@ -23,6 +23,7 @@ const PopularSection = ({ popularProduct }: Props) => {
           </p>
         </div>
         <Link
+          prefetch={false}
           className="~text-[0.75rem]/[1rem] md:flex hidden font-medium leading-[120%] tracking-[-0.03em] hover:text-main hover:bg-[#F8F5EE] text-[#1A1A1A] px-[0.875rem] py-[0.5rem] hover:rounded-[0.5rem] transition-all duration-300 ease-in-out"
           href={"/shop"}
         >
@@ -37,7 +38,7 @@ const PopularSection = ({ popularProduct }: Props) => {
       </div>
 
       <div className="~pt-[2.125rem]/[7.625rem]">
-        <Link href={"/shop#yadi"}>
+        <Link prefetch={false} href={"/shop#yadi"}>
           <div className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem]  flex md:flex-row flex-col gap-[2rem] justify-between relative items-center ~pt-[5rem]/[7.4375rem] pb-[2.875rem]  md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]">
             <div className="flex flex-col items-center md:items-start">
               <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center bg-clip-text bg-gradient-to-b from-[#000000] to-[#666666] md:text-white  font-medium leading-[120%] tracking-[-0.05em]">

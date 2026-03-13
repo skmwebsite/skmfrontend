@@ -98,6 +98,7 @@ const SecondSection = ({ popular_products }: Props) => {
             </p>
           </div>
           <Link
+            prefetch={false}
             className="~text-[0.75rem]/[1rem] md:flex hidden font-medium leading-[120%] tracking-[-0.03em] hover:bg-main/10 text-[#1A1A1A] px-[0.875rem] py-[0.5rem] hover:rounded-full transition-all duration-300 ease-in-out"
             href={"/shop"}
           >

@@ -110,6 +110,7 @@ const HeroSection = () => {
             </motion.div>
           </AnimatePresence>
           <Link
+            prefetch={false}
             href={"/shop"}
             className="relative overflow-hidden rounded-full bg-main text-white p-[0.125rem] ~w-[9.5625rem]/[13rem] flex items-center justify-end ~text-[0.75rem]/[1rem] tracking-[-0.03em] leading-[120%] font-medium group"
           >
