@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import ProductCard from "@/src/app/_components/ProductCard";
 import { TShop } from "@/src/api/type";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   menuitems: TShop[];
@@ -14,7 +14,7 @@ type Props = {
 
 const SecondSection = ({ menuitems }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  const router = useRouter();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("q") ?? "";
 
@@ -33,7 +33,11 @@ const SecondSection = ({ menuitems }: Props) => {
       product.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
-
+  const handleClearSearch = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("q");
+    router.push(`?${params.toString()}`);
+  };
   if (menuitems.length === 0) {
     return null;
   }
@@ -125,6 +129,51 @@ const SecondSection = ({ menuitems }: Props) => {
     }
   }, [searchTerm]);
 
+  const SearchHeader = () => {
+    if (searchTerm === "") return null;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        className=" ~mb-[0.5rem]/[1.5rem] flex items-center justify-between "
+      >
+        <div className="flex items-center text-[#1A1A1ABF] pt-[0.5rem] leading-[130%] tracking-[-0.02em] ~text-[0.85rem]/[1rem] gap-2">
+          <span className="">Search Results for:</span>
+          <span className=" capitalize font-semibold text-main">
+            {searchTerm}
+          </span>
+        </div>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleClearSearch}
+          className="flex items-center gap-2 ~px-[0.75rem]/[1rem] ~py-[0.3rem]/[0.5rem]  ~text-[0.875rem]/[1rem] bg-[#F8F5EE] hover:bg-main hover:text-white rounded-full text-sm font-medium text-main transition-colors duration-300"
+        >
+          <label>
+            Clear <span className="max-md:hidden">Search</span>
+          </label>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </motion.button>
+      </motion.div>
+    );
+  };
+
   if (isResponsiveUi) {
     return (
       <div className="relative min-h-[calc(100vh-16rem)] w-full">
@@ -169,6 +218,10 @@ const SecondSection = ({ menuitems }: Props) => {
         </div>
 
         <div>
+          <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] ">
+            {" "}
+            <SearchHeader />
+          </div>
           <div className="relative pt-[1rem] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] flex gap-[1rem] flex-col">
             {filteredMenuItems?.map((section) => {
               const slug = section.slug;
@@ -317,6 +370,7 @@ const SecondSection = ({ menuitems }: Props) => {
             </div>
           ) : (
             <div>
+              <SearchHeader />
               {filteredMenuItems?.map((section) => {
                 const slug = section.slug;
                 return (

@@ -103,6 +103,7 @@ const CartModal = () => {
         toast.error("Invalid promo code");
         setDiscountAmount(0);
         setPromoData(null);
+        setPromoCode("");
         return;
       }
 
@@ -221,7 +222,7 @@ const CartModal = () => {
   useEffect(() => {
     if (tempData?.is_registered === undefined) return;
 
-    setCurrentView(tempData.is_registered ? "pickup" : "delivery");
+    setCurrentView("pickup");
   }, [tempData?.is_registered]);
 
   const handleOTPVerified = () => {};
