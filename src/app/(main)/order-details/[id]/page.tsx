@@ -10,11 +10,32 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/src/hooks/useCart";
+import Location from "@/src/components/svg/Location";
+
+const SHOP_ADDRESS = {
+  name: "Shree Kakaji Masale",
+  street: "Shop No 2, Om Plaza, Trimurti Chowk",
+  city: "Nashik",
+  state: "Maharashtra",
+  pincode: "422008",
+  fullAddress:
+    "Shop No 2, Om Plaza, Trimurti Chowk, Trimurti-Kamatwade road, Nashik, Maharashtra - 422008",
+  phone: "+91 7277331111",
+  email: "shreekakajimasalensk@gmail.com",
+};
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const { emptyCart } = useCart();
+  const handleCopyAddress = () => {
+    const text = `${SHOP_ADDRESS.name}
+${SHOP_ADDRESS.fullAddress}
+Phone: ${SHOP_ADDRESS.phone}
+Email: ${SHOP_ADDRESS.email}`;
 
+    navigator.clipboard.writeText(text);
+    toast.success("Pickup address copied!");
+  };
   const {
     data: orderDetails,
     isLoading,
@@ -25,7 +46,6 @@ const OrderDetailsPage = () => {
       if (!id) throw new Error("Order ID is required");
       const response = await frontendApi.getOrderDetails(id as string);
 
-      console.log("response", response);
       return {
         transaction_id: response.data?.transaction_id,
         order_id: response.data?.order_id,
@@ -41,6 +61,7 @@ const OrderDetailsPage = () => {
         ),
         status: response.data?.status,
         order_status: response.data?.order_status,
+        order_type: response.data?.order_type,
       };
     },
     enabled: !!id,
@@ -49,7 +70,6 @@ const OrderDetailsPage = () => {
     gcTime: 10 * 60 * 1000,
   });
 
-  console.log("orderDetails", orderDetails);
   useEffect(() => {
     if (orderDetails && orderDetails.order_status !== null) {
       emptyCart();
@@ -218,6 +238,12 @@ const OrderDetailsPage = () => {
                 <span>{orderDetails.order_date}</span>
               </div>
               <div className="flex justify-between">
+                <span className="font-semibold">Order Type</span>
+                <span className="">
+                  {orderDetails.order_type === 1 ? "Delivery" : "Pickup"}
+                </span>
+              </div>
+              <div className="flex justify-between">
                 <span className="font-semibold">Total Amount:</span>
                 <span className="font-bold text-main">
                   ₹ {orderDetails.amount}
@@ -241,6 +267,41 @@ const OrderDetailsPage = () => {
             </div>
           </div>
         )}
+        {orderDetails.order_status !== null &&
+          orderDetails.order_type === 2 && (
+            <div className="border border-[#00000014] flex ~gap-[0.5rem]/[0.75rem] ~rounded-[0.74875rem]/[1rem] ~p-[0.5rem]/[0.75rem]">
+              <div>
+                <Location className="w-[1rem] shrink-0 text-main" />
+              </div>
+
+              <div className="flex-1 space-y-1">
+                <h5 className="~text-[0.75rem]/[0.875rem] capitalize text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+                  Pickup from {SHOP_ADDRESS.name}
+                </h5>
+
+                <div className="~text-[0.75rem]/[0.875rem] space-y-1 leading-[120%]">
+                  <p>{SHOP_ADDRESS.street}</p>
+                  <p>
+                    {SHOP_ADDRESS.city}, {SHOP_ADDRESS.state} -{" "}
+                    {SHOP_ADDRESS.pincode}
+                  </p>
+
+                  <div className="flex md:flex-row flex-col text-[0.75rem] text-[#0000008F] ~gap-[0]/[0.5rem]">
+                    <p>{SHOP_ADDRESS.phone}</p>
+                    <span className="max-md:hidden"> |</span>
+                    <p>{SHOP_ADDRESS.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleCopyAddress}
+                className="~text-[0.75rem]/[0.875rem] font-semibold py-1 px-2 hover:bg-[#F8F5EE] rounded-[0.5rem] cursor-pointer h-fit text-main"
+              >
+                Copy
+              </button>
+            </div>
+          )}
         <div className="grid sm:grid-cols-2 ~gap-[0.75rem]/[1rem]">
           <Link
             prefetch={false}

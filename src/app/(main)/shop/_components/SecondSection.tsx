@@ -24,20 +24,53 @@ const SecondSection = ({ menuitems }: Props) => {
 
   const isClickScrollingRef = useRef(false);
 
-  // Filter menu items based on search term from params
-  const filteredMenuItems = menuitems.filter((section) => {
-    if (searchTerm === "") {
-      return true;
-    }
-    return section.products.some((product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  });
+  // Parse search terms - split by comma and clean up
+  const getSearchTerms = (query: string): string[] => {
+    if (!query) return [];
+    return query
+      .split(",")
+      .map((term) => term.trim().toLowerCase())
+      .filter((term) => term.length > 0);
+  };
+
+  const searchTerms = getSearchTerms(searchTerm);
+
+  // Check if a product matches any of the search terms
+  const productMatchesSearch = (productName: string): boolean => {
+    if (searchTerms.length === 0) return true;
+
+    const productNameLower = productName.toLowerCase();
+    return searchTerms.some((term) => productNameLower.includes(term));
+  };
+
+  // Filter menu items and update product counts per category
+  const filteredMenuItems = menuitems
+    .map((section) => {
+      // Filter products in this section based on search
+      const filteredProducts = section.products.filter((product) =>
+        productMatchesSearch(product.name),
+      );
+
+      // Return section with only matching products
+      return {
+        ...section,
+        products: filteredProducts,
+      };
+    })
+    .filter((section) => section.products.length > 0); // Only keep sections with matching products
+
+  // Calculate total products count for "no results" message
+  const totalFilteredProducts = filteredMenuItems.reduce(
+    (total, section) => total + section.products.length,
+    0,
+  );
+
   const handleClearSearch = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("q");
     router.push(`?${params.toString()}`);
   };
+
   if (menuitems.length === 0) {
     return null;
   }
@@ -139,18 +172,28 @@ const SecondSection = ({ menuitems }: Props) => {
         exit={{ opacity: 0, y: -20 }}
         className=" ~mb-[0.5rem]/[1.5rem] flex items-center justify-between "
       >
-        <div className="flex items-center text-[#1A1A1ABF] pt-[0.5rem] leading-[130%] tracking-[-0.02em] ~text-[0.85rem]/[1rem] gap-2">
+        <div className="flex items-center text-[#1A1A1ABF] pt-[0.5rem] leading-[130%] tracking-[-0.02em] ~text-[0.85rem]/[1rem] gap-2 flex-wrap">
           <span className="">Search Results for:</span>
-          <span className=" capitalize font-semibold text-main">
-            {searchTerm}
-          </span>
+          <div className="flex flex-wrap gap-1">
+            {searchTerms.map((term, index) => (
+              <React.Fragment key={term}>
+                <span className="capitalize font-semibold text-main">
+                  {term}
+                </span>
+                {index < searchTerms.length - 1 && (
+                  <span className="text-main/50">,</span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+         
         </div>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleClearSearch}
-          className="flex items-center gap-2 ~px-[0.75rem]/[1rem] ~py-[0.3rem]/[0.5rem]  ~text-[0.875rem]/[1rem] bg-[#F8F5EE] hover:bg-main hover:text-white rounded-full text-sm font-medium text-main transition-colors duration-300"
+          className="flex items-center gap-2 ~px-[0.75rem]/[1rem] ~py-[0.3rem]/[0.5rem] ~text-[0.875rem]/[1rem] bg-[#F8F5EE] hover:bg-main hover:text-white rounded-full text-sm font-medium text-main transition-colors duration-300"
         >
           <label>Reset</label>
           <svg
@@ -175,7 +218,7 @@ const SecondSection = ({ menuitems }: Props) => {
   if (isResponsiveUi) {
     return (
       <div className="relative min-h-[calc(100vh-16rem)] w-full">
-        <div className="pt-[1.125rem] ~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem] pb-[1.5rem]">
+        <div className="pt-[1.125rem] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] pb-[1.5rem]">
           <h5 className="~text-[1rem]/[1.5rem] font-medium tracking-[-0.03em] leading-[130%]">
             Shop
           </h5>
@@ -216,7 +259,7 @@ const SecondSection = ({ menuitems }: Props) => {
         </div>
 
         <div>
-          <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] ">
+          <div className="~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem]">
             {" "}
             <SearchHeader />
           </div>
@@ -241,21 +284,13 @@ const SecondSection = ({ menuitems }: Props) => {
                   </div>
                   <div key={slug} id={slug}>
                     <div key={slug} className="grid grid-cols-2 gap-[1rem]">
-                      {section.products
-                        .filter((product) =>
-                          searchTerm === ""
-                            ? true
-                            : product.name
-                                .toLowerCase()
-                                .includes(searchTerm.toLowerCase()),
-                        )
-                        .map((item) => (
-                          <ProductCard
-                            key={item.id}
-                            section={section.name}
-                            item={item}
-                          />
-                        ))}
+                      {section.products.map((item) => (
+                        <ProductCard
+                          key={item.id}
+                          section={section.name}
+                          item={item}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -280,8 +315,8 @@ const SecondSection = ({ menuitems }: Props) => {
 
   return (
     <div className="relative flex min-h-[calc(100vh-16rem)] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] gap-[2.2875rem] w-full">
-      <div className="~w-[12rem]/[15.625rem] ~pt-[1.6875rem]/[6.75rem]  shrink-0">
-        <div className="sticky  top-[7rem]">
+      <div className="~w-[12rem]/[15.625rem] ~pt-[1.6875rem]/[6.75rem] shrink-0">
+        <div className="sticky top-[7rem]">
           <div
             data-lenis-prevent
             className="relative overflow-y-auto no-scrollbar max-h-[calc(100vh-8rem)]"
@@ -358,9 +393,8 @@ const SecondSection = ({ menuitems }: Props) => {
 
       <div className="w-full">
         <div className="~pt-[4.5rem]/[6.75rem]" />
-
+        <SearchHeader />
         <div className="w-full">
-          <SearchHeader />
           {filteredMenuItems.length === 0 ? (
             <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
               <svg
@@ -373,22 +407,22 @@ const SecondSection = ({ menuitems }: Props) => {
                 <path
                   d="M61.5 148.5C92.7041 148.5 118 146.933 118 145C118 143.067 92.7041 141.5 61.5 141.5C30.2959 141.5 5 143.067 5 145C5 146.933 30.2959 148.5 61.5 148.5Z"
                   fill="#928F8F"
-                  fill-opacity="0.2"
+                  fillOpacity="0.2"
                 />
                 <path
                   d="M18.0495 1.5H99.3713C101.395 1.5 103.335 2.3037 104.766 3.7343C106.196 5.1649 107 7.10521 107 9.12839V105.872C107 107.895 106.196 109.835 104.766 111.266C103.335 112.696 101.395 113.5 99.3713 113.5H7.62869C5.60544 113.5 3.66505 112.696 2.23439 111.266C0.803735 109.835 0 107.895 0 105.872V19.7318L18.0495 1.5Z"
                   fill="#9A2923"
-                  fill-opacity="0.2"
+                  fillOpacity="0.2"
                 />
                 <path
                   d="M0 19.5H14.7439C15.6088 19.496 16.437 19.1531 17.0472 18.5462C17.6574 17.9392 18 17.1178 18 16.2615V1.5L0 19.5Z"
                   fill="#9A2923"
-                  fill-opacity="0.5"
+                  fillOpacity="0.5"
                 />
                 <path
                   d="M107.133 28.5H23.8667C20.6266 28.5 18 31.0779 18 34.2579V51.7421C18 54.9221 20.6266 57.5 23.8667 57.5H107.133C110.373 57.5 113 54.9221 113 51.7421V34.2579C113 31.0779 110.373 28.5 107.133 28.5Z"
                   fill="white"
-                  fill-opacity="0.5"
+                  fillOpacity="0.5"
                 />
                 <path
                   d="M34 48.5C36.7614 48.5 39 46.2614 39 43.5C39 40.7386 36.7614 38.5 34 38.5C31.2386 38.5 29 40.7386 29 43.5C29 46.2614 31.2386 48.5 34 48.5Z"
@@ -405,7 +439,7 @@ const SecondSection = ({ menuitems }: Props) => {
                 <path
                   d="M107.133 61.5H23.8667C20.6266 61.5 18 64.0779 18 67.2579V84.7421C18 87.9221 20.6266 90.5 23.8667 90.5H107.133C110.373 90.5 113 87.9221 113 84.7421V67.2579C113 64.0779 110.373 61.5 107.133 61.5Z"
                   fill="white"
-                  fill-opacity="0.5"
+                  fillOpacity="0.5"
                 />
                 <path
                   d="M34 81.5C36.7614 81.5 39 79.0376 39 76C39 72.9624 36.7614 70.5 34 70.5C31.2386 70.5 29 72.9624 29 76C29 79.0376 31.2386 81.5 34 81.5Z"
@@ -422,7 +456,7 @@ const SecondSection = ({ menuitems }: Props) => {
                 <path
                   d="M107.133 93.5H23.8667C20.6266 93.5 18 96.1668 18 99.4565V117.544C18 120.833 20.6266 123.5 23.8667 123.5H107.133C110.373 123.5 113 120.833 113 117.544V99.4565C113 96.1668 110.373 93.5 107.133 93.5Z"
                   fill="white"
-                  fill-opacity="0.5"
+                  fillOpacity="0.5"
                 />
                 <path
                   d="M34 113.5C36.7614 113.5 39 111.261 39 108.5C39 105.739 36.7614 103.5 34 103.5C31.2386 103.5 29 105.739 29 108.5C29 111.261 31.2386 113.5 34 113.5Z"
@@ -439,17 +473,17 @@ const SecondSection = ({ menuitems }: Props) => {
                 <path
                   d="M114 65.5C131.673 65.5 146 51.397 146 34C146 16.603 131.673 2.5 114 2.5C96.3269 2.5 82 16.603 82 34C82 51.397 96.3269 65.5 114 65.5Z"
                   fill="white"
-                  fill-opacity="0.2"
+                  fillOpacity="0.2"
                   stroke="#9A2923"
-                  stroke-width="5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M137 56.5L145 65.5"
                   stroke="#9A2923"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M144.23 61.2707L141.607 64.0146C140.427 65.2489 140.471 67.2061 141.706 68.386L164.497 90.1739C165.732 91.3539 167.689 91.3098 168.869 90.0755L171.492 87.3316C172.672 86.0973 172.628 84.1402 171.393 82.9602L148.602 61.1723C147.367 59.9924 145.41 60.0364 144.23 61.2707Z"
@@ -457,13 +491,12 @@ const SecondSection = ({ menuitems }: Props) => {
                 />
               </svg>
 
-              <p className="~text-[0.75rem]/[1rem]  text-main/70">
+              <p className="~text-[0.75rem]/[1rem] text-main/70">
                 No items found.
               </p>
             </div>
           ) : (
             <div>
-              <SearchHeader />
               {filteredMenuItems?.map((section) => {
                 const slug = section.slug;
                 return (
@@ -488,21 +521,13 @@ const SecondSection = ({ menuitems }: Props) => {
                       <div className="h-[1px] ml-[12px] w-full bg-[#D9D9D9]" />
                     </div>
                     <div className="hidden grid-cols-1 ~pt-[1rem]/[2.3125rem] ~pb-[1rem]/[3.75rem] ~gap-[1.5rem]/[3rem] md:grid lg:grid-cols-2 xl:grid-cols-3">
-                      {section.products
-                        .filter((product) =>
-                          searchTerm === ""
-                            ? true
-                            : product.name
-                                .toLowerCase()
-                                .includes(searchTerm.toLowerCase()),
-                        )
-                        .map((item) => (
-                          <ProductCard
-                            section={section.name}
-                            key={item.id}
-                            item={item}
-                          />
-                        ))}
+                      {section.products.map((item) => (
+                        <ProductCard
+                          section={section.name}
+                          key={item.id}
+                          item={item}
+                        />
+                      ))}
                     </div>
                   </motion.div>
                 );

@@ -318,14 +318,28 @@ const CartModal = () => {
                             Edit Address
                           </div>
                         ) : (
-                          <div className="flex items-center gap-3">
+                          <>
                             {" "}
-                            <ChevronDown
-                              onClick={() => setCurrentView("pickup")}
-                              className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
-                            />{" "}
-                            Add Address
-                          </div>
+                            {orderType === 1 ? (
+                              <div className="flex items-center gap-3">
+                                {" "}
+                                <ChevronDown
+                                  onClick={() => setCurrentView("pickup")}
+                                  className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
+                                />{" "}
+                                Add Address
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-3">
+                                {" "}
+                                <ChevronDown
+                                  onClick={() => setCurrentView("pickup")}
+                                  className="shrink-0 cursor-pointer rotate-90 hover:scale-105 duration-300 ease-in-out transition-all ~w-[0.5775000453rem]/[0.900000095rem]"
+                                />{" "}
+                                Save Your Info
+                              </div>
+                            )}
+                          </>
                         ))}
 
                       {currentView === "pickup" && (
@@ -741,9 +755,9 @@ const CartModal = () => {
                               <Image
                                 src={bag}
                                 alt=""
-                                className="size-[7.9375rem] shrink-0 object-cover"
+                                className="~size-[7.9375rem]/[12rem] shrink-0 object-cover"
                               />
-                              <div className="~text-[1.25rem]/[2.5rem] leading-[120%] tracking-[-0.03em] font-medium text-[#181D27] ">
+                              <div className="~text-[1.25rem]/[2.5rem] ~pt-[1rem]/[2rem] leading-[120%] tracking-[-0.03em] font-medium text-[#181D27] ">
                                 Your Cart is Empty
                               </div>
                               <p className="pt-[0.4px] text-[#535862] tracking-[-0.03em] ~pb-[0.5rem]/[1rem] ~text-[0.875rem]/[1.125rem]">

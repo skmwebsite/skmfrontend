@@ -21,15 +21,15 @@ const SecondSection = () => {
     <div className="~pt-[1.25rem]/[2.375rem]">
       {/* ── SECTION 1: Origin Story ── */}
       <div className="flex md:flex-row flex-col ~gap-[1rem]/[3.125rem]">
-        <div className="md:w-[45%] w-full rounded-[1rem] overflow-hidden ~h-[18rem]/[38.2961425781rem] relative">
+        <div className="md:w-[45%] w-full rounded-[1rem] overflow-hidden ~h-[18rem]/[35.2961425781rem] relative">
           <Image alt="" fill className="object-cover" src={tradition} />
         </div>
         <div className="md:w-[55%] flex justify-center items-center">
           <div>
-            <h4 className="bg-gradient-to-b bg-clip-text text-transparent tracking-[-0.05em] font-medium ~text-[1.5rem]/[2.25rem] leading-[120%] from-[#EC5715] to-[#FF7E00]">
+            <h4 className="bg-gradient-to-b bg-clip-text text-transparent tracking-[-0.05em] font-medium ~text-[1.5rem]/[1.75rem] leading-[120%] from-[#EC5715] to-[#FF7E00]">
               Before It Became a Brand, It Was a Man People Called Kakaji
             </h4>
-            <p className="~text-[0.75rem]/[1.75rem] text-[#000000BF] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+            <p className="~text-[0.75rem]/[1.25rem] text-[#000000BF] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
               In 1973, in the small town of{" "}
               <span className="text-main font-semibold">
                 Malegaon, Maharashtra,
@@ -42,7 +42,7 @@ const SecondSection = () => {
               everyone knew him by a name that carried warmth and familiarity —{" "}
               <span className="text-main font-semibold">"Kakaji."</span>
             </p>
-            <p className="~text-[0.75rem]/[1.75rem] text-[#000000BF] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+            <p className="~text-[0.75rem]/[1.25rem] text-[#000000BF] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
               People trusted his judgement, his honesty, and the way he cared
               about the small things that others often overlooked. One of those
               small things was{" "}
@@ -52,7 +52,7 @@ const SecondSection = () => {
               care, the aroma that rises from the kitchen tells you everything
               about the meal before the first bite is taken.
             </p>
-            <p className="~text-[0.75rem]/[1.75rem] text-[#000000BF] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+            <p className="~text-[0.75rem]/[1.25rem] text-[#000000BF] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
               This belief became the beginning of what is today known as{" "}
               <span className="text-main font-semibold">
                 Shrikakaji Masala.
@@ -67,10 +67,10 @@ const SecondSection = () => {
 
         {/* ── SECTION 2: Who We Are + The Name ── */}
         <div className="~pt-[2rem]/[4rem] flex flex-col items-center">
-          <h4 className="text-main tracking-[-0.05em] font-medium text-center ~text-[1.5rem]/[2.25rem]  leading-[120%]">
+          <h4 className="text-main tracking-[-0.05em] font-medium text-center ~text-[1.5rem]/[1.75rem]  leading-[120%]">
             Who We Are
           </h4>
-          <p className="~text-[0.75rem]/[1.75rem] text-center text-[#0000008F] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+          <p className="~text-[0.75rem]/[1.25rem] text-center text-[#0000008F] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
             The name{" "}
             <span className="font-semibold text-[#000000BF]">
               Shrikakaji Masala carries more than branding — it carries a memory
@@ -85,7 +85,7 @@ const SecondSection = () => {
               Trust. Honesty. Authenticity.
             </span>
           </p>
-          <p className="~text-[0.75rem]/[1.75rem] text-center text-[#0000008F] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+          <p className="~text-[0.75rem]/[1.25rem] text-center text-[#0000008F] ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
             We specialize in{" "}
             <span className="font-semibold text-[#000000BF]">
               pure single spices, herbs, agro-products, and dehydrated
@@ -98,13 +98,13 @@ const SecondSection = () => {
         </div>
 
         {/* ── SECTION 3: The First Batch — text + image layout ── */}
-        <div className="~pt-[1.875rem]/[5rem] flex md:flex-row flex-col ~gap-[1rem]/[3.125rem]">
+        <div className="~pt-[1.875rem]/[4rem] flex md:flex-row flex-col ~gap-[1rem]/[3.125rem]">
           <div className="flex justify-center items-center">
             <div>
-              <h4 className="text-main text-center tracking-[-0.05em] font-medium ~text-[1.5rem]/[2.25rem] leading-[120%]">
+              <h4 className="text-main text-center tracking-[-0.05em] font-medium ~text-[1.5rem]/[1.75rem] leading-[120%]">
                 A Kitchen, A Roasting Pan, and the First Batch of Kala Masala
               </h4>
-              <p className="~text-[0.75rem]/[1.75rem] text-center  text-[#000000BF] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+              <p className="~text-[0.75rem]/[1.25rem] text-center  text-[#000000BF] ~pt-[0.625rem]/[1.875rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
                 The first batches of masala were made exactly the way
                 traditional households prepared them. Spices were{" "}
                 <span className="text-main font-semibold">
@@ -115,7 +115,7 @@ const SecondSection = () => {
                 that smelled real when cooking and tasted rich in the plate, you
                 went to Kakaji.
               </p>
-              <p className="~text-[0.75rem]/[1.75rem] text-[#000000BF] text-center ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+              <p className="~text-[0.75rem]/[1.25rem] text-[#000000BF] text-center ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
                 The very first blend he created was{" "}
                 <span className="text-main font-semibold">
                   Maharashtrian Kala Masala
@@ -126,7 +126,7 @@ const SecondSection = () => {
                 few people to assist, and eventually invested in his first
                 grinding machine — marking the beginning of a larger journey.
               </p>
-              <p className="~text-[0.75rem]/[1.75rem] text-[#000000BF] text-center ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[130%] tracking-[-0.02em]">
+              <p className="~text-[0.75rem]/[1.25rem] text-[#000000BF] text-center ~pt-[0.375rem]/[1rem] font-medium md:font-normal leading-[140%] tracking-[-0.02em]">
                 But Kakaji never stopped learning. Fascinated by machinery and
                 spice processing, he travelled across{" "}
                 <span className="text-main font-semibold">
@@ -140,8 +140,8 @@ const SecondSection = () => {
           </div>
         </div>
 
-        <div className="~pt-[1.875rem]/[5rem]">
-          <h4 className="text-main tracking-[-0.05em] font-medium text-center ~text-[1.5rem]/[2.25rem] leading-[120%]">
+        <div className="~pt-[1.875rem]/[4rem]">
+          <h4 className="text-main tracking-[-0.05em] font-medium text-center ~text-[1.5rem]/[1.75rem] leading-[120%]">
             Our Legacy & Our Journey
           </h4>
           <p className="text-[1rem] text-[#0000008F] pt-[1rem] text-center leading-[120%]">
@@ -287,7 +287,7 @@ const SecondSection = () => {
               <h5 className="~text-[0.875rem]/[1.25rem] font-medium tracking-[-0.03em] leading-[120%] text-main ~mb-[0.5rem]/[1rem]">
                 Spice Traditions Across India
               </h5>
-              <p className="text-[#1A1A1ABF] tracking-[-0.04em] leading-[130%] ~text-[0.75rem]/[1rem]">
+              <p className="text-[#1A1A1ABF] tracking-[-0.04em] leading-[140%] ~text-[0.75rem]/[1rem]">
                 While Kala Masala remained the heart of the brand, the range
                 slowly expanded into everyday essentials — staples like Lal
                 Mirchi Powder and Dhaniya Powder. Over time, inspired by
@@ -302,7 +302,7 @@ const SecondSection = () => {
               <h5 className="~text-[0.875rem]/[1.25rem] font-medium tracking-[-0.03em] leading-[120%] text-main ~mb-[0.5rem]/[1rem]">
                 Reaching Every Kitchen
               </h5>
-              <p className="text-[#1A1A1ABF] tracking-[-0.04em] leading-[130%] ~text-[0.75rem]/[1rem]">
+              <p className="text-[#1A1A1ABF] tracking-[-0.04em] leading-[140%] ~text-[0.75rem]/[1rem]">
                 For decades, our loyal customers have been home cooks in Tier-2,
                 Tier-3, and Tier-4 towns — especially families who value
                 authentic Maharashtrian flavours. Today, through our online
@@ -334,7 +334,7 @@ const SecondSection = () => {
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2rem] leading-[120%] ">
               Flavour Before Everything
             </h4>
-            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[130%]">
+            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[140%]">
               We believe that good food begins with good spices. Every blend we
               create is rooted in the idea that authentic flavor should come
               from pure ingredients, traditional methods, and uncompromising
@@ -346,7 +346,7 @@ const SecondSection = () => {
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2rem] leading-[120%] ">
               Less Effort, Deeper Taste
             </h4>
-            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[130%]">
+            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[140%]">
               Cooking should feel joyful, not complicated. Instead of mixing
               multiple spices, our blends bring together carefully balanced
               ingredients that work together seamlessly. Often, all you need is
@@ -357,7 +357,7 @@ const SecondSection = () => {
             <h4 className="text-center font-medium md:font-semibold tracking-[-0.03em] ~text-[1rem]/[2rem] leading-[120%] ">
               The Taste of Home
             </h4>
-            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[130%]">
+            <p className="~text-[0.75rem]/[1rem] max-md:font-medium text-center ~pt-[1.25rem]/[3rem] leading-[140%]">
               Across generations and regions, certain flavours instantly feel
               familiar — comforting, warm, and deeply satisfying. Our masalas
               are designed to recreate those timeless tastes that remind you of

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import Location from "../svg/Location";
 
 interface CustomerAddress {
   id: number;
@@ -344,16 +345,57 @@ const AddressForm = ({
     ? updateAddressMutation.isPending || isSubmitting
     : createAddressMutation.isPending || isSubmitting;
 
+  const SHOP_ADDRESS = {
+    name: "Shree Kakaji Masale",
+    street: "Shop No 2, Om Plaza, Trimurti Chowk",
+    city: "Nashik",
+    state: "Maharashtra",
+    pincode: "422008",
+    fullAddress:
+      "Shop No 2, Om Plaza, Trimurti Chowk, Trimurti-Kamatwade road, Nashik, Maharashtra - 422008",
+    phone: "+91 7277331111",
+    email: "shreekakajimasalensk@gmail.com",
+  };
   return (
     <div className="~px-[1rem]/[1.5rem] ">
       <div className="~pt-[1rem]/[2.563rem] ~pb-[1rem]/[2rem]">
-        <p className="text-[0.875rem] ~pt-[0.5rem]/[1rem] text-center tracking-[-0.05em] text-[#1A1A1ABF] leading-[110%]">
-          {orderType === 1
-            ? isEditing
+        {orderType === 1 && (
+          <p className="text-[0.875rem] ~pt-[0.5rem]/[1rem] text-center tracking-[-0.05em] text-[#1A1A1ABF] leading-[110%]">
+            {isEditing
               ? "Update your delivery address details below"
-              : "Please provide your delivery address to complete your purchase"
-            : "You selected store pickup. Please proceed to complete your purchase."}
-        </p>
+              : "Please provide your delivery address to complete your purchase"}
+          </p>
+        )}
+        {orderType === 2 && (
+          <div className="text-start text-[0.875rem]  ">
+            {" "}
+            <p className="font-semibold"> You Selected Store Pickup </p>
+            <div className="border border-[#00000014] mt-2 flex ~gap-[0.5rem]/[0.75rem] rounded-[0.625rem] ~p-[0.5rem]/[0.75rem]">
+              <div>
+                <Location className="w-[1rem] shrink-0 text-main" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h5 className="~text-[0.75rem]/[0.875rem] capitalize text-start md:font-semibold font-medium leading-[120%] tracking-[-0.03em]">
+                    Pickup from {SHOP_ADDRESS.name}
+                  </h5>
+                </div>
+                <div className=" ~text-[0.75rem]/[0.875rem] space-y-1 leading-[120%]">
+                  <p className="text-start">{SHOP_ADDRESS.street}</p>
+                  <p className="text-start capitalize">
+                    {SHOP_ADDRESS.city}, {SHOP_ADDRESS.state} -{" "}
+                    {SHOP_ADDRESS.pincode}
+                  </p>
+                  <div className="flex md:flex-row flex-col text-start text-[0.75rem] leading-[120%] text-[#0000008F] ~gap-[0]/[0.5rem]">
+                    <p>{SHOP_ADDRESS.phone}</p>
+                    <span className="max-md:hidden"> |</span>
+                    <p>{SHOP_ADDRESS.email}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>

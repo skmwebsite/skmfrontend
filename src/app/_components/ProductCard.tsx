@@ -61,57 +61,36 @@ const ProductCard = ({ item, section }: Props) => {
   const finalPrice = selectedVariant?.price || 0;
   return (
     <div className="">
-      <Link
-        prefetch={false}
-        href={`/shop/${item.slug}`}
-        className="bg-cream group cursor-pointer relative overflow-hidden items-center flex w-full justify-center rounded-[0.75rem]"
+      <div
+        className="relative w-full rounded-bl-[0.75rem] max-sm:rounded-br-[0.75rem] rounded-t-[0.75rem]"
+        style={{ contain: "paint" }}
       >
-        <div className="relative  aspect-square w-full">
-          {/* ~w-[7.9340820313rem]/[14.6875rem]  ~h-[8.9340820313rem]/[17.0830421448rem] */}
-          <Image
-            loading="lazy"
-            src={item.thumbnail_image}
-            className="object-cover group-hover:scale-105 duration-700 transition-all ease-in-out"
-            fill
-            alt={item.name}
-          />
-        </div>
-        <div className="size-[3.2748651505rem] max-sm:hidden rounded-tl-[0.75rem] flex justify-center items-center bg-white absolute bottom-0 right-0">
-          <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 bottom-0 left-[-0.842rem]" />
-          <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 top-[-0.842rem] right-0" />
-          <div
-            className="
-  size-[2.339189291rem]
-  relative
-  flex justify-center items-center
-  rounded-full
-  bg-cream
-  overflow-hidden
-"
-          >
-            <span
-              className="
-    absolute inset-0
-    bg-gradient-to-r from-[#EC5715] to-[#FF7E00]
-    opacity-0 group-hover:opacity-100
-    transition-opacity duration-700 ease-in-out
-  "
+        <Link
+          prefetch={false}
+          href={`/shop/${item.slug}`}
+          className="bg-cream group cursor-pointer relative items-center flex w-full justify-center rounded-[0.75rem]"
+          style={{ isolation: "isolate" }}
+        >
+          <div className="relative aspect-square w-full  ">
+            <Image
+              loading="lazy"
+              src={item.thumbnail_image}
+              className="object-cover group-hover:scale-105 duration-700 transition-all ease-in-out"
+              fill
+              sizes="100vw"
+              alt={item.name}
             />
-
-            <Arrow
-              className="
-    size-[1.25rem]
-     z-10
-    text-main group-hover:text-white
-    absolute right-[0.5rem]
-    transition-all duration-700 ease-in-out
-    -rotate-45 
-  "
-            />
+            <div className="size-[3.2748651505rem] max-sm:hidden rounded-tl-[0.75rem] flex justify-center items-center bg-white absolute bottom-0 right-0">
+              <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 bottom-0 left-[-0.842rem]" />
+              <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 top-[-0.842rem] right-0" />
+              <div className="size-[2.339189291rem] relative flex justify-center items-center rounded-full bg-cream overflow-hidden">
+                <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                <Arrow className="size-[1.25rem] z-10 text-main group-hover:text-white absolute right-[0.5rem] transition-all duration-700 ease-in-out -rotate-45" />
+              </div>
+            </div>
           </div>
-        </div>
-      </Link>
-
+        </Link>
+      </div>
       <div className="pt-[0.75rem]">
         {item.category_name && (
           <p className="uppercase text-[#F1913D] font-medium md:font-semibold leading-[120%] tracking-[-0.03em] ~text-[0.6875rem]/[1rem]">

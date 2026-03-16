@@ -55,11 +55,11 @@ const page = () => {
               <span className="">
                 {" "}
                 <Link
-                  href={"mailto:shreekakajimasale@gmail.com"}
+                  href={"mailto:shreekakajimasalensk@gmail.com"}
                   target="_blank"
                   className="text-main font-medium hover:underline"
                 >
-                  shreekakajimasale@gmail.com
+                  shreekakajimasalensk@gmail.com
                 </Link>
               </span>
             </p>
