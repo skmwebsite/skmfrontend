@@ -526,6 +526,35 @@ const Delivery = ({
               Copy
             </button>
           </div>
+
+          <div className="flex bg-cream items-start p-[0.75rem] rounded-[0.625rem] text-start ~gap-[0.5rem]/[0.75rem] ~text-[0.75rem]/[0.875rem] text-[#0000008F] leading-[120%] mt-2 border border-[#00000014]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-[1rem] shrink-0 mt-[0.1rem]"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <circle
+                cx="12"
+                cy="8"
+                r="0.5"
+                fill="currentColor"
+                stroke="none"
+              />
+              <line x1="12" y1="11" x2="12" y2="16" />
+            </svg>
+            <p>
+              <span className="font-semibold text-[#000000BF]">Note: </span>
+              For orders involving yadi, delivery can be picked up next day. For
+              orders without yadi, it can be picked up from the store anytime 4
+              hours after the order is placed.
+            </p>
+          </div>
         </div>
 
         <div>
