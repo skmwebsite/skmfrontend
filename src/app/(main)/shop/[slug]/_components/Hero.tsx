@@ -16,7 +16,6 @@ type Props = {
 };
 
 const Hero = ({ product_details }: Props) => {
-  console.log("product_details", product_details);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     product_details.images?.[0],
@@ -27,7 +26,8 @@ const Hero = ({ product_details }: Props) => {
     product_details?.variants?.[0],
   );
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState(
-    selectedVariant?.spice_levels?.[0],
+    selectedVariant?.spice_levels?.find((level) => level.level === 3) ||
+      selectedVariant?.spice_levels?.[0],
   );
   const [grinding, setGrinding] = useState(
     selectedVariant?.has_grind === 1 ? "Yes" : "No",
@@ -178,7 +178,6 @@ const Hero = ({ product_details }: Props) => {
       ? customIngredientsTotal
       : selectedVariant?.price || 0;
 
-    console.log("basePrice", basePrice);
     const total = basePrice + spiceLevelPrice + grindingPrice;
     return Math.round(total * 100) / 100; // Round to 2 decimal places
   }, [
@@ -207,7 +206,10 @@ const Hero = ({ product_details }: Props) => {
 
   const handleVariantChange = (variant: any) => {
     setSelectedVariant(variant);
-    setSelectedSpiceLevel(variant?.spice_levels?.[0]);
+    setSelectedSpiceLevel(
+      variant?.spice_levels?.find((level: any) => level.level === 3) ||
+        variant?.spice_levels?.[0],
+    );
     setGrinding(variant?.has_grind === 1 ? "Yes" : "No");
     setCustomizedIngredients(null);
     setIsCustomized(false);

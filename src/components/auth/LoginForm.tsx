@@ -84,7 +84,7 @@ const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
           />
           <input
             {...register("phone_number")}
-            className="bg-[#F8F5EE] no-spinner  text-[#0000008F]  leading-[120%] tracking-[-0.03em] text-[1rem] w-full outline-none ~rounded-r-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+            className="bg-[#F8F5EE] no-spinner  text-[#000000]  leading-[120%] tracking-[-0.03em] text-[1rem] w-full outline-none ~rounded-r-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
             placeholder="Enter your number"
             type="number"
           />

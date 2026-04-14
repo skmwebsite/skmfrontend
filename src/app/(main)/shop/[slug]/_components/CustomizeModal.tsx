@@ -54,7 +54,6 @@ const CustomizeModal = ({
   const [ingredients, setIngredients] = useState<CustomIngredient[]>([]);
   useBodyScrollLock(open);
 
-  console.log("selectedVariant", selectedVariant);
   const parseQuantity = (value: string | number): number => {
     if (typeof value === "number") return value;
     return parseFloat(value) || 0;
