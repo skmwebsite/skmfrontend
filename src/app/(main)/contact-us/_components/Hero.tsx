@@ -100,7 +100,7 @@ const HeroSection = () => {
                 {...register("name")}
                 type="text"
                 placeholder="Enter Your Name"
-                className="bg-[#F8F5EE] text-[#0000008] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+                className="bg-[#F8F5EE] text-[#000000] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem] ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
               />
               {errors.name && (
                 <p className=" text-red-400 absolute ~bottom-[-1rem]/[-1.3rem] left-[1rem]  ~text-[0.65rem]/[0.875rem] ">
@@ -118,7 +118,7 @@ const HeroSection = () => {
                 {...register("email")}
                 type="email"
                 placeholder="Enter Your Email"
-                className="bg-[#F8F5EE] text-[#0000008] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem]  ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+                className="bg-[#F8F5EE] text-[#000000] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem]  ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
               />
               {errors.email && (
                 <p className=" text-red-400 absolute ~bottom-[-1rem]/[-1.3rem] left-[1rem]  ~text-[0.65rem]/[0.875rem] ">
@@ -136,7 +136,7 @@ const HeroSection = () => {
                 {...register("message")}
                 rows={5}
                 placeholder="Enter Your Message"
-                className="bg-[#F8F5EE] text-[#0000008] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem]  ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
+                className="bg-[#F8F5EE] text-[#000000] leading-[120%] tracking-[-0.03em] ~text-[0.75rem]/[0.875rem] w-full outline-none ~rounded-[0.5rem]/[1rem]  ~px-[0.5rem]/[1.25rem] ~py-[0.5rem]/[0.75rem]"
               />
               {errors.message && (
                 <p className=" text-red-400 absolute bottom-[-1rem] left-[1rem]  ~text-[0.65rem]/[0.875rem] ">

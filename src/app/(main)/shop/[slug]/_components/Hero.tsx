@@ -207,10 +207,13 @@ const Hero = ({ product_details }: Props) => {
   const handleVariantChange = (variant: any) => {
     setSelectedVariant(variant);
     setSelectedSpiceLevel(
-      variant?.spice_levels?.find((level: any) => level.level === 3) ||
+      variant?.spice_levels?.find(
+        (level: any) => level.level === selectedSpiceLevel?.level,
+      ) ||
+        variant?.spice_levels?.find((level: any) => level.level === 3) ||
         variant?.spice_levels?.[0],
     );
-    setGrinding(variant?.has_grind === 1 ? "Yes" : "No");
+    setGrinding(variant?.has_grind === 1 ? grinding : "No");
     setCustomizedIngredients(null);
     setIsCustomized(false);
   };
