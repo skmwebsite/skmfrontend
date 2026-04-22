@@ -97,7 +97,7 @@ const ProductCard = ({ item, section }: Props) => {
             {item.category_name}
           </p>
         )}
-        <p className="~text-[0.875rem]/[1.5rem] mb-[0.5rem] font-medium leading-[120%] ~tracking-[-0.05em]/[-0.03em]">
+        <p className="~text-[0.875rem]/[1.5rem] line-clamp-1 text-ellipsis mb-[0.5rem] font-medium leading-[120%] ~tracking-[-0.05em]/[-0.03em]">
           {item.name}
         </p>
 

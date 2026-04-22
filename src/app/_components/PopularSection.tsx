@@ -39,18 +39,18 @@ const PopularSection = ({ popularProduct }: Props) => {
 
       <div className="~pt-[2.125rem]/[7.625rem]">
         <Link prefetch={false} href={"/shop#yadi"}>
-          <div className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem]  flex md:flex-row flex-col gap-[2rem] justify-between relative items-center ~pt-[5rem]/[7.4375rem] pb-[2.875rem]  md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]">
+          <div className="bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem]  flex md:flex-row flex-col gap-[2rem] justify-between relative items-center ~pt-[5rem]/[7.4375rem] pb-[2.875rem]  md:py-[0.625rem] rounded-[1rem]  from-[#A11300] to-[#C02611]">
             <div className="flex flex-col items-center md:items-start">
-              <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center bg-clip-text bg-gradient-to-b from-[#000000] to-[#666666] md:text-white  font-medium leading-[120%] tracking-[-0.05em]">
+              <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center text-white  font-medium leading-[120%] tracking-[-0.05em]">
                 Customize Your Perfect Masala Blend with Yadi Customisation{" "}
               </h3>{" "}
-              <button className="relative overflow-hidden rounded-full max-md:bg-main bg-white mt-4 max-md:text-white group-hover:text-white text-main p-[0.125rem] ~w-[9.625rem]/[13rem] flex items-center justify-end ~text-[0.75rem]/[1rem] tracking-[-0.03em] leading-[120%] transition-all duration-700 ease-in-out font-medium group">
+              <button className="relative overflow-hidden rounded-full  bg-white mt-4  group-hover:text-white text-main p-[0.125rem] ~w-[9.625rem]/[13rem] flex items-center justify-end ~text-[0.75rem]/[1rem] tracking-[-0.03em] leading-[120%] transition-all duration-700 ease-in-out font-medium group">
                 <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
                 <span className="absolute z-10 ~left-[0.5rem]/[1rem]">
                   Shop Yadi Products
                 </span>
-                <div className="relative z-10 ~w-[2rem]/[2.5rem] ~h-[2rem]/[2.5rem] flex justify-center items-center max-md:bg-white  bg-main group-hover:bg-white rounded-full transition-all duration-700 ease-in-out">
-                  <Arrow className="~size-[1rem]/[1.5rem] max-md:text-main text-white group-hover:text-main absolute right-[0.5rem] transition-all duration-700 ease-in-out group-hover:-rotate-45" />
+                <div className="relative z-10 ~w-[2rem]/[2.5rem] ~h-[2rem]/[2.5rem] flex justify-center items-center   bg-main group-hover:bg-white rounded-full transition-all duration-700 ease-in-out">
+                  <Arrow className="~size-[1rem]/[1.5rem] text-white group-hover:text-main absolute right-[0.5rem] transition-all duration-700 ease-in-out group-hover:-rotate-45" />
                 </div>
               </button>
             </div>

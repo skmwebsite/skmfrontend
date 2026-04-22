@@ -1,25 +1,29 @@
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import FaceBook from "@/src/components/svg/FaceBook";
 import Instagram from "@/src/components/svg/Instagram";
-import Logo from "@/src/components/svg/Logo";
 import Whatsapp from "@/src/components/svg/Whatsapp";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
+import Logo from "@public/svg/logo.svg";
 const Footer = () => {
   return (
     <div className="mt-[2.5rem] ~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem] mb-[1.5rem]">
       <div className="bg-[#F8F5EE] relative rounded-[1rem] ~pb-[1.875rem]/[1.5rem] ~px-[1.25rem]/[4rem] ~pt-[5rem]/[6.5rem]">
         <div
-          className=" ~w-[11.9375rem]/[17.555622101rem] shrink-0 flex justify-center items-center bg-white absolute top-0
+          className=" ~w-[11.9375rem]/[18.555622101rem] shrink-0 flex justify-center items-center bg-white absolute top-0
          left-0 rounded-br-[1rem] ~h-[3.25rem]/[4.75rem] "
         >
           <BorderRadius className="size-[1.125rem] absolute bottom-[-1.125rem]  left-0 text-white " />
           <BorderRadius className="size-[1.125rem] absolute right-[-1.12rem]  top-0 text-white " />
 
           <div className="flex items-center justify-center gap-[0.5rem]">
-            <Logo className="~w-[2.775427103rem]/[5.8555626869rem] shrink-0" />
-            <p className="font-bold leading-[120%] tracking-[-0.03em]  text-main ~text-[0.75rem]/[0.875rem]">
+            <Image
+              alt="Shree Kakaji Masale"
+              src={Logo}
+              className="~w-[2.775427103rem]/[5.8555626869rem] shrink-0"
+            />
+            <p className="font-bold leading-[120%] tracking-[-0.03em]  text-main ~text-[0.75rem]/[1rem]">
               Shree Kakaji Masale
             </p>
           </div>

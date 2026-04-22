@@ -21,7 +21,7 @@ const SecondSection = ({ collections }: Props) => {
           <Link
             prefetch={false}
             href={`/shop#${yadiCollection.slug}`}
-            className="md:bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem] flex md:flex-row flex-col gap-[2rem] justify-between relative items-center pt-[7.4375rem] pb-[2.875rem] md:py-[0.625rem] rounded-[1rem] bg-[#FFF5E7] md:from-[#A11300] md:to-[#C02611]"
+            className="bg-gradient-to-b group cursor-pointer ~px-[0.5rem]/[2.5rem] flex md:flex-row flex-col gap-[2rem] justify-between relative items-center pt-[7.4375rem] pb-[2.875rem] md:py-[0.625rem] rounded-[1rem] from-[#A11300] to-[#C02611]"
           >
             <h3 className="~text-[1.25rem]/[2.5rem] max-w-[28ch] text-transparent max-md:text-center bg-clip-text bg-gradient-to-b from-[#000000] to-[#666666] md:text-white font-medium leading-[120%] tracking-[-0.05em]">
               Customize Your Perfect Masala Blend with {yadiCollection.name}{" "}

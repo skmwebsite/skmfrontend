@@ -14,8 +14,7 @@ import about3 from "@public/images/about-3.png";
 import about4 from "@public/images/about-5.png";
 import banner from "@public/images/banner-1.png";
 import dot from "@public/svg/dots.svg";
-import Logo from "@/src/components/svg/Logo";
-
+import Logo from "@public/svg/logo.svg";
 const SecondSection = () => {
   return (
     <div className="~pt-[1.25rem]/[2.375rem]">
@@ -476,8 +475,12 @@ const SecondSection = () => {
           <div className="~pl-[1.375rem]/[1.75rem] pt-[1.25rem]">
             <div>
               <div className="flex items-center gap-[0.5rem]">
-                <Logo className="~w-[2.775427103rem]/[5.8555626869rem] shrink-0" />
-                <p className="font-bold leading-[120%] tracking-[-0.03em] text-main ~text-[0.5rem]/[0.875rem]">
+                <Image
+                  alt="Shree Kakaji Masale"
+                  src={Logo}
+                  className="~w-[2.775427103rem]/[5.8555626869rem] shrink-0"
+                />
+                <p className="font-bold leading-[120%] tracking-[-0.03em] text-main ~text-[0.5rem]/[1rem]">
                   Shree Kakaji Masale
                 </p>
               </div>

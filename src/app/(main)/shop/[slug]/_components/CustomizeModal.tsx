@@ -365,7 +365,7 @@ const CustomizeModal = ({
                                 onChange={(e) =>
                                   handleInputChange(item.id, e.target.value)
                                 }
-                                className={`bg-[#F8F5EE] rounded-[0.5rem] min-w-[5ch] text-center p-[0.625rem] outline-none no-spinner ${
+                                className={`bg-[#F8F5EE] rounded-[0.5rem] min-w-[8ch] text-center p-[0.625rem] outline-none no-spinner ${
                                   isEditable
                                     ? "focus:ring-1 focus:ring-main"
                                     : "cursor-not-allowed"
