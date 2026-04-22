@@ -23,7 +23,7 @@ const banners = [
   },
   {
     image: hero2,
-    title: "Authentically Indian",
+    title: "Shree Kakaji Masale",
     subtitle: {
       part1: "Finest",
       part2: "Honest",
@@ -34,7 +34,7 @@ const banners = [
   },
   {
     image: hero3,
-    title: "Spices Made Personal",
+    title: "Shree Kakaji Masale",
     subtitle: {
       part1: "Custom",
       part2: "Quality",
