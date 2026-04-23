@@ -75,7 +75,9 @@ const Footer = () => {
                   <span className="relative z-10"> Facebook</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={
+                    "https://wa.me/919096551111?text=Hello%20Shree%20Kakaji%20Masale%2C%20I%20would%20like%20to%20inquire%20about%20your%20products.%20Could%20you%20please%20provide%20me%20with%20more%20information%3F"
+                  }
                   target="_blank"
                   className="bg-main hover:bg-main/70 relative overflow-hidden group tracking-[-0.04em] font-medium ~text-[0.75rem]/[1rem] duration-500 transition-all ease-in-out ~py-[0.25rem]/[0.5rem] flex items-center gap-[0.25rem] rounded-full sm:rounded-[0.75rem] text-white ~px-[0.4rem]/[1rem]"
                 >

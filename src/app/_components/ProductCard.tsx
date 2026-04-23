@@ -1,12 +1,12 @@
 "use client";
-import { TProduct } from "@/src/api/type";
+import { TProduct, TSpiceLevel } from "@/src/api/type";
 import CartButton from "@/src/components/product/CartButton";
 import Arrow from "@/src/components/svg/Arrow";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 
 type Props = {
   item: TProduct;
@@ -14,9 +14,23 @@ type Props = {
 };
 
 const ProductCard = ({ item, section }: Props) => {
+  const isYadi = item.product_type === 2;
+
   const [selectedVariant, setSelectedVariant] = useState(item?.variants?.[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Yadi-specific state
+  const [selectedSpiceLevel, setSelectedSpiceLevel] = useState<
+    TSpiceLevel | undefined
+  >(
+    () =>
+      selectedVariant?.spice_levels?.find((l) => l.level === 3) ??
+      selectedVariant?.spice_levels?.[0],
+  );
+  const [grinding, setGrinding] = useState<"Yes" | "No">(
+    selectedVariant?.has_grind === 1 ? "Yes" : "No",
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,6 +64,16 @@ const ProductCard = ({ item, section }: Props) => {
 
   const handleVariantSelect = (variant: typeof selectedVariant) => {
     setSelectedVariant(variant);
+    if (isYadi) {
+      setSelectedSpiceLevel(
+        variant?.spice_levels?.find(
+          (l) => l.level === selectedSpiceLevel?.level,
+        ) ??
+          variant?.spice_levels?.find((l) => l.level === 3) ??
+          variant?.spice_levels?.[0],
+      );
+      setGrinding(variant?.has_grind === 1 ? grinding : "No");
+    }
     setIsDropdownOpen(false);
   };
 
@@ -57,8 +81,104 @@ const ProductCard = ({ item, section }: Props) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Calculate final price for CartButton
-  const finalPrice = selectedVariant?.price || 0;
+  // --- Yadi price calculation (mirrors Hero.tsx logic) ---
+  const totalIngredientsWeight = useMemo(() => {
+    if (!selectedVariant?.ingredients) return 0;
+    return selectedVariant.ingredients.reduce((total, ingredient) => {
+      const qtyMatch = ingredient.quantity.match(/(\d+(\.\d+)?)/);
+      const qty = qtyMatch ? parseFloat(qtyMatch[1]) : 0;
+      const unit = ingredient.unit.toLowerCase();
+      if (unit === "kg") return total + qty * 1000;
+      if (unit === "gm" || unit === "g") return total + qty;
+      if (unit === "pcs" || unit === "pc") {
+        const mat = ingredient.raw_materials?.[0];
+        const pcsInTier = parseFloat(mat?.name || "1") || 1;
+        const gramsPerPiece = (mat?.quantity_in_grams || 0) / pcsInTier;
+        return total + qty * gramsPerPiece;
+      }
+      return total + qty;
+    }, 0);
+  }, [selectedVariant]);
+
+  const spiceLevelPrice = useMemo(() => {
+    if (!isYadi || !selectedSpiceLevel || selectedSpiceLevel.price === 0)
+      return 0;
+    const spiceQty = parseFloat(selectedSpiceLevel.quantity_in_gm) || 0;
+    if (spiceQty === 0) return 0;
+    return selectedSpiceLevel.price;
+  }, [isYadi, selectedSpiceLevel]);
+
+  const grindingPrice = useMemo(() => {
+    if (!isYadi || grinding !== "Yes" || selectedVariant?.has_grind !== 1)
+      return 0;
+    const spiceQty = parseFloat(selectedSpiceLevel?.quantity_in_gm || "0") || 0;
+    const totalWeight = totalIngredientsWeight + spiceQty;
+    return (selectedVariant.grind_price * totalWeight) / 1000;
+  }, [
+    isYadi,
+    grinding,
+    selectedVariant,
+    selectedSpiceLevel,
+    totalIngredientsWeight,
+  ]);
+
+  // Calculate the display price for the selected variant (used in both trigger and options)
+  // Calculate the display price for any variant — uses that variant's own spice level
+  // so the dropdown price always matches the price shown after selection.
+  const calcVariantPrice = (variant: typeof selectedVariant) => {
+    if (!isYadi) return variant?.price || 0;
+
+    // Always resolve the spice level from the target variant itself
+    const targetSpiceLevel =
+      variant?.spice_levels?.find(
+        (l) => l.level === (selectedSpiceLevel?.level ?? 3),
+      ) ?? variant?.spice_levels?.[0];
+
+    const spicePrice =
+      targetSpiceLevel &&
+      targetSpiceLevel.price !== 0 &&
+      parseFloat(targetSpiceLevel.quantity_in_gm) !== 0
+        ? targetSpiceLevel.price
+        : 0;
+
+    const variantGrindPrice = (() => {
+      if (grinding !== "Yes" || variant?.has_grind !== 1) return 0;
+      // Use this variant's own spice quantity for grind calculation
+      const spiceQty = parseFloat(targetSpiceLevel?.quantity_in_gm || "0") || 0;
+      const ingWeight =
+        variant?.ingredients?.reduce((total, ingredient) => {
+          const qtyMatch = ingredient.quantity.match(/(\d+(\.\d+)?)/);
+          const qty = qtyMatch ? parseFloat(qtyMatch[1]) : 0;
+          const unit = ingredient.unit.toLowerCase();
+          if (unit === "kg") return total + qty * 1000;
+          if (unit === "gm" || unit === "g") return total + qty;
+          if (unit === "pcs" || unit === "pc") {
+            const mat = ingredient.raw_materials?.[0];
+            const pcsInTier = parseFloat(mat?.name || "1") || 1;
+            const gramsPerPiece = (mat?.quantity_in_grams || 0) / pcsInTier;
+            return total + qty * gramsPerPiece;
+          }
+          return total + qty;
+        }, 0) ?? 0;
+      return (variant.grind_price * (ingWeight + spiceQty)) / 1000;
+    })();
+
+    return (
+      Math.round(
+        ((variant?.price || 0) + spicePrice + variantGrindPrice) * 100,
+      ) / 100
+    );
+  };
+
+  // Final price for the selected variant (used in CartButton)
+  const finalPrice = useMemo(() => {
+    if (!isYadi) return selectedVariant?.price || 0;
+    return (
+      Math.round(
+        ((selectedVariant?.price || 0) + spiceLevelPrice + grindingPrice) * 100,
+      ) / 100
+    );
+  }, [isYadi, selectedVariant, spiceLevelPrice, grindingPrice]);
   return (
     <div className="">
       <div
@@ -114,7 +234,7 @@ const ProductCard = ({ item, section }: Props) => {
                   {selectedVariant.formatted_unit}
                 </div>
                 <p className="text-[#00000029] font-bold">/</p>
-                <div>₹{selectedVariant.price.toFixed(2)}</div>
+                <div>₹{finalPrice.toFixed(2)}</div>
               </div>
               <ChevronDown
                 className={`text-black shrink-0 w-[0.6775000453rem] transition-transform ${
@@ -126,6 +246,7 @@ const ProductCard = ({ item, section }: Props) => {
             {isDropdownOpen && (
               <div className="absolute z-[200] mt-[0.5rem] w-full flex flex-col gap-[0.25rem] bg-[#F8F5EE] rounded-[1rem] ~p-[0.75rem]/[1rem] shadow-lg overflow-auto">
                 {item.variants?.map((variant, i) => {
+                  const displayPrice = calcVariantPrice(variant);
                   return (
                     <button
                       key={i}
@@ -143,7 +264,7 @@ const ProductCard = ({ item, section }: Props) => {
                           {variant.formatted_unit}
                         </div>
                         <p className="text-[#00000029] font-bold">/</p>
-                        <div>₹{variant.price.toFixed(2)}</div>
+                        <div>₹{displayPrice.toFixed(2)}</div>
                         {selectedVariant.id === variant.id && (
                           <div className="ml-auto">
                             <svg
