@@ -15,7 +15,7 @@ import SearchIcon from "@/src/components/svg/SearchIcon";
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 import AnnouncementBanner from "../_components/AnnouncementBanner";
 
-const Header = ({ showAnnouncement }: { showAnnouncement: boolean }) => {
+const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
