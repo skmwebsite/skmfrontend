@@ -214,4 +214,18 @@ export const frontendApi = {
     const response = await axiosClient.get(`/order-details/${orderId}`);
     return response.data;
   },
+  orderAvailabilityCheck: async (): Promise<{
+    success: boolean;
+    message: string;
+  } | null> => {
+    try {
+      const response = await axiosClient.get("/delivery-acceptance-status");
+
+      console.log("Order availability response:", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error checking order availability:", error);
+      return null;
+    }
+  },
 };

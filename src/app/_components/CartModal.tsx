@@ -57,6 +57,11 @@ interface AddressResponse {
   shipping_charge: ShippingCharge;
 }
 
+interface DeliveryStatusResponse {
+  success: boolean;
+  message: string;
+}
+
 const CartModal = () => {
   const {
     isCartOpen,
@@ -78,6 +83,10 @@ const CartModal = () => {
   const [promoCode, setPromoCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [showPromoSuccess, setShowPromoSuccess] = useState(false);
+  const [isCheckingDeliveryStatus, setIsCheckingDeliveryStatus] =
+    useState(false);
+  const [deliveryStatus, setDeliveryStatus] =
+    useState<DeliveryStatusResponse | null>(null);
   const [promoData, setPromoData] = useState<{
     discount_type: number;
     discount_value: number;
@@ -204,6 +213,19 @@ const CartModal = () => {
     }
   }, [isCartOpen]);
 
+  useEffect(() => {
+    const checkOrderAvailability = async () => {
+      setIsCheckingDeliveryStatus(true);
+      const status = await frontendApi.orderAvailabilityCheck();
+      setDeliveryStatus(status);
+      setIsCheckingDeliveryStatus(false);
+    };
+
+    if (isCartOpen && currentView === "cart" && totalUniqueItems > 0) {
+      checkOrderAvailability();
+    }
+  }, [isCartOpen, currentView, totalUniqueItems]);
+
   const handleCloseCart = () => {
     setTimeout(() => {
       setCurrentView("cart");
@@ -269,6 +291,8 @@ const CartModal = () => {
     }
   };
   const isPromoApplied = discountAmount > 0;
+  const isCheckoutDisabled =
+    isCheckingDeliveryStatus || deliveryStatus?.success !== true;
   const dialogPanelKey = isCartOpen ? "cart-open" : "cart-closed";
 
   return (
@@ -722,7 +746,6 @@ const CartModal = () => {
                                   </div>
                                   <AnimatePresence mode="wait">
                                     <motion.div
-                                      onClick={handleCheckout}
                                       key="checkout-button"
                                       initial={{ opacity: 0, y: 10 }}
                                       animate={{ opacity: 1, y: 0 }}
@@ -732,7 +755,11 @@ const CartModal = () => {
                                         ease: "easeOut",
                                       }}
                                     >
-                                      <button className="~text-[0.75rem]/[1rem] group relative w-full overflow-hidden flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white py-[0.78125rem]">
+                                      <button
+                                        onClick={handleCheckout}
+                                        disabled={isCheckoutDisabled}
+                                        className="~text-[0.75rem]/[1rem] group relative w-full overflow-hidden flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] bg-main font-medium text-white py-[0.78125rem] disabled:cursor-not-allowed disabled:opacity-60"
+                                      >
                                         <span
                                           className="
                                             absolute inset-0
@@ -742,9 +769,17 @@ const CartModal = () => {
                                           "
                                         />
                                         <span className="relative z-20">
-                                          Checkout
+                                          {isCheckingDeliveryStatus
+                                            ? "Checking..."
+                                            : "Checkout"}
                                         </span>
                                       </button>
+                                      {!isCheckingDeliveryStatus &&
+                                        deliveryStatus?.success === false && (
+                                          <p className="mt-[0.5rem] text-center text-[0.75rem] text-main">
+                                            {deliveryStatus.message}
+                                          </p>
+                                        )}
                                     </motion.div>
                                   </AnimatePresence>
                                 </div>

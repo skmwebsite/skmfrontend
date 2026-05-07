@@ -13,8 +13,9 @@ import CartModal from "../_components/CartModal";
 import { usePathname, useRouter } from "next/navigation";
 import SearchIcon from "@/src/components/svg/SearchIcon";
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
+import AnnouncementBanner from "../_components/AnnouncementBanner";
 
-const Header = () => {
+const Header = ({ showAnnouncement }: { showAnnouncement: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -140,14 +141,17 @@ const Header = () => {
           )}
         </AnimatePresence>
       )}
-      <div className="lg:~px-[0.75rem]/[1.5rem]  2xl:~px-[-10.75rem]/[15rem]">
+      <div
+        className={`lg:~px-[0.75rem]/[1.5rem] relative ${showAnnouncement ? "pb-[2.25rem] " : ""} 2xl:~px-[-10.75rem]/[15rem]`}
+      >
+        {showAnnouncement && <AnnouncementBanner />}
         <AnimatePresence>
           {!isScrolled && (
             <motion.div
               initial={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="absolute top-0 lg:~top-[1rem]/[1.5rem] max-lg:w-full z-[2000]"
+              className={`absolute  ${showAnnouncement ? "top-[2.57rem] lg:~top-[3.3rem]/[3.7rem]" : "top-0 lg:~top-[1rem]/[1.5rem]"} max-lg:w-full z-[2000]`}
             >
               <div className="w-full flex  items-center relative">
                 <BorderRadius className="text-white absolute ~size-[0.6428571343rem]/[1.125rem] ~left-[0.75rem]/[1.5rem] lg:left-0 z-30 max-lg:~bottom-[-0.6428571343rem]/[-1.125rem] lg:~top-[3.0025rem]/[5.25rem]" />
@@ -258,7 +262,7 @@ const Header = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed w-full top-0 lg:~top-[1rem]/[1.5rem] z-[2000]"
+              className={`fixed w-full ${showAnnouncement ? "top-[2.3rem] lg:~top-[3.3rem]/[3.7rem]" : "top-0 lg:~top-[1rem]/[1.5rem]"} z-[2000]`}
             >
               <div className="w-fit max-lg:w-full relative">
                 <motion.div
