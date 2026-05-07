@@ -777,7 +777,7 @@ const CartModal = () => {
                                       {!isCheckingDeliveryStatus &&
                                         deliveryStatus?.success === false && (
                                           <p className="mt-[0.5rem] text-center text-[0.75rem] text-main">
-                                            {deliveryStatus.message}
+                                            Currently not accepting orders
                                           </p>
                                         )}
                                     </motion.div>
