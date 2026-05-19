@@ -259,6 +259,9 @@ const prepareOrderItems = (items: any[]) => {
   return items
     .filter((item) => !item.isFreeItem)
     .map((item) => {
+      const isTypeTwoProduct = Number(item.productType) === 2;
+      const hasEditedIngredients = item.hasCustomizedIngredients === true;
+
       const orderItem: any = {
         product_id:
           typeof item.id === "string"
@@ -270,12 +273,16 @@ const prepareOrderItems = (items: any[]) => {
       };
 
       // Only add spice_level and has_grind for product_type 2
-      if (Number(item.productType) === 2) {
+      if (isTypeTwoProduct) {
         orderItem.spice_level = item.spiceLevel?.id || 0;
         orderItem.has_grind = item.grinding === "Yes" ? true : false;
+
+        if (hasEditedIngredients) {
+          orderItem.isCustomize = true;
+        }
       }
 
-      if (Number(item.productType) === 2 && item.customIngredients) {
+      if (isTypeTwoProduct && item.customIngredients) {
         const ingredients = item.customIngredients.map((ing: any) => ({
           raw_material_id: ing.raw_material_id,
           quantity: ing.qty,
@@ -338,6 +345,7 @@ const Delivery = ({
         yadi_ingredients?: { raw_material_id: number; quantity: number }[];
         spice_level?: number;
         has_grind?: boolean;
+        isCustomize?: boolean;
       }[];
       order_type: 1 | 2;
       promo_code: string;

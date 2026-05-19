@@ -171,6 +171,7 @@ export const frontendApi = {
       yadi_ingredients?: { raw_material_id: number; quantity: number }[];
       spice_level?: number;
       has_grind?: boolean;
+      isCustomize?: boolean;
     }[];
     order_type: 1 | 2;
     promo_code: string;
