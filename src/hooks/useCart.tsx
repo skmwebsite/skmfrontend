@@ -670,13 +670,19 @@ export const CartProvider: React.FC<{
       throw new Error("You must provide a `price` for items");
     }
 
-    // Check max_quantity limit using WEIGHT calculation, not item count
-    const maxQuantityKg = item.max_quantity || 15;
+    // For pcs-based variants, max_quantity is item count.
+    // For weight-based variants, max_quantity is treated as kg limit.
+    const maxQuantityLimit = item.max_quantity || 15;
     const currentItem = state.items.find((i: Item) => i.itemId === itemHash);
 
     // Calculate weight per piece
     const variantName = String(item.variantName || "");
     const variantUnit = String(item.variantUnit || "");
+    const variantUnitLower = variantUnit.toLowerCase();
+    const isPiecesVariant =
+      variantUnitLower === "pcs" ||
+      variantUnitLower === "pc" ||
+      /\b(\d+)\s*(pcs|pc|pieces|piece)\b/i.test(variantName);
     const weightPerUnit = parseFloat(variantName) || 0;
     const weightPerPieceKg =
       weightPerUnit > 0 && variantUnit
@@ -686,10 +692,17 @@ export const CartProvider: React.FC<{
     if (currentItem) {
       const newQuantity = currentItem.quantity + quantityChange;
 
-      // Use weight-based check if we have valid variant info
-      if (weightPerPieceKg > 0 && quantityChange > 0) {
+      // For pcs variants, enforce count-based limit.
+      if (isPiecesVariant && quantityChange > 0) {
+        if (newQuantity > maxQuantityLimit) {
+          return;
+        }
+      }
+
+      // For weight-based variants, enforce kg limit.
+      if (!isPiecesVariant && weightPerPieceKg > 0 && quantityChange > 0) {
         const newTotalWeightKg = weightPerPieceKg * newQuantity;
-        if (newTotalWeightKg > maxQuantityKg) {
+        if (newTotalWeightKg > maxQuantityLimit) {
           return;
         }
       }
@@ -700,10 +713,17 @@ export const CartProvider: React.FC<{
         return;
       }
 
-      // Use weight-based check for new items too
-      if (weightPerPieceKg > 0) {
+      // For pcs variants, enforce count-based limit for first add too.
+      if (isPiecesVariant) {
+        if (quantityChange > maxQuantityLimit) {
+          return;
+        }
+      }
+
+      // Use weight-based check for new items too.
+      if (!isPiecesVariant && weightPerPieceKg > 0) {
         const newTotalWeightKg = weightPerPieceKg * quantityChange;
-        if (newTotalWeightKg > maxQuantityKg) {
+        if (newTotalWeightKg > maxQuantityLimit) {
           return;
         }
       }

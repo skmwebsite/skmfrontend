@@ -93,7 +93,6 @@ const Hero = ({ product_details }: Props) => {
       return total + qty;
     }, 0);
   };
-
   const totalIngredientsWeight = useMemo(
     () => calculateIngredientsTotalWeight(),
     [selectedVariant, isCustomized, customizedIngredients],
