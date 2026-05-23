@@ -41,28 +41,9 @@ interface AddressData {
 }
 
 const fetchLocationByPincode = async (pincode: string) => {
-  const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+  const pincodeDetails = await frontendApi.getPincodeDetails(pincode);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch pincode details");
-  }
-
-  const data = await res.json();
-
-  if (
-    Array.isArray(data) &&
-    data[0]?.Status === "Success" &&
-    data[0]?.PostOffice?.length > 0
-  ) {
-    const postOffice = data[0].PostOffice[0];
-
-    return {
-      city: postOffice.District,
-      state: postOffice.State,
-    };
-  }
-
-  return null;
+  return pincodeDetails;
 };
 
 const schema = z.object({
@@ -145,7 +126,7 @@ const AddressForm = ({
         setIsCheckingPincode(true);
         try {
           const pincodeCheck = await frontendApi.getPinCode(pincodeValue);
-
+          console.log(pincodeCheck, "pincodeeee");
           // Check if pincode is valid (assuming the API returns data if deliverable)
           if (pincodeCheck) {
             // Pincode is deliverable, now fetch location details from postal API
@@ -153,6 +134,8 @@ const AddressForm = ({
             setIsLoadingLocation(true);
 
             const location = await fetchLocationByPincode(pincodeValue);
+
+            console.log(location, "locationnnn");
             if (location) {
               setValue("city", location.city);
               setValue("state", location.state);

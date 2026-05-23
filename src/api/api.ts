@@ -50,6 +50,17 @@ export const frontendApi = {
       return null;
     }
   },
+  getPincodeDetails: async (pincode: string): Promise<{state: string; city: string} | null> => {
+    try {
+      const response = await axiosClient.get(
+        `/pincode/${pincode}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
   getShopInnerPage: async (slug: string): Promise<TShopInner | null> => {
     try {
       const response = await axiosClient.get(`/product-details/${slug}`);
