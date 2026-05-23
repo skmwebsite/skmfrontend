@@ -33,10 +33,12 @@ const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
   });
   const schema = z.object({
     phone_number: z
+
       .string()
-      .max(15, { message: "Enter a valid phone number" })
-      .min(10, { message: "Enter a valid phone number" })
-      .regex(phoneNumberRegex, { message: "Only digits allowed" }),
+
+      .regex(/^\d{10}$/, {
+        message: "Enter a valid 10 digit phone number",
+      }),
     phone_code: z.string().nonempty("Phone code is required"),
   });
   type Schema = z.infer<typeof schema>;
