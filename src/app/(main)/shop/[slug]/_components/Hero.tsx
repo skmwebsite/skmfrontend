@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useMemo } from "react";
+import BestSellerTag from "@/src/components/BestSellerTag";
 import Image from "next/image";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
@@ -291,7 +292,7 @@ const Hero = ({ product_details }: Props) => {
           </div>
         </div>
         <div className="lg:w-[40%]">
-          <div className="flex gap-[0.375rem] ~text-[0.75rem]/[0.875rem] font-medium tracking-[-0.03em]">
+          <div className="flex flex-wrap items-center gap-[0.375rem] ~text-[0.75rem]/[0.875rem] font-medium tracking-[-0.03em]">
             <p className="text-[#0000007A]">Shop</p>
             <p className="text-[#0000007A]">•</p>
             <p
@@ -300,6 +301,10 @@ const Hero = ({ product_details }: Props) => {
             >
               {product_details.category_name}
             </p>
+            {/* tags: 1 = best seller */}
+            {product_details.tags === 1 && (
+              <BestSellerTag variant="inline" className="ml-[0.25rem]" />
+            )}
           </div>
           <h2 className="~text-[1.25rem]/[3rem] tracking-[-0.04em] leading-[120%] ~pt-[0.75rem]/[0.5rem] bg-clip-text text-transparent font-medium bg-gradient-to-b from-[#000000] to-[#666666]">
             {product_details.name}

@@ -4,25 +4,22 @@ import CartIcon from "@/src/components/svg/CartIcon";
 import Logo from "@/src/components/svg/Logo";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Humburger from "@/src/components/svg/Humburger";
 import { useCart } from "@/src/hooks/useCart";
 import CloseButton from "@/src/components/svg/CloseButton";
 import CartModal from "../_components/CartModal";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import SearchIcon from "@/src/components/svg/SearchIcon";
-import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
+import SearchModal from "../_components/SearchModal";
 import AnnouncementBanner from "../_components/AnnouncementBanner";
 
 const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
-  const router = useRouter();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -37,18 +34,31 @@ const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
 
   const { totalNumberItems, openCart, isCartOpen } = useCart();
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = searchQuery.trim();
-    if (!trimmed) return;
-    setIsSearchOpen(false);
-    setSearchQuery("");
-    router.push(`/shop?q=${encodeURIComponent(trimmed)}`);
-  };
-
   const handleOpenSearch = () => {
     setIsSearchOpen(true);
   };
+
+  // Open search with ⌘K / Ctrl+K, or "/" when not already typing somewhere.
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable;
+
+      const isCommandK = (event.metaKey || event.ctrlKey) && event.key === "k";
+      const isSlash = event.key === "/" && !isTyping;
+
+      if (isCommandK || isSlash) {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   const SearchButton = ({ className }: { className?: string }) => (
     <button
@@ -63,68 +73,10 @@ const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
 
   return (
     <>
-      {/* Search Dialog */}
-      <Dialog
+      <SearchModal
         open={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        className="relative z-[99999]"
-      >
-        <DialogBackdrop
-          as={motion.div}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-        />
-
-        <div className="fixed inset-0 flex items-start justify-center pt-[20vh] px-4">
-          <DialogPanel
-            as={motion.div}
-            initial={{ opacity: 0, y: -16, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -16, scale: 0.97 }}
-            className="w-full max-w-[32rem] bg-white rounded-[1rem] shadow-2xl overflow-hidden"
-          >
-            <form
-              onSubmit={handleSearchSubmit}
-              className="flex items-center gap-[0.75rem] px-[1.25rem] ~py-[0.625rem]/[1rem]"
-            >
-              <SearchIcon className="size-[1.25rem] shrink-0 text-[#1A1A1A]/50" />
-              <input
-                ref={inputRef}
-                autoFocus
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Product"
-                className="flex-1 text-[1rem] font-medium text-[#1A1A1A] placeholder:text-[#1A1A1A]/40 bg-transparent outline-none leading-[1.5] tracking-[-0.02em]"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors"
-                  aria-label="Clear search"
-                >
-                  <CloseButton className="size-[1.125rem]" />
-                </button>
-              )}
-            </form>
-            {searchQuery.trim() && (
-              <div className="border-t border-[#00000010] px-[1.25rem] py-[0.875rem]">
-                <button
-                  type="button"
-                  onClick={handleSearchSubmit as any}
-                  className="flex items-center gap-[0.5rem] text-[0.875rem] font-medium text-main hover:underline"
-                >
-                  <SearchIcon className="size-[0.875rem]" />
-                  Search for &ldquo;{searchQuery}&rdquo;
-                </button>
-              </div>
-            )}
-          </DialogPanel>
-        </div>
-      </Dialog>
+      />
 
       {isCartOpen === true && <CartModal />}
       {open && (
@@ -399,7 +351,20 @@ const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
                   onClick={() => setOpen(!open)}
                 />
               </div>
-              <div className="pt-[2.25rem] space-y-[0.85rem]  ">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  setIsSearchOpen(true);
+                }}
+                className="mt-[1.5rem] flex w-full items-center gap-[0.625rem] rounded-[0.75rem] bg-[#F8F5EE] px-[0.875rem] py-[0.75rem] text-left"
+              >
+                <SearchIcon className="size-[1.125rem] shrink-0 text-main/60" />
+                <span className="text-[0.875rem] font-medium leading-[130%] tracking-[-0.03em] text-[#1A1A1A]/50">
+                  Search products
+                </span>
+              </button>
+              <div className="pt-[1.5rem] space-y-[0.85rem]  ">
                 <Link
                   prefetch={false}
                   onClick={() => setOpen(!open)}
@@ -431,6 +396,17 @@ const Header = ({ showAnnouncement }: { showAnnouncement?: boolean }) => {
                 >
                   {" "}
                   About Us
+                </Link>
+                <Link
+                  prefetch={false}
+                  onClick={() => setOpen(!open)}
+                  href={"/orders"}
+                  className={`~text-[0.875rem]/[1rem] flex leading-[155%] ~pb-[0.25rem]/[0.5rem] border-b border-b-[#00000033] w-full tracking-[-0.03em] text-[#1A1A1A] ${
+                    isActive("/orders") ? "font-bold" : "font-medium"
+                  }`}
+                >
+                  {" "}
+                  My Orders
                 </Link>
                 <Link
                   prefetch={false}

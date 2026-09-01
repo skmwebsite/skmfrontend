@@ -1,6 +1,15 @@
 import { TUserData } from "../contexts/AuthContext";
 import axiosClient from "./config/axiosClient";
-import { TCategories, THome, TPromoCode, TShop, TShopInner } from "./type";
+import {
+  TCategories,
+  THome,
+  TOrderHistoryResponse,
+  TProductSearchParams,
+  TProductSearchResponse,
+  TPromoCode,
+  TShop,
+  TShopInner,
+} from "./type";
 
 export const frontendApi = {
   getHomePage: async (): Promise<THome | null> => {
@@ -20,6 +29,35 @@ export const frontendApi = {
       console.log(error);
       return null;
     }
+  },
+  searchProducts: async ({
+    q,
+    category_id,
+    page = 1,
+    per_page = 15,
+  }: TProductSearchParams = {}): Promise<TProductSearchResponse> => {
+    // Errors are intentionally not swallowed: the search UI needs to tell a
+    // failed request apart from a genuine "no matches" (which is a 200).
+    const response = await axiosClient.get("/products/search", {
+      params: {
+        // The API treats both params as optional, so only send what is set.
+        ...(q?.trim() ? { q: q.trim() } : {}),
+        ...(category_id ? { category_id } : {}),
+        page,
+        // The API caps per_page at 50.
+        per_page: Math.min(per_page, 50),
+      },
+    });
+
+    return {
+      data: response.data?.data ?? [],
+      meta: response.data?.meta ?? {
+        current_page: 1,
+        last_page: 1,
+        per_page,
+        total: response.data?.data?.length ?? 0,
+      },
+    };
   },
   getShopPage: async (): Promise<TShop[] | null> => {
     try {
@@ -221,6 +259,29 @@ export const frontendApi = {
       console.error("Error creating order:", error);
       return null;
     }
+  },
+  getOrderHistory: async (params?: {
+    page?: number;
+    per_page?: number;
+  }): Promise<TOrderHistoryResponse> => {
+    // Errors are intentionally not swallowed here: the orders page needs to
+    // tell a 401 (session expired) apart from a network failure.
+    const response = await axiosClient.get("/orders/history", {
+      params: {
+        page: params?.page ?? 1,
+        per_page: params?.per_page ?? 10,
+      },
+    });
+
+    return {
+      data: response.data?.data ?? [],
+      meta: response.data?.meta ?? {
+        current_page: 1,
+        last_page: 1,
+        per_page: params?.per_page ?? 10,
+        total: response.data?.data?.length ?? 0,
+      },
+    };
   },
   getOrderDetails: async (orderId: string) => {
     const response = await axiosClient.get(`/order-details/${orderId}`);

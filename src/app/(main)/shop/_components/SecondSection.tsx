@@ -1,22 +1,31 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { motion } from "motion/react";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import ProductCard from "@/src/app/_components/ProductCard";
+import { frontendApi } from "@/src/api/api";
 import { TShop } from "@/src/api/type";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   menuitems: TShop[];
 };
 
+// The search endpoint caps per_page at 50; the shop grid shows everything that
+// matches on one page rather than paginating.
+const SEARCH_PER_PAGE = 50;
+
 const SecondSection = ({ menuitems }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("q") ?? "";
+  const categoryIdParam = searchParams.get("category_id");
+  const categoryLabel = searchParams.get("category") ?? "";
+  const categoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
 
   const isResponsiveUi = useMediaQuery("(max-width: 1024px)");
 
@@ -24,56 +33,89 @@ const SecondSection = ({ menuitems }: Props) => {
 
   const isClickScrollingRef = useRef(false);
 
-  // Parse search terms - split by comma and clean up
-  const getSearchTerms = (query: string): string[] => {
-    if (!query) return [];
-    return query
-      .split(",")
-      .map((term) => term.trim().toLowerCase())
-      .filter((term) => term.length > 0);
-  };
+  const isSearching = Boolean(searchTerm.trim() || categoryId);
 
-  const searchTerms = getSearchTerms(searchTerm);
+  // When the URL carries a query or a category the results come from the API;
+  // otherwise the full server-rendered catalogue is shown as-is.
+  const {
+    data: search,
+    isFetching: isSearchFetching,
+    isError: isSearchError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["shop-search", searchTerm.trim(), categoryId ?? null],
+    queryFn: ({ pageParam }) =>
+      frontendApi.searchProducts({
+        q: searchTerm.trim() || undefined,
+        category_id: categoryId,
+        page: pageParam,
+        per_page: SEARCH_PER_PAGE,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.current_page < lastPage.meta.last_page
+        ? lastPage.meta.current_page + 1
+        : undefined,
+    enabled: isSearching,
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000,
+  });
 
-  // Check if a product matches any of the search terms
-  const productMatchesSearch = (productName: string): boolean => {
-    if (searchTerms.length === 0) return true;
-
-    const productNameLower = productName.toLowerCase();
-    return searchTerms.some((term) => productNameLower.includes(term));
-  };
-
-  // Filter menu items and update product counts per category
-  const filteredMenuItems = menuitems
-    .map((section) => {
-      // Filter products in this section based on search
-      const filteredProducts = section.products.filter((product) =>
-        productMatchesSearch(product.name),
-      );
-
-      // Return section with only matching products
-      return {
-        ...section,
-        products: filteredProducts,
-      };
-    })
-    .filter((section) => section.products.length > 0); // Only keep sections with matching products
-
-  // Calculate total products count for "no results" message
-  const totalFilteredProducts = filteredMenuItems.reduce(
-    (total, section) => total + section.products.length,
-    0,
+  const searchResults = useMemo(
+    () => (search?.pages ?? []).flatMap((page) => page.data),
+    [search],
   );
+
+  // Group the flat API results back into the category sections the grid renders,
+  // reusing each category's colour and slug from the catalogue where known.
+  const filteredMenuItems = useMemo<TShop[]>(() => {
+    if (!isSearching) return menuitems;
+    if (!search) return [];
+
+    const sections = new Map<string, TShop>();
+
+    for (const product of searchResults) {
+      const name = product.category_name ?? "Products";
+      if (!sections.has(name)) {
+        const known = menuitems.find((section) => section.name === name);
+        sections.set(name, {
+          id: known?.id ?? 0,
+          name,
+          slug: known?.slug ?? name.toLowerCase().replace(/\s+/g, "-"),
+          colour: known?.colour ?? "#F1913D",
+          has_offer: known?.has_offer ?? 0,
+          products: [],
+        });
+      }
+      sections.get(name)?.products.push(product);
+    }
+
+    return [...sections.values()];
+  }, [isSearching, search, searchResults, menuitems]);
+
+  const isSearchLoading = isSearching && isSearchFetching && !search;
+
+  // Labels shown in the search header: the typed terms, or the category name.
+  const searchTerms = useMemo(() => {
+    if (searchTerm) {
+      return searchTerm
+        .split(",")
+        .map((term) => term.trim())
+        .filter((term) => term.length > 0);
+    }
+    return categoryLabel ? [categoryLabel] : [];
+  }, [searchTerm, categoryLabel]);
 
   const handleClearSearch = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("q");
-    router.push(`?${params.toString()}`);
+    params.delete("category_id");
+    params.delete("category");
+    const rest = params.toString();
+    router.push(rest ? `?${rest}` : "/shop");
   };
-
-  if (menuitems.length === 0) {
-    return null;
-  }
 
   useEffect(() => {
     if (!menuitems?.length) {
@@ -155,15 +197,15 @@ const SecondSection = ({ menuitems }: Props) => {
     }, 1000);
   };
 
-  // Scroll to top when search param is present
+  // Scroll to top when a search or category filter is applied.
   useEffect(() => {
-    if (searchTerm !== "") {
+    if (isSearching) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [searchTerm]);
+  }, [isSearching]);
 
   const SearchHeader = () => {
-    if (searchTerm === "") return null;
+    if (searchTerms.length === 0) return null;
 
     return (
       <motion.div
@@ -215,6 +257,50 @@ const SecondSection = ({ menuitems }: Props) => {
     );
   };
 
+  if (menuitems.length === 0 && !isSearching) {
+    return null;
+  }
+
+  // Skeleton grid shown while an API-backed search is in flight.
+  const SearchSkeleton = () => (
+    <div className="grid grid-cols-2 ~gap-[1rem]/[3rem] lg:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className="~h-[12rem]/[20rem] animate-pulse rounded-[0.75rem] bg-[#F8F5EE]"
+        />
+      ))}
+    </div>
+  );
+
+  const LoadMore = () =>
+    hasNextPage ? (
+      <div className="flex justify-center ~pt-[1.5rem]/[2rem] ~pb-[1rem]/[2rem]">
+        <button
+          type="button"
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+          className="~text-[0.6875rem]/[0.875rem] group overflow-hidden relative flex justify-center items-center gap-[0.5rem] rounded-full leading-[120%] tracking-[-0.03em] border border-main font-medium text-main ~px-[1.5rem]/[2rem] ~py-[0.5rem]/[0.625rem] transition-all duration-700 ease-in-out hover:border-transparent hover:text-white disabled:opacity-60"
+        >
+          <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+          <span className="relative z-10">
+            {isFetchingNextPage ? "Loading…" : "Load more products"}
+          </span>
+        </button>
+      </div>
+    ) : null;
+
+  const SearchError = () => (
+    <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
+      <p className="~text-[1rem]/[1.5rem] font-neueHaasMedium text-redcolor/70">
+        We couldn&rsquo;t load these results.
+      </p>
+      <p className="~text-[0.75rem]/[1rem] font-medium text-redcolor/50">
+        Please check your connection and try again.
+      </p>
+    </div>
+  );
+
   if (isResponsiveUi) {
     return (
       <div className="relative min-h-[calc(100vh-16rem)] w-full">
@@ -264,7 +350,9 @@ const SecondSection = ({ menuitems }: Props) => {
             <SearchHeader />
           </div>
           <div className="relative pt-[1rem] ~px-[0.75rem]/[1.5rem] 2xl:~px-[-10.75rem]/[15rem] flex gap-[1rem] flex-col">
-            {filteredMenuItems?.map((section) => {
+            {isSearchLoading && <SearchSkeleton />}
+            {!isSearchLoading && isSearchError && <SearchError />}
+            {!isSearchLoading && !isSearchError && filteredMenuItems?.map((section) => {
               const slug = section.slug;
               return (
                 <div key={slug}>
@@ -296,7 +384,7 @@ const SecondSection = ({ menuitems }: Props) => {
                 </div>
               );
             })}
-            {filteredMenuItems.length === 0 && (
+            {!isSearchLoading && !isSearchError && filteredMenuItems.length === 0 && (
               <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
                 <p className="~text-[1rem]/[1.5rem] font-neueHaasMedium text-redcolor/70">
                   No items found.
@@ -307,6 +395,7 @@ const SecondSection = ({ menuitems }: Props) => {
                 </p>
               </div>
             )}
+            {!isSearchLoading && !isSearchError && isSearching && <LoadMore />}
           </div>
         </div>
       </div>
@@ -395,7 +484,11 @@ const SecondSection = ({ menuitems }: Props) => {
         <div className="~pt-[4.5rem]/[6.75rem]" />
         <SearchHeader />
         <div className="w-full">
-          {filteredMenuItems.length === 0 ? (
+          {isSearchLoading ? (
+            <SearchSkeleton />
+          ) : isSearchError ? (
+            <SearchError />
+          ) : filteredMenuItems.length === 0 ? (
             <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-[0.25rem]">
               <svg
                 width="174"
@@ -532,6 +625,7 @@ const SecondSection = ({ menuitems }: Props) => {
                   </motion.div>
                 );
               })}
+              {isSearching && <LoadMore />}
             </div>
           )}
         </div>

@@ -25,6 +25,25 @@ export type TCategories = {
   type: number;
 };
 
+export type TPaginationMeta = {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+};
+
+export type TProductSearchParams = {
+  q?: string;
+  category_id?: number;
+  page?: number;
+  per_page?: number;
+};
+
+export type TProductSearchResponse = {
+  data: TProduct[];
+  meta: TPaginationMeta;
+};
+
 export type TMenu = {
   category: string;
   image: string;
@@ -91,6 +110,8 @@ export type TProduct = {
   product_type: number;
   max_quantity: number;
   category_slug?: string;
+  // 1 = best seller, 0 = not a best seller. Sent by /home and /shop.
+  tags?: 0 | 1;
 
   id: number;
   colour?: string;
@@ -115,4 +136,72 @@ export type TMeta = {
   meta_description: string;
   meta_keywords: string;
   name: string;
+};
+
+export type TOrderStatus =
+  | "Pending"
+  | "Confirmed"
+  | "Shipped"
+  | "Delivered"
+  | "Cancelled"
+  | "Unknown";
+
+export type TPaymentStatus =
+  | "Not initiated"
+  | "Created"
+  | "Paid"
+  | "Failed"
+  | "Authorized";
+
+export type TOrderHistoryItem = {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_image: string;
+  product_type: number;
+  quantity: number;
+  unit_price: string;
+  line_total: string;
+  variant: {
+    id: number;
+    name: string;
+    unit: string;
+  } | null;
+};
+
+export type TOrderHistoryAddress = {
+  name: string;
+  street: string;
+  city: string;
+  state: string;
+  pincode: string;
+};
+
+export type TOrderHistory = {
+  id: number;
+  order_id: string;
+  order_date: string;
+  order_status: TOrderStatus;
+  payment_status: TPaymentStatus;
+  gross_price: string;
+  tax: string;
+  promo_discount: string;
+  shipping_charge: string;
+  total_price: string;
+  order_type: 1 | 2;
+  delivery_address: TOrderHistoryAddress | null;
+  created_at: string;
+  items: TOrderHistoryItem[];
+};
+
+export type TOrderHistoryMeta = {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+};
+
+export type TOrderHistoryResponse = {
+  data: TOrderHistory[];
+  meta: TOrderHistoryMeta;
 };

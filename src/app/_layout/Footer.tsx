@@ -128,6 +128,13 @@ const Footer = () => {
               >
                 About us
               </Link>{" "}
+              <Link
+                prefetch={false}
+                className="md:font-medium hover:text-black duration-700 ease-in-out transition-all hover:scale-[1.02] text-[#1A1A1ABF] ~text-[0.75rem]/[1rem] leading-[120%] tracking-[-0.04em]"
+                href="/orders"
+              >
+                My Orders
+              </Link>{" "}
             </div>
             <div className="flex flex-col gap-[1rem] ">
               <h4 className="font-semibold text-[1rem] leading-[120%] tracking-[-0.04em] text-black">

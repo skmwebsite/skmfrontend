@@ -4,6 +4,7 @@ import PopularSection from "../_components/PopularSection";
 import CollectionSection from "../_components/CollectionSection";
 import DiscoverSection from "../_components/DiscoverSection";
 import Testimonials from "../_components/Testimonials";
+import ReelsSection from "../_components/ReelsSection";
 import { frontendApi } from "@/src/api/api";
 import { THome } from "@/src/api/type";
 
@@ -24,6 +25,7 @@ const page = async () => {
 
       <DiscoverSection />
       <Testimonials />
+      <ReelsSection />
     </div>
   );
 };

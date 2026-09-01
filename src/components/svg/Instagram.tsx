@@ -11,7 +11,7 @@ const Instagram = (props: SVGProps<SVGSVGElement>) => (
   >
     <g clipPath="url(#a)">
       <path
-        stroke="#fff"
+        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth={1.333}

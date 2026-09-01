@@ -2,6 +2,7 @@
 import { TProduct, TSpiceLevel } from "@/src/api/type";
 import CartButton from "@/src/components/product/CartButton";
 import Arrow from "@/src/components/svg/Arrow";
+import BestSellerTag from "@/src/components/BestSellerTag";
 import BorderRadius from "@/src/components/svg/BorderRadius";
 import ChevronDown from "@/src/components/svg/ChevronDown";
 import Image from "next/image";
@@ -15,6 +16,8 @@ type Props = {
 
 const ProductCard = ({ item, section }: Props) => {
   const isYadi = item.product_type === 2;
+  // tags: 1 = best seller, 0 = not a best seller.
+  const isBestSeller = item.tags === 1;
 
   const [selectedVariant, setSelectedVariant] = useState(item?.variants?.[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -200,6 +203,9 @@ const ProductCard = ({ item, section }: Props) => {
               sizes="100vw"
               alt={item.name}
             />
+            {isBestSeller && (
+              <BestSellerTag className="absolute ~top-[0.5rem]/[0.75rem] ~left-[0.5rem]/[0.75rem] z-10" />
+            )}
             <div className="size-[3.2748651505rem] max-sm:hidden rounded-tl-[0.75rem] flex justify-center items-center bg-white absolute bottom-0 right-0">
               <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 bottom-0 left-[-0.842rem]" />
               <BorderRadius className="absolute size-[0.8421081305rem] rotate-180 text-white z-20 top-[-0.842rem] right-0" />

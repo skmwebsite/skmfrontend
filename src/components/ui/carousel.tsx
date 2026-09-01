@@ -191,20 +191,34 @@ const CarouselItem = React.forwardRef<
 });
 CarouselItem.displayName = "CarouselItem";
 
+/**
+ * Orange gradient that fades in on hover, matching the Testimonials arrows.
+ * Sits behind the arrow icon, which flips to white via `group-hover`.
+ */
+const CarouselArrowHover = () => (
+  <span className="absolute inset-0 bg-gradient-to-r from-[#EC5715] to-[#FF7E00] opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
+);
+
 const CarouselPrevious = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const { scrollPrev } = useCarousel();
 
   return (
     <div
       ref={ref}
       onClick={scrollPrev}
-      className="~size-[2.5rem]/[4rem] relative flex items-center text-black hover:text-white justify-center rounded-full border-2 border-black hover:bg-black bg-transparent"
+      role="button"
+      aria-label="Previous slide"
+      className={cn(
+        "~size-[2.339189291rem]/[3.125rem] group relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#F8F5EE] text-main",
+        className
+      )}
       {...props}
     >
-      ===={" "}
+      <CarouselArrowHover />
+      {children ?? "===="}
     </div>
   );
 });
@@ -213,17 +227,23 @@ CarouselPrevious.displayName = "CarouselPrevious";
 const CarouselNext = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const { scrollNext } = useCarousel();
 
   return (
     <div
       ref={ref}
       onClick={scrollNext}
-      className="~size-[2.5rem]/[4rem] text-black hover:text-white relative flex items-center justify-center rounded-full border-2 border-black hover:bg-black bg-transparent"
+      role="button"
+      aria-label="Next slide"
+      className={cn(
+        "~size-[2.339189291rem]/[3.125rem] group relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#F8F5EE] text-main",
+        className
+      )}
       {...props}
     >
-      ==={" "}
+      <CarouselArrowHover />
+      {children ?? "==="}
     </div>
   );
 });
